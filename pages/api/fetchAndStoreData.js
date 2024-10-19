@@ -158,10 +158,19 @@ async function storeDataInSupabase(data) {
 export default async function handler(req, res) {
   console.log(`Received ${req.method} request`);
 
+  // Log the received authorization header (be careful not to log the full token in production)
+  console.log('Received Authorization header:', req.headers.authorization ? 'Present' : 'Missing');
+
+  // Log the expected CRON_SECRET (only the first few characters for security)
+  const expectedSecret = process.env.CRON_SECRET;
+  console.log('Expected CRON_SECRET:', expectedSecret ? `${expectedSecret.slice(0, 4)}...` : 'Missing');
+
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    console.log('Unauthorized access attempt');
+    console.log('Authorization failed');
     return res.status(401).json({ message: 'Unauthorized' });
   }
+
+  console.log('Authorization successful');
 
   if (req.method === 'GET' || req.method === 'POST') {
     try {
