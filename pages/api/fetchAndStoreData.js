@@ -1,7 +1,51 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 
-// ... [Keep the existing imports and configurations] ...
+const API_TOKEN = process.env.API_TOKEN;
+const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+const BASE_URL = 'https://oceancom.msm-data.com/api/device/10/Waves/';
+
+const endpoints = [
+  { url: `${BASE_URL}Wave%20Height/?token=${API_TOKEN}`, type: 'Wave Height' },
+  { url: `${BASE_URL}Wave%20Period/?token=${API_TOKEN}`, type: 'Wave Period' },
+  { url: `${BASE_URL}Angular/?token=${API_TOKEN}`, type: 'Angular' },
+  { url: `${BASE_URL}Wave%20Count/?token=${API_TOKEN}`, type: 'Wave Count' },
+];
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  console.error('Missing Supabase environment variables');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+async function fetchData(endpoint) {
+  try {
+    console.log(`Fetching data from ${endpoint.url}`);
+    const response = await fetch(endpoint.url, {
+      method: 'GET',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        Origin: 'https://stackblitz.com',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(`Successfully fetched data for ${endpoint.type}`);
+    return { type: endpoint.type, data: data };
+  } catch (error) {
+    console.error(`Error fetching data from ${endpoint.url}:`, error.message);
+    throw error;
+  }
+}
 
 function processData(fetchedData) {
   console.log(`Processing ${fetchedData.type} data`);
@@ -46,6 +90,21 @@ function processData(fetchedData) {
   return Object.values(processedData);
 }
 
+async function getLatestTimestamp() {
+  const { data, error } = await supabase
+    .from('arica_oceano')
+    .select('created_at')
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.error('Error fetching latest timestamp:', error);
+    return null;
+  }
+
+  return data.length > 0 ? new Date(data[0].created_at).getTime() : null;
+}
+
 function filterNewData(data, latestTimestamp) {
   if (!latestTimestamp) {
     console.log(
@@ -67,7 +126,34 @@ function filterNewData(data, latestTimestamp) {
   return newData;
 }
 
-// ... [Keep other functions as they are] ...
+async function storeDataInSupabase(data) {
+  try {
+    console.log(`Preparing to store ${data.length} entries in Supabase`);
+
+    if (data.length === 0) {
+      console.log('No new data to store. Skipping Supabase operation.');
+      return;
+    }
+
+    const dataWithIds = data.map((entry) => ({
+      id: entry.id || uuidv4(),
+      ...entry,
+    }));
+
+    const { data: insertedData, error } = await supabase
+      .from('arica_oceano')
+      .upsert(dataWithIds, {
+        onConflict: 'id',
+        ignoreDuplicates: false,
+      });
+
+    if (error) throw error;
+    console.log('Data stored successfully:', insertedData);
+  } catch (error) {
+    console.error('Error storing data in Supabase:', error);
+    throw error;
+  }
+}
 
 export default async function handler(req, res) {
   console.log(`Received ${req.method} request`);
