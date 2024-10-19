@@ -74,7 +74,8 @@ function processData(fetchedData) {
         if (!processedData[item.date]) {
           processedData[item.date] = { created_at: item.date };
         }
-        processedData[item.date][`${fetchedData.type}_${key}`] = parseFloat(item.value);
+        // Use only the original key name, without prefixing with fetchedData.type
+        processedData[item.date][key] = parseFloat(item.value);
       }
     } else {
       console.warn(
