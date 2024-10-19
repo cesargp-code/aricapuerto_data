@@ -170,24 +170,53 @@ async function storeDataInSupabase(data) {
 export default async function handler(req, res) {
   console.log(`Received ${req.method} request`);
 
-  // Temporarily disable authorization check for testing
-  // if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   console.log('Unauthorized access attempt');
-  //   return res.status(401).json({ message: 'Unauthorized' });
-  // }
+  // Re-enable authorization check
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.log('Unauthorized access attempt');
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
 
   if (req.method === 'GET' || req.method === 'POST') {
     try {
       console.log('Starting data fetch and store process');
 
-      // Your existing data fetching and processing logic here
-      // For now, let's just log a message
-      console.log('Data fetching and processing would happen here');
+      const latestTimestamp = await getLatestTimestamp();
+      console.log('Latest timestamp in database:', latestTimestamp);
+
+      // Fetch data from all endpoints
+      console.log('Fetching data from endpoints');
+      const fetchPromises = endpoints.map((endpoint) => fetchData(endpoint));
+      const fetchedDataArray = await Promise.all(fetchPromises);
+      console.log('Data fetched successfully');
+
+      // Process all fetched data
+      console.log('Processing fetched data');
+      const processedDataArray = fetchedDataArray.map((fetchedData) => processData(fetchedData));
+      console.log('Data processed successfully');
+
+      // Merge all processed data
+      console.log('Merging processed data');
+      const mergedData = processedDataArray.reduce((acc, curr) => [...acc, ...curr], []);
+      console.log(`Merged data: ${mergedData.length} entries`);
+
+      // Filter new data
+      console.log('Filtering new data');
+      const newData = filterNewData(mergedData, latestTimestamp);
+      console.log(`New data to be stored: ${newData.length} entries`);
+
+      // Store the new data in Supabase
+      if (newData.length > 0) {
+        console.log('Storing new data in Supabase');
+        await storeDataInSupabase(newData);
+        console.log('Data stored successfully');
+      } else {
+        console.log('No new data to store');
+      }
 
       console.log('Handler function completed successfully');
       res.status(200).json({
         message: 'Data fetched and stored successfully',
-        method: req.method,
+        newDataCount: newData.length,
       });
     } catch (error) {
       console.error('Error in handler:', error);
