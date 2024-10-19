@@ -25,7 +25,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 async function fetchData(endpoint) {
   try {
     console.log(`Fetching data from ${endpoint.url}`);
-    const response = await fetch(CORS_PROXY + endpoint.url, {
+    const response = await fetch(endpoint.url, {
       method: 'GET',
       headers: {
         'User-Agent':
