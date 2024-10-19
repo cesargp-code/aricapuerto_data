@@ -168,6 +168,11 @@ async function storeDataInSupabase(data) {
 }
 
 export default async function handler(req, res) {
+  // Check for the Authorization header
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
   if (req.method === 'POST') {
     try {
       console.log('Starting data fetch and store process');
@@ -219,23 +224,21 @@ export default async function handler(req, res) {
       // Store the new data in Supabase
       await storeDataInSupabase(newData);
 
-      res
-        .status(200)
-        .json({
-          message: 'Data fetched and stored successfully',
-          dataCount: newData.length,
-        });
+      res.status(200).json({
+        message: 'Data fetched and stored successfully',
+        dataCount: newData.length,
+      });
     } catch (error) {
       console.error('Error in handler:', error);
       res.status(500).json({
         message: 'Error fetching or storing data',
         error: error.message,
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
         details: error.toString(),
       });
     }
   } else {
     res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    res.status(405).json({ message: `Method ${req.method} Not Allowed` });
   }
 }
