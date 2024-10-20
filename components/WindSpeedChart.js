@@ -36,13 +36,12 @@ const WindSpeedChart = () => {
   
       if (formattedData.length > 0) {
         const lastDataPoint = formattedData[formattedData.length - 1];
-        setCurrentWindSpeed(Number(lastDataPoint.WSPD).toFixed(2));
-        setLastUpdated(new Date(lastDataPoint.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        setCurrentWindSpeed(lastDataPoint.y);
+        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString());
         console.log('Last data point set:', lastDataPoint);
       } else {
         console.log('No data points available');
       }
-      
     } catch (error) {
       console.error('Error fetching data:', error);
     }
