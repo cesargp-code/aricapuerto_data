@@ -31,6 +31,7 @@ const WindSpeedChart = () => {
         const lastDataPoint = formattedData[formattedData.length - 1];
         setCurrentWindSpeed(lastDataPoint.y);
         setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString());
+        console.error('Non 0 data');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
