@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Script from 'next/script';
 
 const Layout = ({ children }) => {
   return (
@@ -46,7 +47,10 @@ const Layout = ({ children }) => {
           </div>
         </div>
       </div>
-      <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+      <Script 
+        src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"
+        strategy="afterInteractive"
+      />
     </>
   );
 };
