@@ -1,13 +1,15 @@
 import React from 'react';
-import WindSpeedChart from '../components/wind_speed_home';
+import Layout from '../components/Layout';
+import WindSpeedChart from '../components/WindSpeedChart';
 
-const MainPage = () => {
+const Home = () => {
   return (
-    <div>
-      <h1>Weather Data Dashboard</h1>
-      <WindSpeedChart />
-    </div>
+    <Layout>
+      <div className="col-12">
+        <WindSpeedChart />
+      </div>
+    </Layout>
   );
 };
 
-export default MainPage;
+export default Home;

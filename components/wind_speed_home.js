@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import mockWindData from '../mocks/mockWindData.json';  // Adjust the path as necessary
 
-const Chart = dynamic(() => import('@tabler/core').then((mod) => mod.Chart), { ssr: false });
-const Card = dynamic(() => import('@tabler/core').then((mod) => mod.Card), { ssr: false });
+// Import Tabler components
+import { Card } from '@tabler/core';
+import Chart from 'react-apexcharts';
 
 const WindSpeedChart = () => {
   const [windData, setWindData] = useState([]);
@@ -11,7 +12,13 @@ const WindSpeedChart = () => {
 
   useEffect(() => {
     setIsClient(true);
-    initializeSupabaseAndFetchData();
+    if (process.env.NODE_ENV === 'development') {
+      // Use mock data in development
+      setWindData(mockWindData);
+    } else {
+      // Use real data in production
+      initializeSupabaseAndFetchData();
+    }
   }, []);
 
   const initializeSupabaseAndFetchData = async () => {
@@ -49,15 +56,27 @@ const WindSpeedChart = () => {
     }
   };
 
-  const chartData = {
-    categories: windData.map(d => new Date(d.created_at).toLocaleTimeString()),
-    series: [
-      {
-        name: 'Wind Speed',
-        data: windData.map(d => d.WSPD),
+  const chartOptions = {
+    chart: {
+      id: 'wind-speed-chart',
+      type: 'line',
+    },
+    xaxis: {
+      categories: windData.map(d => new Date(d.created_at).toLocaleTimeString()),
+    },
+    yaxis: {
+      title: {
+        text: 'Wind Speed (m/s)',
       },
-    ],
+    },
   };
+
+  const chartSeries = [
+    {
+      name: 'Wind Speed',
+      data: windData.map(d => d.WSPD),
+    },
+  ];
 
   if (!isClient) return null; // Return null on server-side
 
@@ -79,22 +98,10 @@ const WindSpeedChart = () => {
       <Card.Body>
         {windData.length > 0 ? (
           <Chart
+            options={chartOptions}
+            series={chartSeries}
             type="line"
             height={300}
-            options={{
-              chart: {
-                id: 'wind-speed-chart',
-              },
-              xaxis: {
-                categories: chartData.categories,
-              },
-              yaxis: {
-                title: {
-                  text: 'Wind Speed (m/s)',
-                },
-              },
-            }}
-            series={chartData.series}
           />
         ) : (
           <p>Loading wind data...</p>
