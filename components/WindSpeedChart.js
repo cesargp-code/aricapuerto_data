@@ -13,29 +13,39 @@ const WindSpeedChart = () => {
   }, []);
 
   const fetchData = async () => {
+    console.log('Fetching data started');
     try {
       const response = await fetch('/api/wind-speed-data');
+      console.log('Fetch response received:', response.status, response.statusText);
+      
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
+      
       const data = await response.json();
-
+      console.log('Data received:', data);
+  
       const formattedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
         y: parseFloat(item.WSPD)
       }));
-
+      console.log('Formatted data:', formattedData);
+  
       setChartData(formattedData);
-
+      console.log('Chart data set:', formattedData);
+  
       if (formattedData.length > 0) {
         const lastDataPoint = formattedData[formattedData.length - 1];
         setCurrentWindSpeed(lastDataPoint.y);
         setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString());
-        console.error('Non 0 data');
+        console.log('Last data point set:', lastDataPoint);
+      } else {
+        console.log('No data points available');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+    console.log('Fetching data completed');
   };
 
   const chartOptions = {
