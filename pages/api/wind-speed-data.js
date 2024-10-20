@@ -6,35 +6,35 @@ const supabase = createClient(
 )
 
 export default async function handler(req, res) {
-  console.log('API route called');
-  
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-    console.error('Supabase environment variables are missing');
-    return res.status(500).json({ error: 'Server configuration error' });
-  }
+  const debugInfo = {
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set',
+    supabaseKey: process.env.SUPABASE_ANON_KEY ? 'Set' : 'Not set',
+    queryResult: null,
+    error: null
+  };
 
   try {
-    console.log('Attempting to fetch data from Supabase');
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('arica_meteo')
-      .select('created_at, WSPD')
+      .select('created_at, WSPD', { count: 'exact' })
       .order('created_at', { ascending: false })
       .limit(24);
 
+    debugInfo.queryResult = { 
+      dataLength: data ? data.length : 0,
+      count,
+      firstRow: data && data.length > 0 ? data[0] : null,
+      lastRow: data && data.length > 0 ? data[data.length - 1] : null
+    };
+
     if (error) {
-      console.error('Supabase query error:', error);
-      return res.status(500).json({ error: error.message });
+      debugInfo.error = error.message;
+      return res.status(500).json({ error: error.message, debugInfo });
     }
 
-    if (!data || data.length === 0) {
-      console.log('No data returned from Supabase');
-      return res.status(204).json({ message: 'No data available' });
-    }
-
-    console.log(`Fetched ${data.length} records from Supabase`);
-    return res.status(200).json(data);
+    return res.status(200).json({ data, debugInfo });
   } catch (err) {
-    console.error('Unexpected error in API route:', err);
-    return res.status(500).json({ error: 'An unexpected error occurred' });
+    debugInfo.error = err.message;
+    return res.status(500).json({ error: 'An unexpected error occurred', debugInfo });
   }
 }
