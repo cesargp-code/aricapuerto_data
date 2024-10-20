@@ -1,5 +1,13 @@
-import Dashboard from '../components/Dashboard';
+import React from 'react';
+import WindSpeedChart from '../components/wind_speed_home';
 
-export default function Home() {
-  return <main>Hola!</main>;
-}
+const MainPage = () => {
+  return (
+    <div>
+      <h1>Weather Data Dashboard</h1>
+      <WindSpeedChart />
+    </div>
+  );
+};
+
+export default MainPage;
