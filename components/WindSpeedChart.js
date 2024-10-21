@@ -37,7 +37,7 @@ const WindSpeedChart = () => {
       if (formattedData.length > 0) {
         const lastDataPoint = formattedData[formattedData.length - 1];
         setCurrentWindSpeed(lastDataPoint.y);
-        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString());
+        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         console.log('Last data point set:', lastDataPoint);
       } else {
         console.log('No data points available');
@@ -116,9 +116,9 @@ const WindSpeedChart = () => {
   return (
     <div className="card">
       <div className="card-header">
-        <h3 className="card-title">Viento</h3>
+        <h3 className="card-title">Viento </h3>
         <div className="card-actions">
-          <div className="main_card_value">{currentWindSpeed.toFixed(1)} m/s</div>
+          <div className="main_card_value">{currentWindSpeed} m/s</div>
           <div className="main_card_value_last_updated">actualizado {lastUpdated}</div>
         </div>
       </div>
