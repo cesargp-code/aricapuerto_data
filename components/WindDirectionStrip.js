@@ -1,13 +1,13 @@
 const WindDirectionStrip = ({ windDirData }) => {
     const sampleData = () => {
       if (!windDirData || windDirData.length === 0) return [];
-      if (windDirData.length <= 12) return windDirData;
+      if (windDirData.length <= 10) return windDirData;
       
       const samples = [windDirData[0]];
-      const step = Math.floor((windDirData.length - 2) / 10);
+      const step = Math.floor((windDirData.length - 2) / 8);
       
       for (let i = step; i < windDirData.length - 1; i += step) {
-        if (samples.length < 11) {
+        if (samples.length < 9) {
           samples.push(windDirData[i]);
         }
       }
