@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
           <div className="container-xl">
             <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
               <Link href="/" className="h2 mb-0 text-decoration-none">
-                <img src="/img/logo-inverted.svg" height="70px" />
+                <img src="/img/logo-inverted.svg" style={{height: '60px'}} />
               </Link>
             </h1>
             <button className="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
