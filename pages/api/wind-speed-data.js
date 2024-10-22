@@ -6,11 +6,14 @@ const supabase = createClient(
 )
 
 export default async function handler(req, res) {
+  // Calculate timestamp for 24 hours ago
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+
   const { data, error } = await supabase
     .from('arica_meteo')
     .select('created_at, WSPD')
+    .gte('created_at', twentyFourHoursAgo)
     .order('created_at', { ascending: false })
-    .limit(24)
 
   if (error) return res.status(500).json({ error: error.message })
   return res.status(200).json(data)
