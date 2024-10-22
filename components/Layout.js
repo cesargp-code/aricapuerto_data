@@ -10,17 +10,16 @@ const Layout = ({ children }) => {
         <title>Arica</title>
       </Head>
       <div className="page">
-        <header className="navbar navbar-expand-md navbar-dark bg-info
-         text-dark d-print-none">
+        <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
           <div className="container-xl">
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
-              <span className="navbar-toggler-icon"></span>
-            </button>
             <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
               <Link href="/" className="h2 mb-0 text-decoration-none">
-                <img src="/img/logo-inverted.svg" />
+                <img src="/img/logo-inverted.svg" height="100px" />
               </Link>
             </h1>
+            <button className="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+              <span className="navbar-toggler-icon"></span>
+            </button>
           </div>
         </header>
         <div className="page-wrapper">
