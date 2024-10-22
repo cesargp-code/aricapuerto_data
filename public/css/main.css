@@ -1,6 +1,13 @@
 .bg-primary {
     background-color:#29397A !important;
 }
+div.main_card_value {
+    font-size: larger;
+    font-weight: bold;
+}
+div.main_card_value_last_updated {
+    font-size: xx-small;
+}
 .navbar .navbar-brand img#logo {
     height:60px;
 }

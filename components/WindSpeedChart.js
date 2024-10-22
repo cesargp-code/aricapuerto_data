@@ -52,7 +52,7 @@ const WindSpeedChart = () => {
     chart: {
       type: 'line',
       fontFamily: 'inherit',
-      height: 300,
+      height: 200,
       parentHeightOffset: 0,
       toolbar: {
         show: false,
@@ -88,8 +88,9 @@ const WindSpeedChart = () => {
     xaxis: {
       type: 'datetime',
       labels: {
+        trim: false,
+        padding: 3,
         padding: 0,
-        hideOverlappingLabels: true,
         formatter: function(value) {
           // Extract hour from timestamp and add 'h'
           return new Date(value).getHours() + 'h';
@@ -114,18 +115,24 @@ const WindSpeedChart = () => {
     },
     tooltip: {
       x: {
-        format: 'HH:mm'
+        formatter: function(value) {
+          // Format as HH:mm
+          const date = new Date(value);
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          return `${hours}:${minutes}`;
+        }
       }
     },
   };
 
   return (
-    <div className="card">
+    <div className="card" id="home_wind">
       <div className="card-header">
-        <h3 className="card-title">Viento </h3>
+        <h3 className="card-title">Viento (m/s)</h3>
         <div className="card-actions">
-          <div className="main_card_value">{currentWindSpeed} m/s</div>
-          <div className="main_card_value_last_updated">actualizado {lastUpdated}</div>
+          <span className="status status-blue">{currentWindSpeed} m/s</span>
+          <div className=" main_card_value_last_updated">actualizado {lastUpdated}</div>
         </div>
       </div>
       <div className="card-body">
