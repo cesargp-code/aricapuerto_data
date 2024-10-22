@@ -17,9 +17,12 @@ const WindDirectionStrip = ({ windDirData }) => {
     };
    
     return (
-      <div className="d-flex justify-content-between align-items-center ms-5" style={{ minHeight: '80px' }}>
+      <div className="d-flex justify-content-between align-items-center ms-4">
         {sampleData().map((data, index) => (
           <div key={index} className="text-center d-flex flex-column align-items-center">
+            <div style={{ fontSize: 'xx-small' }}>
+              {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+            </div>
             <div style={{ transform: `rotate(${data.y}deg)` }}>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -39,7 +42,6 @@ const WindDirectionStrip = ({ windDirData }) => {
               </svg>
             </div>
             <div style={{ fontSize: 'xx-small' }}>
-              {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}<br/>
               {Math.round(data.y)}°
             </div>
           </div>

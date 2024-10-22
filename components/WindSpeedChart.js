@@ -100,20 +100,9 @@ const WindSpeedChart = () => {
       },
       strokeDashArray: 4,
     },
+    tickAmount: 10,
     xaxis: {
-      type: 'datetime',
       labels: {
-        trim: false,
-        padding: 3,
-        padding: 0,
-        formatter: function(value) {
-          return new Date(value).getHours() + 'h';
-        }
-      },
-      tooltip: {
-        enabled: false
-      },
-      axisBorder: {
         show: false,
       },
     },
@@ -150,13 +139,12 @@ const WindSpeedChart = () => {
         </div>
       </div>
       <div className="card-body">
-      <WindDirectionStrip windDirData={windDirChartData} />
         <div id="chart-wind-speed">
           {typeof window !== 'undefined' && (
             <ReactApexChart options={chartOptionsSpeed} series={chartOptionsSpeed.series} type="line" height={200} />
           )}
         </div>
-
+        <WindDirectionStrip windDirData={windDirChartData} />
       </div>
     </div>
   );
