@@ -39,7 +39,7 @@ const WindDirectionStrip = ({ windDirData }) => {
               </svg>
             </div>
             <div style={{ fontSize: 'xx-small' }}>
-              {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br/>
+              {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}<br/>
               {Math.round(data.y)}°
             </div>
           </div>
