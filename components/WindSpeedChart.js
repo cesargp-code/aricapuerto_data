@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import WindDirectionStrip from './WindDirectionStrip';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -7,6 +8,8 @@ const WindSpeedChart = () => {
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentWindSpeed, setCurrentWindSpeed] = useState(0);
+  const [windDirChartData, setWindDirChartData] = useState([]);
+  const [currentWindDir, setCurrentWindDir] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -25,20 +28,32 @@ const WindSpeedChart = () => {
       const data = await response.json();
       console.log('Data received:', data);
   
-      const formattedData = data.reverse().map(item => ({
+      // Format data for wind speed chart
+      const formattedWindSpeedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
         y: parseFloat(item.WSPD)
       }));
-      console.log('Formatted data:', formattedData);
+      console.log('Formatted wind speed data:', formattedWindSpeedData);
   
-      setChartData(formattedData);
-      console.log('Chart data set:', formattedData);
+      // Format data for wind direction chart
+      const formattedWindDirData = data.map(item => ({
+        x: new Date(item.created_at).getTime(),
+        y: parseFloat(item.WDIR)
+      }));
+      console.log('Formatted wind direction data:', formattedWindDirData);
   
-      if (formattedData.length > 0) {
-        const lastDataPoint = formattedData[formattedData.length - 1];
+      setChartData(formattedWindSpeedData);
+      setWindDirChartData(formattedWindDirData); // You'll need to create this state
+      console.log('Chart data set:', formattedWindSpeedData);
+  
+      if (formattedWindSpeedData.length > 0) {
+        const lastDataPoint = formattedWindSpeedData[formattedWindSpeedData.length - 1];
+        const lastWindDir = formattedWindDirData[formattedWindDirData.length - 1].y;
+        
         setCurrentWindSpeed(lastDataPoint.y);
+        setCurrentWindDir(lastWindDir); // You'll need to create this state
         setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-        console.log('Last data point set:', lastDataPoint);
+        console.log('Last data points set:', { windSpeed: lastDataPoint, windDir: lastWindDir });
       } else {
         console.log('No data points available');
       }
@@ -48,7 +63,7 @@ const WindSpeedChart = () => {
     console.log('Fetching data completed');
   };
 
-  const chartOptions = {
+  const chartOptionsSpeed = {
     chart: {
       type: 'line',
       fontFamily: 'inherit',
@@ -92,7 +107,6 @@ const WindSpeedChart = () => {
         padding: 3,
         padding: 0,
         formatter: function(value) {
-          // Extract hour from timestamp and add 'h'
           return new Date(value).getHours() + 'h';
         }
       },
@@ -131,16 +145,18 @@ const WindSpeedChart = () => {
       <div className="card-header">
         <h3 className="card-title">Viento (m/s)</h3>
         <div className="card-actions">
-          <span className="status status-blue">{currentWindSpeed} m/s</span>
+          <span className="status status-blue">{currentWindSpeed} m/s</span> <span className="status status-green">{currentWindDir} º</span>
           <div className=" main_card_value_last_updated">actualizado {lastUpdated}</div>
         </div>
       </div>
       <div className="card-body">
+      <WindDirectionStrip windDirData={windDirChartData} />
         <div id="chart-wind-speed">
           {typeof window !== 'undefined' && (
-            <ReactApexChart options={chartOptions} series={chartOptions.series} type="line" height={340} />
+            <ReactApexChart options={chartOptionsSpeed} series={chartOptionsSpeed.series} type="line" height={200} />
           )}
         </div>
+
       </div>
     </div>
   );

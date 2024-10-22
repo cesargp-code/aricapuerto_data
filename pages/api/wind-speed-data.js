@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   const { data, error } = await supabase
     .from('arica_meteo')
-    .select('created_at, WSPD')
+    .select('created_at, WSPD, WDIR')
     .gte('created_at', twentyFourHoursAgo)
     .order('created_at', { ascending: false })
 
