@@ -89,6 +89,11 @@ const WindSpeedChart = () => {
       type: 'datetime',
       labels: {
         padding: 0,
+        hideOverlappingLabels: true,
+        formatter: function(value) {
+          // Extract hour from timestamp and add 'h'
+          return new Date(value).getHours() + 'h';
+        }
       },
       tooltip: {
         enabled: false
@@ -99,7 +104,8 @@ const WindSpeedChart = () => {
     },
     yaxis: {
       labels: {
-        padding: 4
+        padding: 4,
+
       },
     },
     colors: ["#206bc4"],
