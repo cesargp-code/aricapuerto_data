@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import WindDirectionStrip from './WindDirectionStrip';
+import { DiagnosticCategory } from 'typescript';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -43,7 +44,7 @@ const WindSpeedChart = () => {
       console.log('Formatted wind direction data:', formattedWindDirData);
   
       setChartData(formattedWindSpeedData);
-      setWindDirChartData(formattedWindDirData); // You'll need to create this state
+      setWindDirChartData(formattedWindDirData);
       console.log('Chart data set:', formattedWindSpeedData);
   
       if (formattedWindSpeedData.length > 0) {
@@ -51,7 +52,7 @@ const WindSpeedChart = () => {
         const lastWindDir = formattedWindDirData[formattedWindDirData.length - 1].y;
         
         setCurrentWindSpeed(lastDataPoint.y);
-        setCurrentWindDir(lastWindDir); // You'll need to create this state
+        setCurrentWindDir(lastWindDir);
         setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         console.log('Last data points set:', { windSpeed: lastDataPoint, windDir: lastWindDir });
       } else {
@@ -100,10 +101,15 @@ const WindSpeedChart = () => {
       },
       strokeDashArray: 4,
     },
-    tickAmount: 10,
+    
     xaxis: {
+      type: 'numeric',
+      tickAmount: 8,
       labels: {
         show: false,
+      },
+      tooltip: {
+        enabled: false
       },
     },
     yaxis: {

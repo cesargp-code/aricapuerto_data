@@ -11,3 +11,7 @@ div.main_card_value_last_updated {
 .navbar .navbar-brand img#logo {
     height:60px;
 }
+
+#chart-wind-speed {
+    margin-right:10px !important;
+}
