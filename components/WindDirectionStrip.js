@@ -30,8 +30,8 @@ const WindDirectionStrip = ({ windDirData }) => {
                 height="24" 
                 viewBox="0 0 24 24" 
                 strokeWidth="2" 
-                stroke="#206bc4"
-                fill="#206bc4"
+                stroke="#13A4DD"
+                fill="#13A4DD"
                 strokeLinecap="round" 
                 strokeLinejoin="round"
               >

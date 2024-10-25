@@ -29,10 +29,11 @@ const WindSpeedChart = () => {
       const data = await response.json();
       console.log('Data received:', data);
   
-      // Format data for wind speed chart
+      // Format data for wind speed chart with direction included
       const formattedWindSpeedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.WSPD)
+        y: parseFloat(item.WSPD),
+        direction: parseFloat(item.WDIR) // Store direction with each point
       }));
       console.log('Formatted wind speed data:', formattedWindSpeedData);
   
@@ -101,7 +102,6 @@ const WindSpeedChart = () => {
       },
       strokeDashArray: 4,
     },
-    
     xaxis: {
       type: 'numeric',
       tickAmount: 8,
@@ -115,22 +115,29 @@ const WindSpeedChart = () => {
     yaxis: {
       labels: {
         padding: 4,
-
       },
     },
-    colors: ["#206bc4"],
+    colors: ["#13A4DD"],
     legend: {
       show: false,
     },
     tooltip: {
-      x: {
-        formatter: function(value) {
-          // Format as HH:mm
-          const date = new Date(value);
-          const hours = String(date.getHours()).padStart(2, '0');
-          const minutes = String(date.getMinutes()).padStart(2, '0');
-          return `${hours}:${minutes}`;
-        }
+      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+        const data = w.config.series[seriesIndex].data[dataPointIndex];
+        const time = new Date(data.x).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        const speed = data.y.toFixed(2);
+        const direction = data.direction.toFixed(0);
+        
+        return `
+          <div class="arrow_box" style="padding: 8px; font-size:small;">
+            <div style="font-weight: bold;">${time}</div>
+            <div>${speed} m/s</div>
+            <div>${direction}°</div>
+          </div>
+        `;
       }
     },
   };
