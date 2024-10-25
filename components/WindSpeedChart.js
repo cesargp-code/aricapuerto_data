@@ -126,14 +126,15 @@ const WindSpeedChart = () => {
         const data = w.config.series[seriesIndex].data[dataPointIndex];
         const time = new Date(data.x).toLocaleTimeString([], {
           hour: '2-digit',
-          minute: '2-digit'
+          minute: '2-digit',
+          hour12: false  // This forces 24-hour format
         });
-        const speed = data.y.toFixed(2);
+        const speed = data.y.toFixed(1);
         const direction = data.direction.toFixed(0);
         
         return `
           <div class="arrow_box">
-            <div class="arrow_box_header" style="font-weight: bold;">${time}</div>
+            <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
             <div>${speed} m/s</div>
             <div>${direction}°</div>
           </div>
@@ -144,11 +145,14 @@ const WindSpeedChart = () => {
 
   return (
     <div className="card" id="home_wind">
+          
       <div className="card-header">
-        <h3 className="card-title">Viento (m/s)</h3>
+        <div>
+          <h3 className="card-title">Viento (m/s)</h3>
+          <p className="card-subtitle" style={{ fontSize: "x-small" }}>actualizado {lastUpdated}</p>
+        </div>
         <div className="card-actions">
-          <span className="status status-blue">{currentWindSpeed} m/s</span> <span className="status status-green">{currentWindDir} º</span>
-          <div className=" main_card_value_last_updated">actualizado {lastUpdated}</div>
+          <span className="status status-teal" style={{ fontSize: "medium", color: "#157B37", height: "34px", backgroundColor:"#E1EBE2" }}><span class="status-dot status-dot-animated"></span> {currentWindSpeed} m/s  |  {currentWindDir} º</span>
         </div>
       </div>
       <div className="card-body">
