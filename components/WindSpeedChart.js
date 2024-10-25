@@ -117,7 +117,7 @@ const WindSpeedChart = () => {
         padding: 4,
       },
     },
-    colors: ["#13A4DD"],
+    colors: ["#157B37"],
     legend: {
       show: false,
     },
@@ -132,8 +132,8 @@ const WindSpeedChart = () => {
         const direction = data.direction.toFixed(0);
         
         return `
-          <div class="arrow_box" style="padding: 8px; font-size:small;">
-            <div style="font-weight: bold;">${time}</div>
+          <div class="arrow_box">
+            <div class="arrow_box_header" style="font-weight: bold;">${time}</div>
             <div>${speed} m/s</div>
             <div>${direction}°</div>
           </div>

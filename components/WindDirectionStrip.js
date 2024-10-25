@@ -17,7 +17,7 @@ const WindDirectionStrip = ({ windDirData }) => {
     };
    
     return (
-      <div className="d-flex justify-content-between align-items-center ms-4">
+      <div className="d-flex justify-content-between align-items-center ms-4 dir_strip">
         {sampleData().map((data, index) => (
           <div key={index} className="text-center d-flex flex-column align-items-center">
             <div style={{ fontSize: 'xx-small' }}>
@@ -30,8 +30,8 @@ const WindDirectionStrip = ({ windDirData }) => {
                 height="24" 
                 viewBox="0 0 24 24" 
                 strokeWidth="2" 
-                stroke="#13A4DD"
-                fill="#13A4DD"
+                stroke="#157B37"
+                fill="#157B37"
                 strokeLinecap="round" 
                 strokeLinejoin="round"
               >

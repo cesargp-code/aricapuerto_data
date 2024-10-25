@@ -23,17 +23,6 @@ const Layout = ({ children }) => {
           </div>
         </header>
         <div className="page-wrapper">
-          <div className="container-xl">
-            <div className="page-header d-print-none">
-              <div className="row align-items-center">
-                <div className="col">
-                  <h2 className="page-title">
-                    Dashboard
-                  </h2>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="page-body">
             <div className="container-xl">
               <div className="row row-deck row-cards">

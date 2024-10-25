@@ -15,3 +15,18 @@ div.main_card_value_last_updated {
 #chart-wind-speed {
     margin-right:10px !important;
 }
+div.arrow_box {
+    padding:0;
+    font-size:small;
+}
+div.arrow_box_header {
+    background-color:#eee;
+}
+div.arrow_box div {
+    padding:2px 8px;
+}
+@media (max-width: 1067px) {
+    div.dir_strip {
+        margin-top: -15px;
+    }
+}
