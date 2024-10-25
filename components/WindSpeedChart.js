@@ -8,9 +8,9 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 const WindSpeedChart = () => {
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
-  const [currentWindSpeed, setCurrentWindSpeed] = useState(0);
+  const [currentWindSpeed, setCurrentWindSpeed] = useState('-');
   const [windDirChartData, setWindDirChartData] = useState([]);
-  const [currentWindDir, setCurrentWindDir] = useState(null);
+  const [currentWindDir, setCurrentWindDir] = useState('-');
 
   useEffect(() => {
     fetchData();
@@ -54,7 +54,7 @@ const WindSpeedChart = () => {
         
         setCurrentWindSpeed(lastDataPoint.y);
         setCurrentWindDir(lastWindDir);
-        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
         console.log('Last data points set:', { windSpeed: lastDataPoint, windDir: lastWindDir });
       } else {
         console.log('No data points available');
