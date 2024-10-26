@@ -36,16 +36,13 @@ div.arrow_box div {
 
 
 /* loco design */
-body {
-    background-color: #ffffff !important;  
-}
-#home_wind {
+#home_wind .card-header {
     background-color: #E1EBE2 !important;
 }
 #home_wind span.status, #home_wave span.status {
     background-color: #ffffff !important;
 }
 
-#home_wave {
+#home_wave .card-header {
     background-color: #DCF2FB !important;
 }

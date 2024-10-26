@@ -11,6 +11,7 @@ const WaveHeightChart = () => {
   const [waveDirChartData, setWaveDirChartData] = useState([]);
   const [currentWaveDir, setCurrentWaveDir] = useState('-');
   const [currentWavePeriod, setCurrentWavePeriod] = useState('-');
+  const [isStaleData, setIsStaleData] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -29,19 +30,19 @@ const WaveHeightChart = () => {
       const data = await response.json();
       console.log('Wave data received:', data);
   
-        // Format data for wave height chart with direction and period included
-        const formattedWaveHeightData = data.reverse().map(item => ({
-            x: new Date(item.created_at).getTime(),
-            y: parseFloat(item.VAVH) / 100,  // Convert cm to m
-            direction: Math.round(parseFloat(item.VDIR)),  // Round to integer
-            period: Math.round(parseFloat(item.VAVT))      // Round to integer
-        }));
-
-        // Format data for wave direction chart
-        const formattedWaveDirData = data.map(item => ({
-            x: new Date(item.created_at).getTime(),
-            y: Math.round(parseFloat(item.VDIR))  // Round to integer
-        }));
+      // Format data for wave height chart with direction and period included
+      const formattedWaveHeightData = data.reverse().map(item => ({
+        x: new Date(item.created_at).getTime(),
+        y: parseFloat(item.VAVH) / 100,  // Convert cm to m
+        direction: Math.round(parseFloat(item.VDIR)),  // Round to integer
+        period: Math.round(parseFloat(item.VAVT))      // Round to integer
+      }));
+  
+      // Format data for wave direction chart
+      const formattedWaveDirData = data.map(item => ({
+        x: new Date(item.created_at).getTime(),
+        y: Math.round(parseFloat(item.VDIR))  // Round to integer
+      }));
       console.log('Formatted wave direction data:', formattedWaveDirData);
   
       setChartData(formattedWaveHeightData);
@@ -50,12 +51,26 @@ const WaveHeightChart = () => {
   
       if (formattedWaveHeightData.length > 0) {
         const lastDataPoint = formattedWaveHeightData[formattedWaveHeightData.length - 1];
-        const lastWaveDir = formattedWaveDirData[formattedWaveDirData.length - 1].y;
+        const lastDataTime = new Date(lastDataPoint.x);
+        const currentTime = new Date();
+        const timeDifferenceMinutes = (currentTime - lastDataTime) / (1000 * 60);
         
-        setCurrentWaveHeight(lastDataPoint.y);
-        setCurrentWaveDir(lastWaveDir);
+        setIsStaleData(timeDifferenceMinutes >= 30);
+        setCurrentWaveHeight(lastDataPoint.y.toFixed(2));
+        setCurrentWaveDir(lastDataPoint.direction);
         setCurrentWavePeriod(lastDataPoint.period);
-        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        setLastUpdated(lastDataTime.toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          hour12: false 
+        }));
+  
+        console.log('Updated values:', {
+          height: lastDataPoint.y.toFixed(2),
+          direction: lastDataPoint.direction,
+          period: lastDataPoint.period,
+          time: lastDataTime
+        });
       } else {
         console.log('No data points available');
       }
@@ -66,42 +81,18 @@ const WaveHeightChart = () => {
   };
 
   const chartOptionsHeight = {
-    
     chart: {
-        type: 'area',
-        fontFamily: 'inherit',
-        height: 200,
-        parentHeightOffset: 0,
-        toolbar: {
-          show: false,
-        },
-        animations: {
-          enabled: false
-        },
+      type: 'line',
+      fontFamily: 'inherit',
+      height: 200,
+      parentHeightOffset: 0,
+      toolbar: {
+        show: false,
       },
-      plotOptions: {
-        area: {
-          fillTo: 'end'
-        }
+      animations: {
+        enabled: false
       },
-      colors: ['#206bc4'],
-      stroke: {
-        curve: 'smooth',
-        width: 2
-      },
-      fill: {
-        enabled: true,  // Explicitly enable fill
-        type: 'pattern',
-        opacity: 1,     // Ensure opacity is set
-        pattern: {
-          enabled: true,  // Explicitly enable pattern
-          style: 'verticalLines',
-          width: 6,
-          height: 6,
-          strokeWidth: 2
-        },
-      },
-
+    },
     dataLabels: {
       enabled: false,
     },
@@ -140,8 +131,9 @@ const WaveHeightChart = () => {
       labels: {
         padding: 4,
       },
+      min: 0,
     },
-    colors: ["#555555"], // Changed to ocean blue
+    colors: ["#13A8E2"], // Changed to ocean blue
     legend: {
       show: false,
     },
@@ -174,17 +166,29 @@ const WaveHeightChart = () => {
       <div className="card-header">
         <div>
           <h3 className="card-title">Oleaje (m)</h3>
-          <p className="card-subtitle" style={{ fontSize: "x-small" }}>actualizado {lastUpdated}</p>
+          <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
+   style={{ 
+     fontSize: "x-small",
+     ...(isStaleData && { 
+       height: "18px",
+       padding: "0 6px"
+     })
+   }}>
+  {isStaleData && <span className="status-dot status-dot-animated"></span>}
+ actualizado {lastUpdated}
+</p>
         </div>
         <div className="card-actions">
-          <span className="status status-azure" 
-                style={{ fontSize: "medium", 
-                         color: "#13A8E2", 
-                         height: "34px", 
-                         backgroundColor:"#DCF2FB" }}>
-            <span className="status-dot status-dot-animated"></span>
-            {currentWaveHeight} m  |  {currentWaveDir}° | {currentWavePeriod} s
-          </span>
+        <span className="status status-azure" 
+      style={{ fontSize: "medium", 
+               color: "#13A8E2", 
+               height: "34px", 
+               backgroundColor:"#DCF2FB" }}>
+  <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+        style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+  </span>
+  {currentWaveHeight} m  |  {currentWaveDir}° | {currentWavePeriod} s
+</span>
         </div>
       </div>
       <div className="card-body">

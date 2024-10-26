@@ -11,6 +11,7 @@ const WindSpeedChart = () => {
   const [currentWindSpeed, setCurrentWindSpeed] = useState('-');
   const [windDirChartData, setWindDirChartData] = useState([]);
   const [currentWindDir, setCurrentWindDir] = useState('-');
+  const [isStaleData, setIsStaleData] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -50,12 +51,24 @@ const WindSpeedChart = () => {
   
       if (formattedWindSpeedData.length > 0) {
         const lastDataPoint = formattedWindSpeedData[formattedWindSpeedData.length - 1];
-        const lastWindDir = formattedWindDirData[formattedWindDirData.length - 1].y;
+        const lastDataTime = new Date(lastDataPoint.x);
+        const currentTime = new Date();
+        const timeDifferenceMinutes = (currentTime - lastDataTime) / (1000 * 60);
         
-        setCurrentWindSpeed(lastDataPoint.y);
-        setCurrentWindDir(lastWindDir);
-        setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
-        console.log('Last data points set:', { windSpeed: lastDataPoint, windDir: lastWindDir });
+        setIsStaleData(timeDifferenceMinutes >= 30);
+        setCurrentWindSpeed(lastDataPoint.y.toFixed(1));
+        setCurrentWindDir(Math.round(lastDataPoint.direction));
+        setLastUpdated(lastDataTime.toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          hour12: false 
+        }));
+
+        console.log('Updated values:', {
+          speed: lastDataPoint.y.toFixed(1),
+          direction: Math.round(lastDataPoint.direction),
+          time: lastDataTime
+        });
       } else {
         console.log('No data points available');
       }
@@ -116,8 +129,9 @@ const WindSpeedChart = () => {
       labels: {
         padding: 4,
       },
+      min: 0,
     },
-    colors: ["#666666"],
+    colors: ["#157B37"],
     legend: {
       show: false,
     },
@@ -145,14 +159,32 @@ const WindSpeedChart = () => {
 
   return (
     <div className="card" id="home_wind">
-          
       <div className="card-header">
         <div>
           <h3 className="card-title">Viento (m/s)</h3>
-          <p className="card-subtitle" style={{ fontSize: "x-small" }}>actualizado {lastUpdated}</p>
+          <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
+             style={{ 
+               fontSize: "x-small",
+               ...(isStaleData && { 
+                 height: "15px",
+                 padding: "2px 6px"
+               })
+             }}>
+            {isStaleData && <span className="status-dot status-dot-animated"></span>}
+            actualizado {lastUpdated}
+          </p>
         </div>
         <div className="card-actions">
-          <span className="status status-teal" style={{ fontSize: "medium", color: "#157B37", height: "34px", backgroundColor:"#E1EBE2" }}><span class="status-dot status-dot-animated"></span> {currentWindSpeed} m/s  |  {currentWindDir} º</span>
+          <span className="status status-teal" 
+                style={{ fontSize: "medium", 
+                         color: "#157B37", 
+                         height: "34px", 
+                         backgroundColor:"#E1EBE2" }}>
+            <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                  style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+            </span>
+            {currentWindSpeed} m/s  |  {currentWindDir}°
+          </span>
         </div>
       </div>
       <div className="card-body">
