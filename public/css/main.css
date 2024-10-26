@@ -15,6 +15,9 @@ div.main_card_value_last_updated {
 #chart-wind-speed, #chart-wave-height {
     margin-right:10px !important;
 }
+.apexcharts-tooltip {
+    transform: translateY(-100%) !important;
+}
 div.arrow_box {
     padding:0;
     font-size:small;

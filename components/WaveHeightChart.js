@@ -29,20 +29,19 @@ const WaveHeightChart = () => {
       const data = await response.json();
       console.log('Wave data received:', data);
   
-      // Format data for wave height chart with direction and period included
-      const formattedWaveHeightData = data.reverse().map(item => ({
-        x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.VAVH) / 100,  // Convert cm to m
-        direction: parseFloat(item.VDIR),
-        period: parseFloat(item.VAVT)
-      }));
-      console.log('Formatted wave height data:', formattedWaveHeightData);
-  
-      // Format data for wave direction chart
-      const formattedWaveDirData = data.map(item => ({
-        x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.VDIR)
-      }));
+        // Format data for wave height chart with direction and period included
+        const formattedWaveHeightData = data.reverse().map(item => ({
+            x: new Date(item.created_at).getTime(),
+            y: parseFloat(item.VAVH) / 100,  // Convert cm to m
+            direction: Math.round(parseFloat(item.VDIR)),  // Round to integer
+            period: Math.round(parseFloat(item.VAVT))      // Round to integer
+        }));
+
+        // Format data for wave direction chart
+        const formattedWaveDirData = data.map(item => ({
+            x: new Date(item.created_at).getTime(),
+            y: Math.round(parseFloat(item.VDIR))  // Round to integer
+        }));
       console.log('Formatted wave direction data:', formattedWaveDirData);
   
       setChartData(formattedWaveHeightData);
@@ -57,7 +56,6 @@ const WaveHeightChart = () => {
         setCurrentWaveDir(lastWaveDir);
         setCurrentWavePeriod(lastDataPoint.period);
         setLastUpdated(new Date(lastDataPoint.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
-        console.log('Last data points set:', { waveHeight: lastDataPoint, waveDir: lastWaveDir });
       } else {
         console.log('No data points available');
       }
@@ -132,8 +130,8 @@ const WaveHeightChart = () => {
           hour12: false
         });
         const height = data.y.toFixed(2);
-        const direction = data.direction.toFixed(0);
-        const period = data.period.toFixed(1);
+        const direction = data.direction.toString();
+        const period = data.period.toString();
         
         return `
           <div class="arrow_box">
