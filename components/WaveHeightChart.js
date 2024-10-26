@@ -85,6 +85,7 @@ const WaveHeightChart = () => {
       type: 'line',
       fontFamily: 'inherit',
       height: 200,
+      zoom: false,
       parentHeightOffset: 0,
       toolbar: {
         show: false,
@@ -171,7 +172,7 @@ const WaveHeightChart = () => {
      fontSize: "x-small",
      ...(isStaleData && { 
        height: "18px",
-       padding: "0 6px"
+       padding: "0 5px"
      })
    }}>
   {isStaleData && <span className="status-dot status-dot-animated"></span>}
@@ -179,7 +180,7 @@ const WaveHeightChart = () => {
 </p>
         </div>
         <div className="card-actions">
-        <span className="status status-azure" 
+<span className="status status-azure" 
       style={{ fontSize: "medium", 
                color: "#13A8E2", 
                height: "34px", 

@@ -32,8 +32,8 @@ const WaveDirectionStrip = ({ waveData }) => {
               height="24" 
               viewBox="0 0 24 24" 
               strokeWidth="2" 
-              stroke="#555555"
-              fill="#555555"
+              stroke="#13A8E2"
+              fill="#13A8E2"
               strokeLinecap="round" 
               strokeLinejoin="round"
             >

@@ -84,6 +84,7 @@ const WindSpeedChart = () => {
       fontFamily: 'inherit',
       height: 200,
       parentHeightOffset: 0,
+      zoom: false,
       toolbar: {
         show: false,
       },
@@ -166,8 +167,8 @@ const WindSpeedChart = () => {
              style={{ 
                fontSize: "x-small",
                ...(isStaleData && { 
-                 height: "15px",
-                 padding: "2px 6px"
+                 height: "18px",
+                 padding: "0 5px"
                })
              }}>
             {isStaleData && <span className="status-dot status-dot-animated"></span>}
