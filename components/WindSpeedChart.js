@@ -117,7 +117,7 @@ const WindSpeedChart = () => {
         padding: 4,
       },
     },
-    colors: ["#157B37"],
+    colors: ["#666666"],
     legend: {
       show: false,
     },

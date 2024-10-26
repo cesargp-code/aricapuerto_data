@@ -66,18 +66,42 @@ const WaveHeightChart = () => {
   };
 
   const chartOptionsHeight = {
+    
     chart: {
-      type: 'line',
-      fontFamily: 'inherit',
-      height: 200,
-      parentHeightOffset: 0,
-      toolbar: {
-        show: false,
+        type: 'area',
+        fontFamily: 'inherit',
+        height: 200,
+        parentHeightOffset: 0,
+        toolbar: {
+          show: false,
+        },
+        animations: {
+          enabled: false
+        },
       },
-      animations: {
-        enabled: false
+      plotOptions: {
+        area: {
+          fillTo: 'end'
+        }
       },
-    },
+      colors: ['#206bc4'],
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+      fill: {
+        enabled: true,  // Explicitly enable fill
+        type: 'pattern',
+        opacity: 1,     // Ensure opacity is set
+        pattern: {
+          enabled: true,  // Explicitly enable pattern
+          style: 'verticalLines',
+          width: 6,
+          height: 6,
+          strokeWidth: 2
+        },
+      },
+
     dataLabels: {
       enabled: false,
     },
@@ -117,7 +141,7 @@ const WaveHeightChart = () => {
         padding: 4,
       },
     },
-    colors: ["#13A8E2"], // Changed to ocean blue
+    colors: ["#555555"], // Changed to ocean blue
     legend: {
       show: false,
     },

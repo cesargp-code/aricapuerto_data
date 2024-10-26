@@ -33,3 +33,19 @@ div.arrow_box div {
         margin-top: -15px;
     }
 }
+
+
+/* loco design */
+body {
+    background-color: #ffffff !important;  
+}
+#home_wind {
+    background-color: #E1EBE2 !important;
+}
+#home_wind span.status, #home_wave span.status {
+    background-color: #ffffff !important;
+}
+
+#home_wave {
+    background-color: #DCF2FB !important;
+}
