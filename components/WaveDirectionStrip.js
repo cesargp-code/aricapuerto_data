@@ -29,7 +29,7 @@ const WaveDirectionStrip = ({ waveData }) => {
           </div>
           <div style={{ transform: `rotate(${data.y}deg)` }}>
           <IconArrowUpCircle
-            size={18} 
+            size={20} 
             color="#13A8E2"
           />
           </div>
