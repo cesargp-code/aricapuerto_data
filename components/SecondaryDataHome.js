@@ -40,7 +40,7 @@ const SecondaryDataHome = () => {
           <div className="card card-sm">
             <div className="card-header border-bottom-0">
               <div>
-                <h3 className='card-title'>Presión atmosférica (hPa)</h3>
+                <h3 className='card-title'>Presión atmosférica</h3>
                 <p className="card-subtitle main_card_value_last_updated">actualizado {lastUpdated}</p>
               </div>
               <div className='card-actions d-flex align-items-center'>
@@ -62,7 +62,7 @@ const SecondaryDataHome = () => {
           <div className="card card-sm">
             <div className="card-header border-bottom-0">
               <div>
-                <h3 className='card-title'>Temperatura (ºC)</h3>
+                <h3 className='card-title'>Temperatura</h3>
                 <p className="card-subtitle main_card_value_last_updated">actualizado {lastUpdated}</p>
               </div>
               <div className='card-actions d-flex align-items-center'>
@@ -84,7 +84,7 @@ const SecondaryDataHome = () => {
           <div className="card card-sm">
             <div className="card-header border-bottom-0">
               <div>
-                <h3 className='card-title'>Punto de rocío (ºC)</h3>
+                <h3 className='card-title'>Punto de rocío</h3>
                 <p className="card-subtitle main_card_value_last_updated">actualizado {lastUpdated}</p>
               </div>
               <div className='card-actions d-flex align-items-center'>
