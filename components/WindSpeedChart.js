@@ -119,7 +119,7 @@ const WindSpeedChart = () => {
     },
     xaxis: {
       type: 'numeric',
-      tickAmount: 8,
+      tickAmount: 9,
       labels: {
         show: false,
       },
