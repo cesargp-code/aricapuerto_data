@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { IconNavigationFilled } from '@tabler/icons-react';
 
 const WaveDirectionStrip = ({ waveData }) => {
   const sampleData = () => {
@@ -26,22 +27,10 @@ const WaveDirectionStrip = ({ waveData }) => {
             {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
           </div>
           <div style={{ transform: `rotate(${data.y}deg)` }}>
-          <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              strokeWidth="2" 
-              stroke="#13A8E2"
-              fill="#13A8E2"
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <path d="M12 5l0 14" />
-              <path d="M16 9l-4 -4" />
-              <path d="M8 9l4 -4" />
-            </svg>
+          <IconNavigationFilled
+            size={18} 
+            color="#13A8E2"
+          />
           </div>
           <div style={{ fontSize: 'xx-small' }}>
             {Math.round(data.y)}°
