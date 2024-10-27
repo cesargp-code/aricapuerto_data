@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
-import { IconArrowLeft } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const TemperaturePage = () => {
+const PressurePage = () => {
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
-  const [currentTemp, setCurrentTemp] = useState('-');
+  const [currentPressure, setCurrentPressure] = useState('-');
   const [isStaleData, setIsStaleData] = useState(false);
   const [stats, setStats] = useState({
     min: '-',
@@ -22,7 +21,7 @@ const TemperaturePage = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/temperature-data');
+      const response = await fetch('/api/pressure-data');
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -32,7 +31,7 @@ const TemperaturePage = () => {
       // Format data for the chart
       const formattedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.DRYT)
+        y: parseFloat(item.ATMS)
       }));
 
       setChartData(formattedData);
@@ -44,7 +43,7 @@ const TemperaturePage = () => {
         const timeDifferenceMinutes = (currentTime - lastDataTime) / (1000 * 60);
         
         setIsStaleData(timeDifferenceMinutes >= 30);
-        setCurrentTemp(lastDataPoint.y.toFixed(1));
+        setCurrentPressure(lastDataPoint.y.toFixed(1));
         setLastUpdated(lastDataTime.toLocaleTimeString([], { 
           hour: '2-digit', 
           minute: '2-digit', 
@@ -52,15 +51,15 @@ const TemperaturePage = () => {
         }));
 
         // Calculate statistics
-        const temperatures = formattedData.map(point => point.y);
+        const pressures = formattedData.map(point => point.y);
         setStats({
-          min: Math.min(...temperatures).toFixed(1),
-          max: Math.max(...temperatures).toFixed(1),
-          avg: (temperatures.reduce((a, b) => a + b, 0) / temperatures.length).toFixed(1)
+          min: Math.min(...pressures).toFixed(1),
+          max: Math.max(...pressures).toFixed(1),
+          avg: (pressures.reduce((a, b) => a + b, 0) / pressures.length).toFixed(1)
         });
       }
     } catch (error) {
-      console.error('Error fetching temperature data:', error);
+      console.error('Error fetching pressure data:', error);
     }
   };
 
@@ -89,12 +88,12 @@ const TemperaturePage = () => {
       curve: "smooth",
     },
     series: [{
-      name: "Temperature",
+      name: "Presión at.",
       data: chartData
     }],
     grid: {
       padding: {
-        top: -20,
+        top: 0,
         right: 0,
         left: -4,
         bottom: -4
@@ -127,12 +126,12 @@ const TemperaturePage = () => {
             minute: '2-digit',
             hour12: false  // This forces 24-hour format
           });
-          const temperature = data.y.toFixed(1);
+          const pressure = data.y.toFixed(1);
           
           return `
             <div class="arrow_box">
               <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-              <div>${temperature} ºC</div>
+              <div>${pressure} hPa</div>
             </div>
           `;
         }
@@ -145,7 +144,7 @@ const TemperaturePage = () => {
         <div className="card">
           <div className="card-header">
             <div>
-              <h3 className="card-title">Temperatura</h3>
+              <h3 className="card-title">Presión atmosférica</h3>
               <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
                  style={{ 
                    fontSize: "x-small",
@@ -163,7 +162,7 @@ const TemperaturePage = () => {
                 <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                       style={isStaleData ? { backgroundColor: '#909090' } : {}}>
                 </span>
-                {currentTemp} ºC
+                {currentPressure} hPa
               </span>
             </div>
           </div>
@@ -172,19 +171,19 @@ const TemperaturePage = () => {
               <div className="card">
                 <div className="card-body p-2 text-center">
                   <div className="text-muted text-secondary fs-5">Mínima</div>
-                  <div className="h2 m-0">{stats.min}°C</div>
-                </div>
-              </div>
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Máxima</div>
-                  <div className="h2 m-0">{stats.max}°C</div>
+                  <div className="h2 m-0">{stats.min} hPa</div>
                 </div>
               </div>
               <div className="card">
                 <div className="card-body p-2 text-center">
                   <div className="text-muted text-secondary fs-5">Media</div>
-                  <div className="h2 m-0">{stats.avg}°C</div>
+                  <div className="h2 m-0">{stats.avg} hPa</div>
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-body p-2 text-center">
+                  <div className="text-muted text-secondary fs-5">Máxima</div>
+                  <div className="h2 m-0">{stats.max} hPa</div>
                 </div>
               </div>
             </div>
@@ -205,4 +204,4 @@ const TemperaturePage = () => {
   );
 };
 
-export default TemperaturePage;
+export default PressurePage;

@@ -47,19 +47,20 @@ const SecondaryDataHome = () => {
   return (
     <div className="col-12">
       <div className="row row-cards">
-        <div className="col-sm-6">
+      <div className="col-sm-6">
+        <Link href="/pressure" className="text-decoration-none">
           <div className="card card-sm">
             <div className="card-header border-bottom-0">
               <div>
                 <h3 className='card-title'>Presión atmosférica</h3>
                 <p className={`card-subtitle ${isStale ? 'status status-red' : ''}`} 
-                   style={{ 
-                     fontSize: "x-small",
-                     ...(isStale && { 
-                       height: "18px",
-                       padding: "0 5px"
-                     })
-                   }}>
+                  style={{ 
+                    fontSize: "x-small",
+                    ...(isStale && { 
+                      height: "18px",
+                      padding: "0 5px"
+                    })
+                  }}>
                   {isStale && <span className="status-dot status-dot-animated"></span>}
                   actualizado {lastUpdated}
                 </p>
@@ -79,7 +80,8 @@ const SecondaryDataHome = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Link>
+      </div>
 
         <div className="col-sm-6">
           <Link href="/temperature" className="text-decoration-none">
