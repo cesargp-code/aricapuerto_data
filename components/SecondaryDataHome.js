@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IconArrowRight } from '@tabler/icons-react';
+import Link from 'next/link';
 
 const SecondaryDataHome = () => {
   const [data, setData] = useState({
@@ -64,7 +65,7 @@ const SecondaryDataHome = () => {
                 </p>
               </div>
               <div className='card-actions'>
-                <span className="status status-teal main_card_value">
+                <span className="status status-azure main_card_value">
                   <span className={`status-dot ${!isStale ? 'status-dot-animated' : ''}`}
                         style={isStale ? { backgroundColor: '#909090' } : {}}>
                   </span>
@@ -81,37 +82,39 @@ const SecondaryDataHome = () => {
         </div>
 
         <div className="col-sm-6">
-          <div className="card card-sm">
-            <div className="card-header border-bottom-0">
-              <div>
-                <h3 className='card-title'>Temperatura</h3>
-                <p className={`card-subtitle ${isStale ? 'status status-red' : ''}`} 
-                   style={{ 
-                     fontSize: "x-small",
-                     ...(isStale && { 
-                       height: "18px",
-                       padding: "0 5px"
-                     })
-                   }}>
-                  {isStale && <span className="status-dot status-dot-animated"></span>}
-                  actualizado {lastUpdated}
-                </p>
-              </div>
-              <div className='card-actions'>
-                <span className="status status-teal main_card_value">
-                  <span className={`status-dot ${!isStale ? 'status-dot-animated' : ''}`}
-                        style={isStale ? { backgroundColor: '#909090' } : {}}>
+          <Link href="/temperature" className="text-decoration-none">
+            <div className="card card-sm">
+              <div className="card-header border-bottom-0">
+                <div>
+                  <h3 className='card-title'>Temperatura</h3>
+                  <p className={`card-subtitle ${isStale ? 'status status-red' : ''}`} 
+                     style={{ 
+                       fontSize: "x-small",
+                       ...(isStale && { 
+                         height: "18px",
+                         padding: "0 5px"
+                       })
+                     }}>
+                    {isStale && <span className="status-dot status-dot-animated"></span>}
+                    actualizado {lastUpdated}
+                  </p>
+                </div>
+                <div className='card-actions'>
+                  <span className="status status-azure main_card_value">
+                    <span className={`status-dot ${!isStale ? 'status-dot-animated' : ''}`}
+                          style={isStale ? { backgroundColor: '#909090' } : {}}>
+                    </span>
+                    {data.DRYT} ºC
                   </span>
-                  {data.DRYT} ºC
-                </span>
-                <IconArrowRight
-                  stroke={2}
-                  size={24} 
-                  className="text-orange ms-2"
-                />
+                  <IconArrowRight
+                    stroke={2}
+                    size={24} 
+                    className="text-orange ms-2"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </div>
