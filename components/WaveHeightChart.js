@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { IconArrowRight } from '@tabler/icons-react';
 import WaveDirectionStrip from './WaveDirectionStrip';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -166,26 +167,31 @@ const WaveHeightChart = () => {
     <div className="card" id="home_wave">
       <div className="card-header">
         <div>
-          <h3 className="card-title">Oleaje (m)</h3>
+          <h3 className="card-title">Oleaje</h3>
           <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
-   style={{ 
-     fontSize: "x-small",
-     ...(isStaleData && { 
-       height: "18px",
-       padding: "0 5px"
-     })
-   }}>
-  {isStaleData && <span className="status-dot status-dot-animated"></span>}
- actualizado {lastUpdated}
-</p>
+            style={{ 
+              fontSize: "x-small",
+                ...(isStaleData && { 
+                  height: "18px",
+                  padding: "0 5px"
+                })
+              }}>
+              {isStaleData && <span className="status-dot status-dot-animated"></span>}
+              actualizado {lastUpdated}
+          </p>
         </div>
         <div className="card-actions">
-<span className="status status-azure main_card_value">
-  <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-        style={isStaleData ? { backgroundColor: '#909090' } : {}}>
-  </span>
-  {currentWaveHeight} m  |  {currentWaveDir}° | {currentWavePeriod} s
-</span>
+          <span className="status status-azure main_card_value">
+            <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                  style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+            </span>
+            {currentWaveHeight} m  |  {currentWaveDir}° | {currentWavePeriod} s
+          </span>
+          <IconArrowRight
+            stroke={2}
+            size={24} 
+            className="text-orange ms-2"
+          />
         </div>
       </div>
       <div className="card-body">

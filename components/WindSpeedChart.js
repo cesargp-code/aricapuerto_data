@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { IconArrowRight } from '@tabler/icons-react';
 import WindDirectionStrip from './WindDirectionStrip';
 import { DiagnosticCategory } from 'typescript';
 
@@ -182,6 +183,11 @@ const WindSpeedChart = () => {
             </span>
             {currentWindSpeed} m/s  |  {currentWindDir}°
           </span>
+          <IconArrowRight
+            stroke={2}
+            size={24} 
+            className="text-orange ms-2"
+          />
         </div>
       </div>
       <div className="card-body">

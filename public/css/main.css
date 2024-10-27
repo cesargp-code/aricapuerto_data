@@ -42,15 +42,3 @@ div.arrow_box div {
         margin-top: -15px;
     }
 }
-
-
-/* loco design */
-#home_wind .card-header {
-    background-color: #E1EBE2 !important;
-}
-#home_wave .card-header {
-    background-color: #DCF2FB !important;
-}
-#home_wind span.status, #home_wave span.status {
-    background-color: #ffffff !important;
-}
