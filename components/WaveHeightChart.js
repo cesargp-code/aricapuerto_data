@@ -180,11 +180,7 @@ const WaveHeightChart = () => {
 </p>
         </div>
         <div className="card-actions">
-<span className="status status-azure" 
-      style={{ fontSize: "medium", 
-               color: "#13A8E2", 
-               height: "34px", 
-               backgroundColor:"#DCF2FB" }}>
+<span className="status status-azure">
   <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
         style={isStaleData ? { backgroundColor: '#909090' } : {}}>
   </span>

@@ -1,17 +1,26 @@
 .bg-primary {
     background-color:#29397A !important;
 }
-div.main_card_value {
-    font-size: larger;
-    font-weight: bold;
+.main_card_value {
+    font-size: medium;
+    height:34px;
+    color: #2C3976; 
+    background-color:#CACDDD;
 }
-div.main_card_value_last_updated {
+.main_card_value_last_updated {
     font-size: xx-small;
+}
+#home_wind span.status {
+    color: #157B37; 
+    background-color:#E1EBE2;
+}
+#home_wave span.status {
+    color: #13A8E2;
+    background-color:#DCF2FB;
 }
 .navbar .navbar-brand img#logo {
     height:60px;
 }
-
 #chart-wind-speed, #chart-wave-height {
     margin-right:10px !important;
 }
@@ -39,10 +48,9 @@ div.arrow_box div {
 #home_wind .card-header {
     background-color: #E1EBE2 !important;
 }
-#home_wind span.status, #home_wave span.status {
-    background-color: #ffffff !important;
-}
-
 #home_wave .card-header {
     background-color: #DCF2FB !important;
+}
+#home_wind span.status, #home_wave span.status {
+    background-color: #ffffff !important;
 }
