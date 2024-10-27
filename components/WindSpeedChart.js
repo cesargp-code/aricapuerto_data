@@ -176,9 +176,7 @@ const WindSpeedChart = () => {
           </p>
         </div>
         <div className="card-actions">
-          <span className="status status-teal main_card_value" 
-                style={{ color: "#157B37", 
-                         backgroundColor:"#E1EBE2" }}>
+          <span className="status status-teal main_card_value">
             <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                   style={isStaleData ? { backgroundColor: '#909090' } : {}}>
             </span>

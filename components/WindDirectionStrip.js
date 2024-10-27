@@ -1,4 +1,5 @@
 import React from 'react';
+import { IconNavigation } from '@tabler/icons-react';
 
 const WindDirectionStrip = ({ windDirData }) => {
   const sampleData = () => {
