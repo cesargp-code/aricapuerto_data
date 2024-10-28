@@ -167,25 +167,31 @@ const PressurePage = () => {
             </div>
           </div>
           <div className="card-body">
-            <div className="card-group mb-3">
-              <div className="card">
+          <div className="row g-0 mb-3">
+            <div className="col-4">
+                <div className="card">
                 <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Mínima</div>
-                  <div className="h2 m-0">{stats.min} hPa</div>
+                    <div className="text-muted text-secondary fs-5">Mínima</div>
+                    <div className="h2 m-0">{stats.min}°C</div>
                 </div>
-              </div>
-              <div className="card">
+                </div>
+            </div>
+            <div className="col-4">
+                <div className="card">
                 <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Media</div>
-                  <div className="h2 m-0">{stats.avg} hPa</div>
+                    <div className="text-muted text-secondary fs-5">Máxima</div>
+                    <div className="h2 m-0">{stats.max}°C</div>
                 </div>
-              </div>
-              <div className="card">
+                </div>
+            </div>
+            <div className="col-4">
+                <div className="card">
                 <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Máxima</div>
-                  <div className="h2 m-0">{stats.max} hPa</div>
+                    <div className="text-muted text-secondary fs-5">Media</div>
+                    <div className="h2 m-0">{stats.avg}°C</div>
                 </div>
-              </div>
+                </div>
+            </div>
             </div>
             <div style={{ height: '200px' }}>
               {typeof window !== 'undefined' && (

@@ -7,6 +7,9 @@
     color: #2C3976; 
     background-color:#DFE1EA;
 }
+.navigation_arrow {
+    color:#F28B2F;
+}
 .main_card_value_last_updated {
     font-size: xx-small;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IconArrowRight } from '@tabler/icons-react';
+import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import Link from 'next/link';
 
 const SecondaryDataHome = () => {
@@ -72,10 +72,9 @@ const SecondaryDataHome = () => {
                   </span>
                   {data.ATMS} hPa
                 </span>
-                <IconArrowRight
-                  stroke={2}
-                  size={24} 
-                  className="text-orange ms-2"
+                <IconCircleArrowRightFilled
+                  size={40} 
+                  className="navigation_arrow ms-2"
                 />
               </div>
             </div>
@@ -108,10 +107,9 @@ const SecondaryDataHome = () => {
                     </span>
                     {data.DRYT} ºC
                   </span>
-                  <IconArrowRight
-                    stroke={2}
-                    size={24} 
-                    className="text-orange ms-2"
+                  <IconCircleArrowRightFilled
+                    size={40} 
+                    className="navigation_arrow ms-2"
                   />
                 </div>
               </div>
