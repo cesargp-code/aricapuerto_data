@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
+import Link from 'next/link';
 import WindDirectionStrip from './WindDirectionStrip';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -160,34 +161,36 @@ const WindSpeedChart = () => {
 
   return (
     <div className="card" id="home_wind">
-      <div className="card-header">
-        <div>
-          <h3 className="card-title">Viento (m/s)</h3>
-          <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
-             style={{ 
-               fontSize: "x-small",
-               ...(isStaleData && { 
-                 height: "18px",
-                 padding: "0 5px"
-               })
-             }}>
-            {isStaleData && <span className="status-dot status-dot-animated"></span>}
-            actualizado {lastUpdated}
-          </p>
-        </div>
-        <div className="card-actions">
-          <span className="status status-teal main_card_value">
-            <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                  style={isStaleData ? { backgroundColor: '#909090' } : {}}>
-            </span>
-            {currentWindSpeed} m/s  |  {currentWindDir}°
-          </span>
-          <IconCircleArrowRightFilled
-            size={40} 
-            className="navigation_arrow"
-          />
-        </div>
-      </div>
+        <Link href="/wind" className="text-decoration-none">
+          <div className="card-header">
+            <div>
+              <h3 className="card-title">Viento (m/s)</h3>
+              <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
+                style={{ 
+                  fontSize: "x-small",
+                  ...(isStaleData && { 
+                    height: "18px",
+                    padding: "0 5px"
+                  })
+                }}>
+                {isStaleData && <span className="status-dot status-dot-animated"></span>}
+                actualizado {lastUpdated}
+              </p>
+            </div>
+            <div className="card-actions">
+              <span className="status status-teal main_card_value">
+                <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                      style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+                </span>
+                {currentWindSpeed} m/s  |  {currentWindDir}°
+              </span>
+              <IconCircleArrowRightFilled
+                size={40} 
+                className="navigation_arrow"
+              />
+            </div>
+          </div>
+        </Link>
       <div className="card-body">
         <div id="chart-wind-speed">
           {typeof window !== 'undefined' && (
