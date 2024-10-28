@@ -189,7 +189,7 @@ const WaveHeightChart = () => {
           </span>
           <IconCircleArrowRightFilled
             size={40} 
-            className="navigation_arrow ms-2"
+            className="navigation_arrow"
           />
         </div>
       </div>
