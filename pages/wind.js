@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
 import { IconArrowUpCircle } from '@tabler/icons-react';
+import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -83,6 +84,7 @@ const WindPage = () => {
       type: 'line',
       fontFamily: 'inherit',
       height: 200,
+      zoom: false,
       parentHeightOffset: 0,
       toolbar: {
         show: false,
@@ -95,10 +97,9 @@ const WindPage = () => {
       enabled: false,
     },
     stroke: {
-      width: [2, 1],
+      width: [2, 2],
       lineCap: "round",
       curve: "smooth",
-      dashArray: [0, 3]
     },
     series: [
       {
@@ -131,7 +132,7 @@ const WindPage = () => {
         padding: 4,
       },
     },
-    colors: ["#157B37", "#206bc4"],
+    colors: ["#157B37", "#43F37C"],
     legend: {
       show: false,
     },
@@ -144,32 +145,36 @@ const WindPage = () => {
 
   return (
     <Layout>
+      <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
+        <div className="d-flex align-items-center">
+          <IconCircleArrowLeftFilled
+            size={40}
+            className="navigation_arrow me-3"
+          />
+          <div>
+            <h1 className='mb-0'>Viento</h1>
+            <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
+              style={{ 
+                fontSize: "x-small",
+                ...(isStaleData && { 
+                  height: "18px",
+                  padding: "0 5px"
+                })
+              }}>
+              {isStaleData && <span className="status-dot status-dot-animated"></span>}
+              actualizado {lastUpdated}
+            </p>
+          </div>
+        </div>
+        <span className="status status-teal main_card_value">
+          <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+          </span>
+          {currentWind.speed} m/s | {currentWind.gust} m/s | {currentWind.direction}°
+        </span>
+      </div>
       <div className="col-12">
         <div className="card" id="home_wind">
-          <div className="card-header">
-            <div>
-              <h3 className="card-title">Viento</h3>
-              <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
-                 style={{ 
-                   fontSize: "x-small",
-                   ...(isStaleData && { 
-                     height: "18px",
-                     padding: "0 5px"
-                   })
-                 }}>
-                {isStaleData && <span className="status-dot status-dot-animated"></span>}
-                actualizado {lastUpdated}
-              </p>
-            </div>
-            <div className="card-actions">
-              <span className="status status-teal main_card_value">
-                <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                      style={isStaleData ? { backgroundColor: '#909090' } : {}}>
-                </span>
-                {currentWind.speed} m/s | {currentWind.direction}°
-              </span>
-            </div>
-          </div>
           <div className="card-body">
             <div className="card-group mb-3" style={{ flex: '0 0 auto', flexWrap: 'nowrap' }}>
               <div className="card">
