@@ -9,6 +9,7 @@ import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const WindPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [windDirChartData, setWindDirChartData] = useState([]);
@@ -86,8 +87,10 @@ const WindPage = () => {
           maxGust: Math.max(...gusts).toFixed(1),
         });
       }
+      setIsLoading(false); // Add this line at the end of successful data processing
     } catch (error) {
       console.error('Error fetching wind data:', error);
+      setIsLoading(false); // Also set loading to false on error
     }
   };
 
@@ -161,6 +164,24 @@ const WindPage = () => {
 
   return (
     <Layout>
+      {isLoading ? (
+        <div className="page page-center">
+          <div className="container container-slim py-4">
+            <div className="text-center">
+              <div className="mb-3">
+                <a href="." className="navbar-brand navbar-brand-autodark">
+                  <img src="/img/logo-inverted.svg" height="36" alt="Loading..." />
+                </a>
+              </div>
+              <div className="text-secondary mb-3">Cargando datos...</div>
+              <div className="progress progress-sm">
+                <div className="progress-bar progress-bar-indeterminate"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
       <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
         <div className="d-flex align-items-center">
         <Link href="/" className="text-decoration-none d-flex align-items-center">
@@ -248,9 +269,11 @@ const WindPage = () => {
       </div>
       <div className="col-12">
             <WindRose data={chartData} />
-      </div>
-    </Layout>
-  );
+            </div>
+      </>
+    )}
+  </Layout>
+);
 };
 
 export default WindPage;

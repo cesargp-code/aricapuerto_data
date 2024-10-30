@@ -45,3 +45,19 @@ div.arrow_box div {
         margin-top: -15px;
     }
 }
+
+.progress-bar-indeterminate {
+    width: 100%;
+    position: relative;
+    animation: progress-loading 1s linear infinite;
+    background-image: linear-gradient(to right, #29397A 30%, #4353a5 60%);
+}
+
+@keyframes progress-loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
