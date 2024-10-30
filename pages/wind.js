@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import WindRose from '../components/WindRose';
 import Layout from '../components/Layout';
 import WindDirectionStrip from '../components/WindDirectionStrip';
-import { IconArrowUpCircle } from '@tabler/icons-react';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -199,36 +199,36 @@ const WindPage = () => {
               <div className="p-3 bg-light rounded-2 text-center">
                 <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
                   <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
-                  <span className="fs-5">Min viento</span>
+                  <span className="fs-5">Mín. viento</span>
                 </div>
-                <div className="h2 m-0">{stats.minWind} m/s</div>
+                <div className="h3 m-0">{stats.minWind} m/s</div>
               </div>
             </div>
             <div className="col-6">
               <div className="p-3 bg-light rounded-2 text-center">
                 <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
                   <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
-                  <span className="fs-5">Max viento</span>
+                  <span className="fs-5">Máx. viento</span>
                 </div>
-                <div className="h2 m-0">{stats.maxWind} m/s</div>
+                <div className="h3 m-0">{stats.maxWind} m/s</div>
               </div>
             </div>
             <div className="col-6">
               <div className="p-3 bg-light rounded-2 text-center">
                 <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
                   <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
-                  <span className="fs-5">Min racha</span>
+                  <span className="fs-5">Mín. racha</span>
                 </div>
-                <div className="h2 m-0">{stats.minGust} m/s</div>
+                <div className="h3 m-0">{stats.minGust} m/s</div>
               </div>
             </div>
             <div className="col-6">
               <div className="p-3 bg-light rounded-2 text-center">
                 <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
                   <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
-                  <span className="fs-5">Max racha</span>
+                  <span className="fs-5">Máx. racha</span>
                 </div>
-                <div className="h2 m-0">{stats.maxGust} m/s</div>
+                <div className="h3 m-0">{stats.maxGust} m/s</div>
               </div>
             </div>
           </div>
@@ -245,6 +245,9 @@ const WindPage = () => {
             <WindDirectionStrip windDirData={windDirChartData} />
           </div>
         </div>
+      </div>
+      <div className="col-12">
+            <WindRose data={chartData} />
       </div>
     </Layout>
   );

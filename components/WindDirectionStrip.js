@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IconArrowUpCircle } from '@tabler/icons-react';
+import { IconArrowNarrowUp } from '@tabler/icons-react';
 
 const WindDirectionStrip = ({ windDirData }) => {
   const sampleData = () => {
@@ -32,7 +32,7 @@ const WindDirectionStrip = ({ windDirData }) => {
             {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
           </div>
           <div style={{ transform: `rotate(${data.y}deg)` }}>
-          <IconArrowUpCircle
+          <IconArrowNarrowUp
             size={20} 
             color="#157B37"
           />
