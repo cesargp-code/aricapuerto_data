@@ -145,7 +145,7 @@ const WindPage = () => {
   return (
     <Layout>
       <div className="col-12">
-        <div className="card">
+        <div className="card" id="home_wind">
           <div className="card-header">
             <div>
               <h3 className="card-title">Viento</h3>
