@@ -159,7 +159,7 @@ const TemperaturePage = () => {
               </p>
             </div>
             <div className="card-actions">
-              <span className="status status-azure main_card_value">
+              <span className="status status-azure current-pill">
                 <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                       style={isStaleData ? { backgroundColor: '#909090' } : {}}>
                 </span>

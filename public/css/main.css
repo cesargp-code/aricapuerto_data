@@ -1,7 +1,7 @@
 .bg-primary {
     background-color:#29397A !important;
 }
-.main_card_value {
+.current-pill {
     font-size: medium;
     height:34px;
     color: #2C3976; 
@@ -13,11 +13,11 @@
 .main_card_value_last_updated {
     font-size: xx-small;
 }
-#home_wind span.status {
+#current-wind-pill.current-pill {
     color: #157B37; 
     background-color:#E1EBE2;
 }
-#home_wave span.status {
+#current-wave-pill.current-pill {
     color: #13A8E2;
     background-color:#DCF2FB;
 }

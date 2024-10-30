@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import Layout from '../components/Layout';
+import WindDirectionStrip from '../components/WindDirectionStrip';
 import { IconArrowUpCircle } from '@tabler/icons-react';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 
@@ -9,6 +11,7 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 const WindPage = () => {
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
+  const [windDirChartData, setWindDirChartData] = useState([]);
   const [currentWind, setCurrentWind] = useState({
     speed: '-',
     direction: '-',
@@ -17,10 +20,11 @@ const WindPage = () => {
   });
   const [isStaleData, setIsStaleData] = useState(false);
   const [stats, setStats] = useState({
+    minWind: '-',
     maxWind: '-',
-    avgWind: '-',
+    minGust: '-',
     maxGust: '-',
-  });
+  });  
 
   useEffect(() => {
     fetchData();
@@ -46,6 +50,13 @@ const WindPage = () => {
 
       setChartData(formattedData);
 
+      // Format data for wind direction strip
+      const formattedWindDirData = formattedData.map(point => ({
+        x: point.x,
+        y: point.direction
+      }));
+      setWindDirChartData(formattedWindDirData);
+
       if (formattedData.length > 0) {
         const lastDataPoint = formattedData[formattedData.length - 1];
         const lastDataTime = new Date(lastDataPoint.x);
@@ -69,8 +80,9 @@ const WindPage = () => {
         const windSpeeds = formattedData.map(point => point.y);
         const gusts = formattedData.map(point => point.gust);
         setStats({
+          minWind: Math.min(...windSpeeds).toFixed(1),
           maxWind: Math.max(...windSpeeds).toFixed(1),
-          avgWind: (windSpeeds.reduce((a, b) => a + b, 0) / windSpeeds.length).toFixed(1),
+          minGust: Math.min(...gusts).toFixed(1),
           maxGust: Math.max(...gusts).toFixed(1),
         });
       }
@@ -121,16 +133,20 @@ const WindPage = () => {
       strokeDashArray: 4,
     },
     xaxis: {
-      type: 'datetime',
+      type: 'numeric',
+      tickAmount: 8,
       labels: {
-        format: 'HH:mm'
+        show: false,
       },
-      tooltip: false,
+      tooltip: {
+        enabled: false
+      },
     },
     yaxis: {
       labels: {
         padding: 4,
       },
+      min: 0,
     },
     colors: ["#157B37", "#43F37C"],
     legend: {
@@ -147,12 +163,13 @@ const WindPage = () => {
     <Layout>
       <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
         <div className="d-flex align-items-center">
+        <Link href="/" className="text-decoration-none d-flex align-items-center">
           <IconCircleArrowLeftFilled
             size={40}
-            className="navigation_arrow me-3"
+            className="navigation_arrow me-1"
           />
           <div>
-            <h1 className='mb-0'>Viento</h1>
+            <h2 className='mb-0 text-decoration-none'>Viento</h2>
             <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
               style={{ 
                 fontSize: "x-small",
@@ -165,8 +182,9 @@ const WindPage = () => {
               actualizado {lastUpdated}
             </p>
           </div>
+        </Link>
         </div>
-        <span className="status status-teal main_card_value">
+        <span className="status status-teal current-pill" id="current-wind-pill">
           <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                 style={isStaleData ? { backgroundColor: '#909090' } : {}}>
           </span>
@@ -174,29 +192,47 @@ const WindPage = () => {
         </span>
       </div>
       <div className="col-12">
-        <div className="card" id="home_wind">
+        <div className="card">
           <div className="card-body">
-            <div className="card-group mb-3" style={{ flex: '0 0 auto', flexWrap: 'nowrap' }}>
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Máxima viento</div>
-                  <div className="h2 m-0">{stats.maxWind} m/s</div>
+          <div className="row g-2 mb-3">
+            <div className="col-6">
+              <div className="p-3 bg-light rounded-2 text-center">
+                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                  <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
+                  <span className="fs-5">Min viento</span>
                 </div>
-              </div>
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Media viento</div>
-                  <div className="h2 m-0">{stats.avgWind} m/s</div>
-                </div>
-              </div>
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Máxima racha</div>
-                  <div className="h2 m-0">{stats.maxGust} m/s</div>
-                </div>
+                <div className="h2 m-0">{stats.minWind} m/s</div>
               </div>
             </div>
-            <div style={{ height: '200px' }}>
+            <div className="col-6">
+              <div className="p-3 bg-light rounded-2 text-center">
+                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                  <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
+                  <span className="fs-5">Max viento</span>
+                </div>
+                <div className="h2 m-0">{stats.maxWind} m/s</div>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="p-3 bg-light rounded-2 text-center">
+                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                  <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
+                  <span className="fs-5">Min racha</span>
+                </div>
+                <div className="h2 m-0">{stats.minGust} m/s</div>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="p-3 bg-light rounded-2 text-center">
+                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                  <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
+                  <span className="fs-5">Max racha</span>
+                </div>
+                <div className="h2 m-0">{stats.maxGust} m/s</div>
+              </div>
+            </div>
+          </div>
+            <div id="chart-wind-speed">
               {typeof window !== 'undefined' && (
                 <ReactApexChart 
                   options={chartOptions} 
@@ -206,22 +242,7 @@ const WindPage = () => {
                 />
               )}
             </div>
-            <div className="d-flex justify-content-between align-items-center mt-4">
-              <div className="text-center">
-                <div className="text-muted mb-1">Dirección viento</div>
-                <div style={{ transform: `rotate(${currentWind.direction}deg)` }}>
-                  <IconArrowUpCircle size={48} color="#157B37" />
-                </div>
-                <div>{currentWind.direction}°</div>
-              </div>
-              <div className="text-center">
-                <div className="text-muted mb-1">Dirección racha</div>
-                <div style={{ transform: `rotate(${currentWind.gustDir}deg)` }}>
-                  <IconArrowUpCircle size={48} color="#206bc4" />
-                </div>
-                <div>{currentWind.gustDir}°</div>
-              </div>
-            </div>
+            <WindDirectionStrip windDirData={windDirChartData} />
           </div>
         </div>
       </div>

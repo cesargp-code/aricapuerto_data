@@ -164,7 +164,7 @@ const WaveHeightChart = () => {
   };
 
   return (
-    <div className="card" id="home_wave">
+    <div className="card">
       <div className="card-header">
         <div>
           <h3 className="card-title">Oleaje</h3>
@@ -181,7 +181,7 @@ const WaveHeightChart = () => {
           </p>
         </div>
         <div className="card-actions">
-          <span className="status status-azure main_card_value">
+          <span className="status status-azure current-pill" id="current-wave-pill">
             <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                   style={isStaleData ? { backgroundColor: '#909090' } : {}}>
             </span>

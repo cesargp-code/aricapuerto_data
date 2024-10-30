@@ -160,11 +160,11 @@ const WindSpeedChart = () => {
   };
 
   return (
-    <div className="card" id="home_wind">
+    <div className="card">
         <Link href="/wind" className="text-decoration-none">
           <div className="card-header">
             <div>
-              <h3 className="card-title">Viento (m/s)</h3>
+              <h3 className="card-title text-decoration-none">Viento</h3>
               <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
                 style={{ 
                   fontSize: "x-small",
@@ -178,7 +178,7 @@ const WindSpeedChart = () => {
               </p>
             </div>
             <div className="card-actions">
-              <span className="status status-teal main_card_value">
+              <span className="status status-teal current-pill" id="current-wind-pill">
                 <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                       style={isStaleData ? { backgroundColor: '#909090' } : {}}>
                 </span>

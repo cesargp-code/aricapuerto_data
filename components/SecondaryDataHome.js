@@ -66,7 +66,7 @@ const SecondaryDataHome = () => {
                 </p>
               </div>
               <div className='card-actions'>
-                <span className="status status-azure main_card_value">
+                <span className="status status-azure current-pill">
                   <span className={`status-dot ${!isStale ? 'status-dot-animated' : ''}`}
                         style={isStale ? { backgroundColor: '#909090' } : {}}>
                   </span>
@@ -101,7 +101,7 @@ const SecondaryDataHome = () => {
                   </p>
                 </div>
                 <div className='card-actions'>
-                  <span className="status status-azure main_card_value">
+                  <span className="status status-azure current-pill">
                     <span className={`status-dot ${!isStale ? 'status-dot-animated' : ''}`}
                           style={isStale ? { backgroundColor: '#909090' } : {}}>
                     </span>
