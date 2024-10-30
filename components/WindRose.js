@@ -9,10 +9,14 @@ const WindRose = ({ data }) => {
     const bins = Array(16).fill(0).map(() => ({
       count: 0,
       speeds: {
-        light: 0,    // 0-5 m/s
-        moderate: 0,  // 5-10 m/s
-        strong: 0,    // 10-15 m/s
-        extreme: 0    // >15 m/s
+        calm: 0,      // 0-2 m/s
+        light: 0,     // 2-4 m/s
+        moderate: 0,  // 4-6 m/s
+        fresh: 0,     // 6-8 m/s
+        strong: 0,    // 8-10 m/s
+        nearGale: 0,  // 10-12 m/s
+        gale: 0,      // 12-14 m/s
+        severe: 0     // >14 m/s
       }
     }));
     
@@ -27,10 +31,14 @@ const WindRose = ({ data }) => {
       bins[binIndex].count++;
       
       // Categorize speed
-      if (speed <= 5) bins[binIndex].speeds.light++;
-      else if (speed <= 10) bins[binIndex].speeds.moderate++;
-      else if (speed <= 15) bins[binIndex].speeds.strong++;
-      else bins[binIndex].speeds.extreme++;
+      if (speed <= 2) bins[binIndex].speeds.calm++;
+      else if (speed <= 4) bins[binIndex].speeds.light++;
+      else if (speed <= 6) bins[binIndex].speeds.moderate++;
+      else if (speed <= 8) bins[binIndex].speeds.fresh++;
+      else if (speed <= 10) bins[binIndex].speeds.strong++;
+      else if (speed <= 12) bins[binIndex].speeds.nearGale++;
+      else if (speed <= 14) bins[binIndex].speeds.gale++;
+      else bins[binIndex].speeds.severe++;
     });
     
     // Convert counts to percentages
@@ -39,10 +47,14 @@ const WindRose = ({ data }) => {
       ...bin,
       percentage: (bin.count / total) * 100,
       speeds: {
+        calm: (bin.speeds.calm / total) * 100,
         light: (bin.speeds.light / total) * 100,
         moderate: (bin.speeds.moderate / total) * 100,
+        fresh: (bin.speeds.fresh / total) * 100,
         strong: (bin.speeds.strong / total) * 100,
-        extreme: (bin.speeds.extreme / total) * 100
+        nearGale: (bin.speeds.nearGale / total) * 100,
+        gale: (bin.speeds.gale / total) * 100,
+        severe: (bin.speeds.severe / total) * 100
       }
     }));
   }, [data]);
@@ -54,12 +66,12 @@ const WindRose = ({ data }) => {
   const maxPercentage = Math.max(...processedData.map(bin => bin.percentage));
   
   // Generate the SVG paths for each speed category
-  const generatePaths = (speedKey, color, scale = 1) => {
+  const generatePaths = (speedKey, color) => {
     const paths = processedData.map((bin, index) => {
       const angle = (index * 22.5 * Math.PI) / 180;
       const nextAngle = ((index + 1) * 22.5 * Math.PI) / 180;
       const percentage = bin.speeds[speedKey];
-      const radius = (percentage * 120) / maxPercentage; // Scale to 120px max radius
+      const radius = (percentage * 220) / maxPercentage; // Scale to 120px max radius
       
       const x1 = 150 + radius * Math.sin(angle);
       const y1 = 150 - radius * Math.cos(angle);
@@ -72,12 +84,31 @@ const WindRose = ({ data }) => {
     return <path d={paths} fill={color} opacity={0.7} />;
   };
 
+  const windSpeedColors = [
+    { key: 'severe', color: '#d63939', label: '>14 m/s' },    // Red
+    { key: 'gale', color: '#e34234', label: '12-14 m/s' },    // Light red
+    { key: 'nearGale', color: '#f59f00', label: '10-12 m/s' }, // Orange
+    { key: 'strong', color: '#fab005', label: '8-10 m/s' },    // Light orange
+    { key: 'fresh', color: '#94d82d', label: '6-8 m/s' },      // Light green
+    { key: 'moderate', color: '#82c91e', label: '4-6 m/s' },   // Green
+    { key: 'light', color: '#51cf66', label: '2-4 m/s' },      // Lighter green
+    { key: 'calm', color: '#40c057', label: '0-2 m/s' }        // Lightest green
+  ];
+
   return (
     <div className="card">
+        <div className='card-header'>
+            <h3 className="card-title">Distribución del viento</h3>
+        </div>
       <div className="card-body">
-        <h3 className="card-title">Distribución del viento</h3>
-        <div className="d-flex justify-content-center align-items-center">
-          <svg viewBox="0 0 300 300" className="w-full max-w-md">
+        <div className="d-flex flex-column align-items-center">
+          <svg viewBox="0 0 300 300" style={{ maxWidth: '500px', width: '100%' }}>
+            {/* Background reference lines */}
+            <line x1="150" y1="30" x2="150" y2="270" stroke="#e2e8f0" strokeWidth="1" />
+            <line x1="30" y1="150" x2="270" y2="150" stroke="#e2e8f0" strokeWidth="1" />
+            <line x1="64" y1="64" x2="236" y2="236" stroke="#e2e8f0" strokeWidth="1" />
+            <line x1="236" y1="64" x2="64" y2="236" stroke="#e2e8f0" strokeWidth="1" />
+            
             {/* Render concentric circles for reference */}
             {[25, 50, 75, 100].map((radius, i) => (
               <circle
@@ -86,42 +117,44 @@ const WindRose = ({ data }) => {
                 cy="150"
                 r={radius * 1.2}
                 fill="none"
-                stroke="#e5e7eb"
+                stroke="#e2e8f0"
                 strokeWidth="1"
               />
             ))}
             
             {/* Direction labels */}
-            <text x="150" y="30" textAnchor="middle">N</text>
-            <text x="270" y="150" textAnchor="start">E</text>
-            <text x="150" y="280" textAnchor="middle">S</text>
-            <text x="30" y="150" textAnchor="end">W</text>
+            <text x="150" y="25" textAnchor="middle" className="text-muted x-small">N</text>
+            <text x="275" y="155" textAnchor="start" className="text-muted x-small">E</text>
+            <text x="150" y="285" textAnchor="middle" className="text-muted">S</text>
+            <text x="25" y="155" textAnchor="end" className="text-muted">W</text>
             
-            {/* Speed category layers */}
-            {generatePaths('extreme', '#ef4444')}  {/* Red */}
-            {generatePaths('strong', '#f97316')}   {/* Orange */}
-            {generatePaths('moderate', '#84cc16')} {/* Green */}
-            {generatePaths('light', '#22c55e')}    {/* Light green */}
+            {/* NE, SE, SW, NW labels */}
+            <text x="235" y="75" textAnchor="middle" className="text-muted">NE</text>
+            <text x="235" y="235" textAnchor="middle" className="text-muted">SE</text>
+            <text x="65" y="235" textAnchor="middle" className="text-muted">SW</text>
+            <text x="65" y="75" textAnchor="middle" className="text-muted">NW</text>
+            
+            {/* Speed category layers - render in reverse order */}
+            {windSpeedColors.reverse().map(({key, color}) => generatePaths(key, color))}
           </svg>
           
           {/* Legend */}
-          <div className="ms-4 text-sm">
-            <div className="mb-2">
-              <span className="inline-block w-3 h-3 bg-[#22c55e] mr-2"></span>
-              0-5 m/s
-            </div>
-            <div className="mb-2">
-              <span className="inline-block w-3 h-3 bg-[#84cc16] mr-2"></span>
-              5-10 m/s
-            </div>
-            <div className="mb-2">
-              <span className="inline-block w-3 h-3 bg-[#f97316] mr-2"></span>
-              10-15 m/s
-            </div>
-            <div className="mb-2">
-              <span className="inline-block w-3 h-3 bg-[#ef4444] mr-2"></span>
-              &gt;15 m/s
-            </div>
+          <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
+            {windSpeedColors.reverse().map(({key, color, label}) => (
+              <div key={key} className="d-flex align-items-center me-3">
+                <span 
+                  className="me-2" 
+                  style={{
+                    display: 'inline-block',
+                    width: '12px',
+                    height: '12px',
+                    backgroundColor: color,
+                    borderRadius: '2px'
+                  }}
+                ></span>
+                <span className="text-muted">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
