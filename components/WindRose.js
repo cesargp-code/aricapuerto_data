@@ -6,6 +6,7 @@ const WindRose = ({ data }) => {
     if (!data || data.length === 0) return null;
     
     // Initialize direction bins (every 22.5 degrees - 16 directions)
+    // Shifted by -11.25 degrees so bins are centered on cardinal directions
     const bins = Array(16).fill(0).map(() => ({
       count: 0,
       speeds: {
@@ -26,7 +27,8 @@ const WindRose = ({ data }) => {
       const speed = point.y;
       
       // Calculate which bin this direction belongs to
-      const binIndex = Math.floor(((direction + 11.25) % 360) / 22.5);
+      // Add 360 before modulo to handle negative angles after the -11.25 shift
+      const binIndex = Math.floor(((direction + 360 - 11.25) % 360) / 22.5);
       
       bins[binIndex].count++;
       
@@ -68,10 +70,10 @@ const WindRose = ({ data }) => {
   // Generate the SVG paths for each speed category
   const generatePaths = (speedKey, color) => {
     const paths = processedData.map((bin, index) => {
-      const angle = (index * 22.5 * Math.PI) / 180;
-      const nextAngle = ((index + 1) * 22.5 * Math.PI) / 180;
+      const angle = ((index * 22.5 - 11.25) * Math.PI) / 180;
+      const nextAngle = (((index + 1) * 22.5 - 11.25) * Math.PI) / 180;
       const percentage = bin.speeds[speedKey];
-      const radius = (percentage * 220) / maxPercentage; // Scale to 120px max radius
+      const radius = (percentage * 120) / maxPercentage;
       
       const x1 = 150 + radius * Math.sin(angle);
       const y1 = 150 - radius * Math.cos(angle);
@@ -85,14 +87,14 @@ const WindRose = ({ data }) => {
   };
 
   const windSpeedColors = [
-    { key: 'severe', color: '#d63939', label: '>14 m/s' },    // Red
-    { key: 'gale', color: '#e34234', label: '12-14 m/s' },    // Light red
-    { key: 'nearGale', color: '#f59f00', label: '10-12 m/s' }, // Orange
-    { key: 'strong', color: '#fab005', label: '8-10 m/s' },    // Light orange
-    { key: 'fresh', color: '#94d82d', label: '6-8 m/s' },      // Light green
-    { key: 'moderate', color: '#82c91e', label: '4-6 m/s' },   // Green
-    { key: 'light', color: '#51cf66', label: '2-4 m/s' },      // Lighter green
-    { key: 'calm', color: '#40c057', label: '0-2 m/s' }        // Lightest green
+    { key: 'calm', color: '#E1E7CE', label: '0-2 m/s' },        // Lightest green
+    { key: 'light', color: '#A5C58F', label: '2-4 m/s' },      // Lighter green
+    { key: 'moderate', color: '#54A151', label: '4-6 m/s' },   // Green
+    { key: 'fresh', color: '#157B37', label: '6-8 m/s' },      // Light green
+    { key: 'strong', color: '#116D43', label: '8-10 m/s' },    // Light orange
+    { key: 'nearGale', color: '#0D5F4B', label: '10-12 m/s' }, // Orange
+    { key: 'gale', color: '#0A504E', label: '12-14 m/s' },    // Light red
+    { key: 'severe', color: '#073641', label: '>14 m/s' }     // Red
   ];
 
   return (
@@ -134,13 +136,13 @@ const WindRose = ({ data }) => {
             <text x="65" y="235" textAnchor="middle" className="text-muted">SW</text>
             <text x="65" y="75" textAnchor="middle" className="text-muted">NW</text>
             
-            {/* Speed category layers - render in reverse order */}
-            {windSpeedColors.reverse().map(({key, color}) => generatePaths(key, color))}
+            {/* Speed category layers - now rendering from fastest to slowest */}
+            {[...windSpeedColors].reverse().map(({key, color}) => generatePaths(key, color))}
           </svg>
           
-          {/* Legend */}
+          {/* Legend - keep original order for readability */}
           <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
-            {windSpeedColors.reverse().map(({key, color, label}) => (
+            {windSpeedColors.map(({key, color, label}) => (
               <div key={key} className="d-flex align-items-center me-3">
                 <span 
                   className="me-2" 

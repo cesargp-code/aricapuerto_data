@@ -50,7 +50,7 @@ div.arrow_box div {
     width: 100%;
     position: relative;
     animation: progress-loading 1s linear infinite;
-    background-image: linear-gradient(to right, #29397A 30%, #4353a5 60%);
+    background-image: linear-gradient(to right, #ffffff 60%, #ffffff 60%);
 }
 
 @keyframes progress-loading {
