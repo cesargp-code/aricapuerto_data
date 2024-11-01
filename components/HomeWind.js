@@ -21,7 +21,7 @@ const WindSpeedChart = () => {
   const fetchData = async () => {
     console.log('Fetching data started');
     try {
-      const response = await fetch('/api/wind-speed-data');
+      const response = await fetch('/api/home-wind-data');
       console.log('Fetch response received:', response.status, response.statusText);
       
       if (!response.ok) {

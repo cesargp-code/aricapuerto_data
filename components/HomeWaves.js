@@ -21,7 +21,7 @@ const WaveHeightChart = () => {
   const fetchData = async () => {
     console.log('Fetching wave data started');
     try {
-      const response = await fetch('/api/waves-data');
+      const response = await fetch('/api/home-waves-data');
       console.log('Fetch response received:', response.status, response.statusText);
       
       if (!response.ok) {

@@ -1,20 +1,20 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import WindSpeedChart from '../components/WindSpeedChart';
-import WaveHeightChart from '../components/WaveHeightChart';
-import SecondaryDataHome from '../components/SecondaryDataHome';
+import HomeWindChart from '../components/HomeWind';
+import HomeWavesChart from '../components/HomeWaves';
+import HomeSecondary from '../components/HomeSecondary';
 
 const Home = () => {
   return (
     <Layout>
       <div className="col-12">
-        <WindSpeedChart />
+        <HomeWindChart />
       </div>
       <div className="col-12">
-        <WaveHeightChart />
+        <HomeWavesChart />
       </div>
       <div className="col-12">
-        <SecondaryDataHome />
+        <HomeSecondary />
       </div>
     </Layout>
   );
