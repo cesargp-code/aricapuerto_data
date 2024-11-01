@@ -69,3 +69,24 @@ div.arrow_box div {
         background-position: 200% 0;
     }
 }
+
+.offcanvas-header {
+    height: 102px;
+}
+
+.footer {
+    background-image: url(../img/bg_map.png);
+    background-position: center;
+    background-color:#29397A;
+    border:0;
+    color:white;
+    height:300px;
+}
+.footer a {
+    color:white;
+    text-decoration: underline;
+}
+.footer a:hover {
+    color:rgb(43, 123, 177);
+    text-decoration: underline;
+}
