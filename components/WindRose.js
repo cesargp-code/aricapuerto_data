@@ -83,18 +83,18 @@ const WindRose = ({ data }) => {
       return `M 150,150 L ${x1},${y1} A ${radius},${radius} 0 0,1 ${x2},${y2} Z`;
     }).join(' ');
 
-    return <path d={paths} fill={color} opacity={0.7} />;
+    return <path d={paths} fill={color} opacity={0.8} />;
   };
 
   const windSpeedColors = [
-    { key: 'calm', color: '#E1E7CE', label: '0-2 m/s' },        // Lightest green
-    { key: 'light', color: '#A5C58F', label: '2-4 m/s' },      // Lighter green
-    { key: 'moderate', color: '#54A151', label: '4-6 m/s' },   // Green
-    { key: 'fresh', color: '#157B37', label: '6-8 m/s' },      // Light green
-    { key: 'strong', color: '#116D43', label: '8-10 m/s' },    // Light orange
-    { key: 'nearGale', color: '#0D5F4B', label: '10-12 m/s' }, // Orange
-    { key: 'gale', color: '#0A504E', label: '12-14 m/s' },    // Light red
-    { key: 'severe', color: '#073641', label: '>14 m/s' }     // Red
+    { key: 'calm', color: '#E1E7CE', label: '0-2 m/s' },
+    { key: 'light', color: '#A5C58F', label: '2-4 m/s' },
+    { key: 'moderate', color: '#54A151', label: '4-6 m/s' },
+    { key: 'fresh', color: '#157B37', label: '6-8 m/s' },
+    { key: 'strong', color: '#116D43', label: '8-10 m/s' },
+    { key: 'nearGale', color: '#0D5F4B', label: '10-12 m/s' },
+    { key: 'gale', color: '#0A504E', label: '12-14 m/s' },
+    { key: 'severe', color: '#073641', label: '>14 m/s' }
   ];
 
   return (
@@ -131,10 +131,10 @@ const WindRose = ({ data }) => {
             <text x="25" y="155" textAnchor="end" className="text-muted">W</text>
             
             {/* NE, SE, SW, NW labels */}
-            <text x="235" y="75" textAnchor="middle" className="text-muted">NE</text>
-            <text x="235" y="235" textAnchor="middle" className="text-muted">SE</text>
-            <text x="65" y="235" textAnchor="middle" className="text-muted">SW</text>
-            <text x="65" y="75" textAnchor="middle" className="text-muted">NW</text>
+            <text x="245" y="65" textAnchor="middle" className="rose_points_2">NE</text>
+            <text x="245" y="245" textAnchor="middle" className="rose_points_2">SE</text>
+            <text x="55" y="245" textAnchor="middle" className="rose_points_2">SW</text>
+            <text x="55" y="65" textAnchor="middle" className="rose_points_2">NW</text>
             
             {/* Speed category layers - now rendering from fastest to slowest */}
             {[...windSpeedColors].reverse().map(({key, color}) => generatePaths(key, color))}

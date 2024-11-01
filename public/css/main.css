@@ -46,11 +46,16 @@ div.arrow_box div {
     }
 }
 
+.rose_points_2 {
+    font-size: x-small;
+    fill: #999;
+}
+
 .progress-bar-indeterminate {
     width: 100%;
     position: relative;
     animation: progress-loading 1s linear infinite;
-    background-image: linear-gradient(to right, #ffffff 60%, #ffffff 60%);
+    background-image: linear-gradient(to right, #ebebeb 60%, #ebebeb 60%);
 }
 
 @keyframes progress-loading {

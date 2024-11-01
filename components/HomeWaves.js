@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
+import { IconArrowNarrowUp } from '@tabler/icons-react';
 import WaveDirectionStrip from './WaveDirectionStrip';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -185,10 +186,20 @@ const WaveHeightChart = () => {
             <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                   style={isStaleData ? { backgroundColor: '#909090' } : {}}>
             </span>
-            {currentWaveHeight} m  |  {currentWaveDir}° | {currentWavePeriod} s
+            {currentWaveHeight} m
+            <span className="d-inline-flex align-items-center gap-1">
+                  <span style={{ transform: `rotate(${currentWaveDir}deg)` }}>
+                    <IconArrowNarrowUp
+                      size={20}
+                      stroke={2}
+                    />
+                  </span>
+                </span>
+            | {currentWavePeriod} s
           </span>
           <IconCircleArrowRightFilled
-            size={40} 
+            height={40}
+            width={40}
             className="navigation_arrow"
           />
         </div>

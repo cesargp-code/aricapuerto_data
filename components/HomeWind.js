@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
+import { IconArrowNarrowUp } from '@tabler/icons-react';
 import Link from 'next/link';
 import WindDirectionStrip from './WindDirectionStrip';
 
@@ -182,10 +183,19 @@ const WindSpeedChart = () => {
                 <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                       style={isStaleData ? { backgroundColor: '#909090' } : {}}>
                 </span>
-                {currentWindSpeed} m/s  |  {currentWindDir}°
+                {currentWindSpeed} m/s
+                <span className="d-inline-flex align-items-center gap-1">
+                  <span style={{ transform: `rotate(${currentWindDir}deg)` }}>
+                    <IconArrowNarrowUp
+                      size={20}
+                      stroke={2}
+                    />
+                  </span>
+                </span>
               </span>
               <IconCircleArrowRightFilled
-                size={40} 
+                height={40}
+                width={40}
                 className="navigation_arrow"
               />
             </div>

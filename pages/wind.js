@@ -5,6 +5,7 @@ import WindRose from '../components/WindRose';
 import Layout from '../components/Layout';
 import WindDirectionStrip from '../components/WindDirectionStrip';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
+import { IconArrowNarrowUp } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -156,8 +157,26 @@ const WindPage = () => {
       show: false,
     },
     tooltip: {
-      x: {
-        format: 'HH:mm'
+      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+        const timestamp = w.config.series[seriesIndex].data[dataPointIndex].x;
+        const value = w.config.series[seriesIndex].data[dataPointIndex].y;
+        const time = new Date(timestamp).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+    
+        // Find the original data point that contains all the information
+        const originalDataPoint = chartData[dataPointIndex];
+        
+        return `
+          <div class="arrow_box">
+            <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
+            <div><span class="status-dot" style="background-color:#43F37C"></span> ${originalDataPoint.gust.toFixed(2)} m/s</div>
+            <div><span class="status-dot" style="background-color:#157B37"></span> ${originalDataPoint.y.toFixed(2)} m/s</div>
+            <div>${originalDataPoint.direction.toFixed(0)}°</div>
+          </div>
+        `;
       }
     },
   };
@@ -165,8 +184,8 @@ const WindPage = () => {
   return (
     <Layout>
       {isLoading ? (
-        <div className="page page-center">
-          <div className="container container-slim py-4">
+        <div className="page page-center" style={{height: '600px'}}>
+          <div className="container container-slim py-3">
             <div className="text-center">
               <div className="text-secondary mb-3">Cargando datos...</div>
               <div className="progress progress-sm">
@@ -181,7 +200,8 @@ const WindPage = () => {
         <div className="d-flex align-items-center">
         <Link href="/" className="text-decoration-none d-flex align-items-center">
           <IconCircleArrowLeftFilled
-            size={40}
+            height={40}
+            width={40}
             className="navigation_arrow me-1"
           />
           <div>
@@ -204,7 +224,15 @@ const WindPage = () => {
           <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                 style={isStaleData ? { backgroundColor: '#909090' } : {}}>
           </span>
-          {currentWind.speed} m/s | {currentWind.gust} m/s | {currentWind.direction}°
+          {currentWind.speed} m/s | {currentWind.gust} m/s
+          <span className="d-inline-flex align-items-center gap-1">
+            <span style={{ transform: `rotate(${currentWind.direction}deg)` }}>
+              <IconArrowNarrowUp
+                size={20}
+                stroke={2}
+              />
+            </span>
+          </span>
         </span>
       </div>
       <div className="col-12">
