@@ -51,6 +51,9 @@ div.arrow_box div {
     fill: #999;
 }
 
+#loading {
+    height:600px;
+}
 .progress-bar-indeterminate {
     width: 100%;
     position: relative;

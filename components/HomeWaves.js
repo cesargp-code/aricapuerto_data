@@ -7,6 +7,7 @@ import WaveDirectionStrip from './WaveDirectionStrip';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const WaveHeightChart = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentWaveHeight, setCurrentWaveHeight] = useState('-');
@@ -76,8 +77,10 @@ const WaveHeightChart = () => {
       } else {
         console.log('No data points available');
       }
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching Wave data:', error);
+      setIsLoading(false);
     }
     console.log('Fetching Wave data completed');
   };
@@ -166,52 +169,72 @@ const WaveHeightChart = () => {
 
   return (
     <div className="card">
-      <div className="card-header">
-        <div>
-          <h3 className="card-title">Oleaje</h3>
-          <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
-            style={{ 
-              fontSize: "x-small",
-                ...(isStaleData && { 
-                  height: "18px",
-                  padding: "0 5px"
-                })
-              }}>
-              {isStaleData && <span className="status-dot status-dot-animated"></span>}
-              actualizado {lastUpdated}
-          </p>
+      {isLoading ? (
+        <div className="page page-center" id="loading">
+          <div className="container container-slim py-3">
+            <div className="text-center">
+              <div className="text-secondary mb-3">Cargando datos...</div>
+              <div className="progress progress-sm">
+                <div className="progress-bar progress-bar-indeterminate"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="card-actions">
-          <span className="status status-azure current-pill" id="current-wave-pill">
-            <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                  style={isStaleData ? { backgroundColor: '#909090' } : {}}>
-            </span>
-            {currentWaveHeight} m
-            <span className="d-inline-flex align-items-center gap-1">
-                  <span style={{ transform: `rotate(${currentWaveDir}deg)` }}>
-                    <IconArrowNarrowUp
-                      size={20}
-                      stroke={2}
-                    />
+      ) : (
+      <>
+        <div className="card-header">
+          <div>
+            <h3 className="card-title">Oleaje</h3>
+            <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
+              style={{ 
+                fontSize: "x-small",
+                  ...(isStaleData && { 
+                    height: "18px",
+                    padding: "0 5px"
+                  })
+                }}>
+                {isStaleData && <span className="status-dot status-dot-animated"></span>}
+                actualizado {lastUpdated}
+            </p>
+          </div>
+          <div className="card-actions">
+            <span className="status status-azure current-pill" id="current-wave-pill">
+              <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                    style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+              </span>
+              {currentWaveHeight} m
+              <span className="d-inline-flex align-items-center gap-1">
+                    <span style={{ transform: `rotate(${currentWaveDir}deg)` }}>
+                      <IconArrowNarrowUp
+                        size={20}
+                        stroke={2}
+                      />
+                    </span>
                   </span>
-                </span>
-            | {currentWavePeriod} s
-          </span>
-          <IconCircleArrowRightFilled
-            height={40}
-            width={40}
-            className="navigation_arrow"
-          />
+              | {currentWavePeriod} s
+            </span>
+            <IconCircleArrowRightFilled
+              height={40}
+              width={40}
+              className="navigation_arrow"
+            />
+          </div>
         </div>
-      </div>
-      <div className="card-body">
-        <div id="chart-wave-height">
-          {typeof window !== 'undefined' && (
-            <ReactApexChart options={chartOptionsHeight} series={chartOptionsHeight.series} type="line" height={200} />
-          )}
+        <div className="card-body">
+          <div id="chart-wave-height">
+            {typeof window !== 'undefined' && (
+              <ReactApexChart 
+                options={chartOptionsHeight} 
+                series={chartOptionsHeight.series} 
+                type="line" 
+                height={200} 
+              />
+            )}
+          </div>
+          <WaveDirectionStrip waveData={waveDirChartData} />
         </div>
-        <WaveDirectionStrip waveData={waveDirChartData} />
-      </div>
+      </>
+      )}
     </div>
   );
 };

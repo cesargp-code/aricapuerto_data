@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import Layout from '../components/Layout';
-import { IconArrowLeft } from '@tabler/icons-react';
+import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const TemperaturePage = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentTemp, setCurrentTemp] = useState('-');
@@ -59,8 +61,10 @@ const TemperaturePage = () => {
           avg: (temperatures.reduce((a, b) => a + b, 0) / temperatures.length).toFixed(1)
         });
       }
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching temperature data:', error);
+      setIsLoading(false);
     }
   };
 
@@ -69,6 +73,7 @@ const TemperaturePage = () => {
       type: 'line',
       fontFamily: 'inherit',
       height: 200,
+      zoom: false,
       parentHeightOffset: 0,
       toolbar: {
         show: false,
@@ -120,87 +125,113 @@ const TemperaturePage = () => {
       show: false,
     },
     tooltip: {
-        custom: function({ series, seriesIndex, dataPointIndex, w }) {
-          const data = w.config.series[seriesIndex].data[dataPointIndex];
-          const time = new Date(data.x).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false  // This forces 24-hour format
-          });
-          const temperature = data.y.toFixed(1);
-          
-          return `
-            <div class="arrow_box">
-              <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-              <div>${temperature} ºC</div>
-            </div>
-          `;
-        }
-      },
+      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+        const data = w.config.series[seriesIndex].data[dataPointIndex];
+        const time = new Date(data.x).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const temperature = data.y.toFixed(1);
+        
+        return `
+          <div class="arrow_box">
+            <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
+            <div>${temperature} ºC</div>
+          </div>
+        `;
+      }
+    },
   };
 
   return (
     <Layout>
-      <div className="col-12">
-        <div className="card">
-          <div className="card-header">
-            <div>
-              <h3 className="card-title">Temperatura</h3>
-              <p className={`card-subtitle ${isStaleData ? 'status status-red' : ''}`} 
-                 style={{ 
-                   fontSize: "x-small",
-                   ...(isStaleData && { 
-                     height: "18px",
-                     padding: "0 5px"
-                   })
-                 }}>
-                {isStaleData && <span className="status-dot status-dot-animated"></span>}
-                actualizado {lastUpdated}
-              </p>
-            </div>
-            <div className="card-actions">
-              <span className="status status-azure current-pill">
-                <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                      style={isStaleData ? { backgroundColor: '#909090' } : {}}>
-                </span>
-                {currentTemp} ºC
-              </span>
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-group mb-3">
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Mínima</div>
-                  <div className="h2 m-0">{stats.min}°C</div>
-                </div>
+      {isLoading ? (
+        <div className="page page-center" id="loading">
+          <div className="container container-slim py-3">
+            <div className="text-center">
+              <div className="text-secondary mb-3">Cargando datos...</div>
+              <div className="progress progress-sm">
+                <div className="progress-bar progress-bar-indeterminate"></div>
               </div>
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Máxima</div>
-                  <div className="h2 m-0">{stats.max}°C</div>
-                </div>
-              </div>
-              <div className="card">
-                <div className="card-body p-2 text-center">
-                  <div className="text-muted text-secondary fs-5">Media</div>
-                  <div className="h2 m-0">{stats.avg}°C</div>
-                </div>
-              </div>
-            </div>
-            <div style={{ height: '200px' }}>
-              {typeof window !== 'undefined' && (
-                <ReactApexChart 
-                  options={chartOptions} 
-                  series={chartOptions.series} 
-                  type="line" 
-                  height={200} 
-                />
-              )}
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div>
+          <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
+            <div className="d-flex align-items-center">
+              <Link href="/" className="text-decoration-none d-flex align-items-center">
+                <IconCircleArrowLeftFilled
+                  height={40}
+                  width={40}
+                  className="navigation_arrow me-1"
+                />
+                <div>
+                  <h2 className='mb-0 text-decoration-none'>Temperatura</h2>
+                  <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
+                    style={{ 
+                      fontSize: "x-small",
+                      ...(isStaleData && { 
+                        height: "18px",
+                        padding: "0 5px"
+                      })
+                    }}>
+                    {isStaleData && <span className="status-dot status-dot-animated"></span>}
+                    actualizado {lastUpdated}
+                  </p>
+                </div>
+              </Link>
+            </div>
+            <span className="status status-azure current-pill">
+              <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                    style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+              </span>
+              {currentTemp} ºC
+            </span>
+          </div>
+          <div className="card">
+            <div className="card-body">
+              <div className="row g-2 mb-3">
+                <div className="col-4">
+                  <div className="p-3 bg-light rounded-2 text-center">
+                    <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                      <span className="fs-5">Mínima</span>
+                    </div>
+                    <div className="h3 m-0">{stats.min} ºC</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="p-3 bg-light rounded-2 text-center">
+                    <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                      <span className="fs-5">Media</span>
+                    </div>
+                    <div className="h3 m-0">{stats.avg} ºC</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="p-3 bg-light rounded-2 text-center">
+                    <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                      <span className="fs-5">Máxima</span>
+                    </div>
+                    <div className="h3 m-0">{stats.max} ºC</div>
+                  </div>
+                </div>
+              </div>
+              <div id="chart-temperature">
+                {typeof window !== 'undefined' && (
+                  <ReactApexChart 
+                    options={chartOptions} 
+                    series={chartOptions.series} 
+                    type="line" 
+                    height={200} 
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };

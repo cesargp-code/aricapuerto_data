@@ -184,7 +184,7 @@ const WindPage = () => {
   return (
     <Layout>
       {isLoading ? (
-        <div className="page page-center" style={{height: '600px'}}>
+        <div className="page page-center" id="loading">
           <div className="container container-slim py-3">
             <div className="text-center">
               <div className="text-secondary mb-3">Cargando datos...</div>
