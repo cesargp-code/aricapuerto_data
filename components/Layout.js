@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
                 <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
               </Link>
             </h1>
-            <div className="navbar-nav flex-row order-md-last">
+            <div className="navbar-nav flex-row order-md-last px-3">
               <div className="nav-item">
                 <button 
                   className="nav-link px-0 border-0 bg-transparent" 
@@ -62,14 +62,11 @@ const Layout = ({ children }) => {
               className="img-fluid rounded mb-3 w-100"
             />
             <p>
-            Este sistema de última generación representa una inversión de más de 150 millones de pesos para monitorear en tiempo real las condiciones marítimas y meteorológicas del Puerto de Arica.
-            </p>
+            Esta tecnología optimiza las operaciones portuarias y refuerza la seguridad marítima del Puerto de Arica, siendo especialmente relevante ante el aumento de marejadas por el cambio climático, lo que posiciona al puerto a la vanguardia en la macrozona norte.</p>
             <p>
-            La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.
-            </p>
+            La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.</p>
             <p>
-            Esta tecnología optimiza las operaciones portuarias y refuerza la seguridad marítima, especialmente relevante ante el aumento de marejadas por el cambio climático, posicionando al Puerto de Arica a la vanguardia en la macrozona norte.
-            </p>
+            Este sistema de última generación representa una inversión de más de 150 millones de pesos, permitiendo monitorear en tiempo real las condiciones marítimas y meteorológicas del puerto.</p>
           </div>
         </div>
 
@@ -94,21 +91,21 @@ const Layout = ({ children }) => {
         {/* Footer */}
         <footer className="footer d-print-none">
           <div className="container-xl">
-            <div className="row text-center align-items-center flex-row-reverse">
-              <div className="col-lg-auto ms-lg-auto">
-              </div>
-              <div className="col-12 col-lg-auto mt-3 mt-lg-0">
-                <ul className="list-inline list-inline-dots mb-0">
-                  <li className="list-inline-item">
-                    Empresa Portuaria Arica © 2024
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="https://www.google.cl/maps/place/M%C3%A1ximo+Lira+389,+Arica,+Regi%C3%B3n+de+Arica+y+Parinacota/@-18.476221,-70.3212228,17z/data=!3m1!4b1!4m2!3m1!1s0x915aa9919caea8d3:0x7789ee7a703f8688" target="_blank">Avda. Máximo Lira #389, Arica</a>
-                  </li>
-                  <li className="list-inline-item">
+            <div className="row">
+              <div className="col-12">
+                <div className="d-flex flex-wrap justify-content-center align-items-center gap-3">
+                  <div>Empresa Portuaria Arica © 2024</div>
+                  <div>
+                    <a href="https://www.google.cl/maps/place/M%C3%A1ximo+Lira+389,+Arica,+Regi%C3%B3n+de+Arica+y+Parinacota/@-18.476221,-70.3212228,17z/data=!3m1!4b1!4m2!3m1!1s0x915aa9919caea8d3:0x7789ee7a703f8688" 
+                      target="_blank" 
+                      rel="noopener noreferrer">
+                      Avda. Máximo Lira #389, Arica
+                    </a>
+                  </div>
+                  <div>
                     Fono: <a href="tel:+56582593400">(+5658) 2593400</a>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

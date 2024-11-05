@@ -1,6 +1,12 @@
 .bg-primary {
     background-color:#29397A !important;
 }
+#__next {
+    height:100%;
+}
+a h3.card-title, a #page-title {
+    color: rgb(24, 36, 51);
+}
 .current-pill {
     font-size: medium;
     height:34px;
@@ -68,10 +74,6 @@ div.arrow_box div {
     100% {
         background-position: 200% 0;
     }
-}
-
-.offcanvas-header {
-    height: 102px;
 }
 
 .footer {

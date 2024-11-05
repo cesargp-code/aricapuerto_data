@@ -167,7 +167,7 @@ const PressurePage = () => {
                   className="navigation_arrow me-1"
                 />
                 <div>
-                  <h2 className='mb-0 text-decoration-none'>Presión atmosférica</h2>
+                  <h2 id='page-title' className='mb-0 text-decoration-none'>Presión atmosférica</h2>
                   <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
                     style={{ 
                       fontSize: "x-small",
