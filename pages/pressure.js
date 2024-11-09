@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Layout from '../components/Layout';
+import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const PressurePage = () => {
+const PressureContent = () => {
+  const { timeRange } = useContext(TimeRangeContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
+  const [allChartData, setAllChartData] = useState([]);
+  const [displayedChartData, setDisplayedChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentPressure, setCurrentPressure] = useState('-');
   const [isStaleData, setIsStaleData] = useState(false);
@@ -21,6 +24,28 @@ const PressurePage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (allChartData.length > 0) {
+      filterDataByTimeRange(timeRange);
+    }
+  }, [timeRange, allChartData]);
+
+  const filterDataByTimeRange = (hours) => {
+    const now = new Date(allChartData[allChartData.length - 1].x);
+    const cutoff = new Date(now.getTime() - (hours * 60 * 60 * 1000));
+    
+    const filteredData = allChartData.filter(point => new Date(point.x) >= cutoff);
+    setDisplayedChartData(filteredData);
+
+    // Update statistics for the filtered range
+    const pressures = filteredData.map(point => point.y);
+    setStats({
+      min: Math.min(...pressures).toFixed(1),
+      max: Math.max(...pressures).toFixed(1),
+      avg: (pressures.reduce((a, b) => a + b, 0) / pressures.length).toFixed(1)
+    });
+  };
 
   const fetchData = async () => {
     try {
@@ -37,7 +62,8 @@ const PressurePage = () => {
         y: parseFloat(item.ATMS)
       }));
 
-      setChartData(formattedData);
+      setAllChartData(formattedData);
+      setDisplayedChartData(formattedData);
 
       if (formattedData.length > 0) {
         const lastDataPoint = formattedData[formattedData.length - 1];
@@ -53,7 +79,7 @@ const PressurePage = () => {
           hour12: false 
         }));
 
-        // Calculate statistics
+        // Calculate initial statistics
         const pressures = formattedData.map(point => point.y);
         setStats({
           min: Math.min(...pressures).toFixed(1),
@@ -94,7 +120,7 @@ const PressurePage = () => {
     },
     series: [{
       name: "Presión at.",
-      data: chartData
+      data: displayedChartData
     }],
     grid: {
       padding: {
@@ -144,7 +170,7 @@ const PressurePage = () => {
   };
 
   return (
-    <Layout>
+    <>
       {isLoading ? (
         <div className="page page-center" id="loading">
           <div className="container container-slim py-3">
@@ -231,6 +257,14 @@ const PressurePage = () => {
           </div>
         </div>
       )}
+    </>
+  );
+};
+
+const PressurePage = () => {
+  return (
+    <Layout>
+      <PressureContent />
     </Layout>
   );
 };

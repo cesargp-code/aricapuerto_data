@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import WindRose from '../components/WindRose';
 import Layout from '../components/Layout';
 import WindDirectionStrip from '../components/WindDirectionStrip';
+import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 import { IconArrowNarrowUp } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const WindPage = () => {
+const WindContent = () => {
+  const { timeRange } = useContext(TimeRangeContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
+  const [allChartData, setAllChartData] = useState([]);
+  const [displayedChartData, setDisplayedChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [windDirChartData, setWindDirChartData] = useState([]);
   const [currentWind, setCurrentWind] = useState({
@@ -26,11 +29,44 @@ const WindPage = () => {
     maxWind: '-',
     minGust: '-',
     maxGust: '-',
-  });  
+  });
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (allChartData.length > 0) {
+      filterDataByTimeRange(timeRange);
+    }
+  }, [timeRange, allChartData]);
+
+  const filterDataByTimeRange = (hours) => {
+    const now = new Date(allChartData[allChartData.length - 1].x);
+    const cutoff = new Date(now.getTime() - (hours * 60 * 60 * 1000));
+    
+    const filteredData = allChartData.filter(point => new Date(point.x) >= cutoff);
+    setDisplayedChartData(filteredData);
+
+    // Update wind direction data for strip
+    const filteredDirData = filteredData.map(point => ({
+      x: point.x,
+      y: point.direction
+    }));
+    setWindDirChartData(filteredDirData);
+
+    // Update statistics for the filtered range
+    if (filteredData.length > 0) {
+      const windSpeeds = filteredData.map(point => point.y);
+      const gusts = filteredData.map(point => point.gust);
+      setStats({
+        minWind: Math.min(...windSpeeds).toFixed(1),
+        maxWind: Math.max(...windSpeeds).toFixed(1),
+        minGust: Math.min(...gusts).toFixed(1),
+        maxGust: Math.max(...gusts).toFixed(1),
+      });
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -50,9 +86,10 @@ const WindPage = () => {
         gustDir: parseFloat(item.GDIR)
       }));
 
-      setChartData(formattedData);
+      setAllChartData(formattedData);
+      setDisplayedChartData(formattedData); // Initial display with all data
 
-      // Format data for wind direction strip
+      // Initial wind direction data
       const formattedWindDirData = formattedData.map(point => ({
         x: point.x,
         y: point.direction
@@ -78,7 +115,7 @@ const WindPage = () => {
           hour12: false 
         }));
 
-        // Calculate statistics
+        // Initial statistics
         const windSpeeds = formattedData.map(point => point.y);
         const gusts = formattedData.map(point => point.gust);
         setStats({
@@ -88,10 +125,10 @@ const WindPage = () => {
           maxGust: Math.max(...gusts).toFixed(1),
         });
       }
-      setIsLoading(false); // Add this line at the end of successful data processing
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching wind data:', error);
-      setIsLoading(false); // Also set loading to false on error
+      setIsLoading(false);
     }
   };
 
@@ -120,11 +157,11 @@ const WindPage = () => {
     series: [
       {
         name: "Viento",
-        data: chartData.map(point => ({ x: point.x, y: point.y }))
+        data: displayedChartData.map(point => ({ x: point.x, y: point.y }))
       },
       {
         name: "Racha",
-        data: chartData.map(point => ({ x: point.x, y: point.gust }))
+        data: displayedChartData.map(point => ({ x: point.x, y: point.gust }))
       }
     ],
     grid: {
@@ -167,7 +204,7 @@ const WindPage = () => {
         });
     
         // Find the original data point that contains all the information
-        const originalDataPoint = chartData[dataPointIndex];
+        const originalDataPoint = displayedChartData[dataPointIndex];
         
         return `
           <div class="arrow_box">
@@ -182,7 +219,7 @@ const WindPage = () => {
   };
 
   return (
-    <Layout>
+    <>
       {isLoading ? (
         <div className="page page-center" id="loading">
           <div className="container container-slim py-3">
@@ -196,107 +233,115 @@ const WindPage = () => {
         </div>
       ) : (
         <>
-      <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
-        <div className="d-flex align-items-center">
-        <Link href="/" className="text-decoration-none d-flex align-items-center">
-          <IconCircleArrowLeftFilled
-            height={40}
-            width={40}
-            className="navigation_arrow me-1"
-          />
-          <div>
-            <h2 id='page-title' className='mb-0 text-decoration-none'>Viento</h2>
-            <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
-              style={{ 
-                fontSize: "x-small",
-                ...(isStaleData && { 
-                  height: "18px",
-                  padding: "0 5px"
-                })
-              }}>
-              {isStaleData && <span className="status-dot status-dot-animated"></span>}
-              actualizado {lastUpdated}
-            </p>
-          </div>
-        </Link>
-        </div>
-        <span className="status status-teal current-pill" id="current-wind-pill">
-          <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                style={isStaleData ? { backgroundColor: '#909090' } : {}}>
-          </span>
-          {currentWind.speed} m/s | {currentWind.gust} m/s
-          <span className="d-inline-flex align-items-center gap-1">
-            <span style={{ transform: `rotate(${currentWind.direction}deg)` }}>
-              <IconArrowNarrowUp
-                size={20}
-                stroke={2}
-              />
-            </span>
-          </span>
-        </span>
-      </div>
-      <div className="col-12">
-        <div className="card">
-          <div className="card-body">
-          <div className="row g-2 mb-3">
-            <div className="col-6">
-              <div className="p-3 bg-light rounded-2 text-center">
-                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                  <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
-                  <span className="fs-5">Mín. viento</span>
-                </div>
-                <div className="h3 m-0">{stats.minWind} m/s</div>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="p-3 bg-light rounded-2 text-center">
-                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                  <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
-                  <span className="fs-5">Máx. viento</span>
-                </div>
-                <div className="h3 m-0">{stats.maxWind} m/s</div>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="p-3 bg-light rounded-2 text-center">
-                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                  <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
-                  <span className="fs-5">Mín. racha</span>
-                </div>
-                <div className="h3 m-0">{stats.minGust} m/s</div>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="p-3 bg-light rounded-2 text-center">
-                <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                  <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
-                  <span className="fs-5">Máx. racha</span>
-                </div>
-                <div className="h3 m-0">{stats.maxGust} m/s</div>
-              </div>
-            </div>
-          </div>
-            <div id="chart-wind-speed">
-              {typeof window !== 'undefined' && (
-                <ReactApexChart 
-                  options={chartOptions} 
-                  series={chartOptions.series} 
-                  type="line" 
-                  height={200} 
+          <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
+            <div className="d-flex align-items-center">
+              <Link href="/" className="text-decoration-none d-flex align-items-center">
+                <IconCircleArrowLeftFilled
+                  height={40}
+                  width={40}
+                  className="navigation_arrow me-1"
                 />
-              )}
+                <div>
+                  <h2 id='page-title' className='mb-0 text-decoration-none'>Viento</h2>
+                  <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
+                    style={{ 
+                      fontSize: "x-small",
+                      ...(isStaleData && { 
+                        height: "18px",
+                        padding: "0 5px"
+                      })
+                    }}>
+                    {isStaleData && <span className="status-dot status-dot-animated"></span>}
+                    actualizado {lastUpdated}
+                  </p>
+                </div>
+              </Link>
             </div>
-            <WindDirectionStrip windDirData={windDirChartData} />
+            <span className="status status-teal current-pill" id="current-wind-pill">
+              <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
+                    style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+              </span>
+              {currentWind.speed} m/s | {currentWind.gust} m/s
+              <span className="d-inline-flex align-items-center gap-1">
+                <span style={{ transform: `rotate(${currentWind.direction}deg)` }}>
+                  <IconArrowNarrowUp
+                    size={20}
+                    stroke={2}
+                  />
+                </span>
+              </span>
+            </span>
           </div>
-        </div>
-      </div>
-      <div className="col-12">
-            <WindRose data={chartData} />
+          <div className="col-12">
+            <div className="card">
+              <div className="card-body">
+                <div className="row g-2 mb-3">
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
+                        <span className="fs-5">Mín. viento</span>
+                      </div>
+                      <div className="h3 m-0">{stats.minWind} m/s</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#157B37' }}></span>
+                        <span className="fs-5">Máx. viento</span>
+                      </div>
+                      <div className="h3 m-0">{stats.maxWind} m/s</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
+                        <span className="fs-5">Mín. racha</span>
+                      </div>
+                      <div className="h3 m-0">{stats.minGust} m/s</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
+                        <span className="fs-5">Máx. racha</span>
+                      </div>
+                      <div className="h3 m-0">{stats.maxGust} m/s</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="chart-wind-speed">
+                  {typeof window !== 'undefined' && (
+                    <ReactApexChart 
+                      options={chartOptions} 
+                      series={chartOptions.series} 
+                      type="line" 
+                      height={200} 
+                    />
+                  )}
+                </div>
+                <WindDirectionStrip windDirData={windDirChartData} />
+              </div>
             </div>
-      </>
-    )}
-  </Layout>
-);
+          </div>
+          <div className="col-12">
+            <WindRose data={displayedChartData} />
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const WindPage = () => {
+  return (
+    <Layout>
+      <WindContent />
+    </Layout>
+  );
 };
 
 export default WindPage;

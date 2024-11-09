@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import { IconArrowNarrowUp } from '@tabler/icons-react';
 import Link from 'next/link';
 import WindDirectionStrip from './WindDirectionStrip';
+import { TimeRangeContext } from '../contexts/TimeRangeContext';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const WindSpeedChart = () => {
+  const { timeRange } = useContext(TimeRangeContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
+  const [allChartData, setAllChartData] = useState([]);
+  const [displayedChartData, setDisplayedChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentWindSpeed, setCurrentWindSpeed] = useState('-');
   const [windDirChartData, setWindDirChartData] = useState([]);
@@ -20,37 +23,52 @@ const WindSpeedChart = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (allChartData.length > 0) {
+      filterDataByTimeRange(timeRange);
+    }
+  }, [timeRange, allChartData]);
+
+  const filterDataByTimeRange = (hours) => {
+    const now = new Date(allChartData[allChartData.length - 1].x);
+    const cutoff = new Date(now.getTime() - (hours * 60 * 60 * 1000));
+    
+    const filteredData = allChartData.filter(point => new Date(point.x) >= cutoff);
+    setDisplayedChartData(filteredData);
+
+    // Update wind direction data
+    const filteredDirData = filteredData.map(point => ({
+      x: point.x,
+      y: point.direction
+    }));
+    setWindDirChartData(filteredDirData);
+  };
+
   const fetchData = async () => {
-    console.log('Fetching data started');
     try {
       const response = await fetch('/api/home-wind-data');
-      console.log('Fetch response received:', response.status, response.statusText);
-      
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
       
       const data = await response.json();
-      console.log('Data received:', data);
   
       // Format data for wind speed chart with direction included
       const formattedWindSpeedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
         y: parseFloat(item.WSPD),
-        direction: parseFloat(item.WDIR) // Store direction with each point
+        direction: parseFloat(item.WDIR)
       }));
-      console.log('Formatted wind speed data:', formattedWindSpeedData);
   
-      // Format data for wind direction chart
-      const formattedWindDirData = data.map(item => ({
-        x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.WDIR)
+      setAllChartData(formattedWindSpeedData);
+      setDisplayedChartData(formattedWindSpeedData);
+  
+      // Format initial data for wind direction chart
+      const formattedWindDirData = formattedWindSpeedData.map(item => ({
+        x: item.x,
+        y: item.direction
       }));
-      console.log('Formatted wind direction data:', formattedWindDirData);
-  
-      setChartData(formattedWindSpeedData);
       setWindDirChartData(formattedWindDirData);
-      console.log('Chart data set:', formattedWindSpeedData);
   
       if (formattedWindSpeedData.length > 0) {
         const lastDataPoint = formattedWindSpeedData[formattedWindSpeedData.length - 1];
@@ -66,21 +84,12 @@ const WindSpeedChart = () => {
           minute: '2-digit', 
           hour12: false 
         }));
-
-        console.log('Updated values:', {
-          speed: lastDataPoint.y.toFixed(1),
-          direction: Math.round(lastDataPoint.direction),
-          time: lastDataTime
-        });
-      } else {
-        console.log('No data points available');
       }
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setIsLoading(false);
     }
-    console.log('Fetching data completed');
   };
 
   const chartOptionsSpeed = {
@@ -110,7 +119,7 @@ const WindSpeedChart = () => {
     },
     series: [{
       name: "Wind Speed",
-      data: chartData
+      data: displayedChartData
     }],
     grid: {
       padding: {
@@ -147,7 +156,7 @@ const WindSpeedChart = () => {
         const time = new Date(data.x).toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
-          hour12: false  // This forces 24-hour format
+          hour12: false
         });
         const speed = data.y.toFixed(1);
         const direction = data.direction.toFixed(0);

@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import { IconArrowNarrowUp } from '@tabler/icons-react';
 import WaveDirectionStrip from './WaveDirectionStrip';
+import { TimeRangeContext } from '../contexts/TimeRangeContext';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const WaveHeightChart = () => {
+  const { timeRange } = useContext(TimeRangeContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
+  const [allChartData, setAllChartData] = useState([]);
+  const [displayedChartData, setDisplayedChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentWaveHeight, setCurrentWaveHeight] = useState('-');
   const [waveDirChartData, setWaveDirChartData] = useState([]);
@@ -20,37 +23,53 @@ const WaveHeightChart = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (allChartData.length > 0) {
+      filterDataByTimeRange(timeRange);
+    }
+  }, [timeRange, allChartData]);
+
+  const filterDataByTimeRange = (hours) => {
+    const now = new Date(allChartData[allChartData.length - 1].x);
+    const cutoff = new Date(now.getTime() - (hours * 60 * 60 * 1000));
+    
+    const filteredData = allChartData.filter(point => new Date(point.x) >= cutoff);
+    setDisplayedChartData(filteredData);
+
+    // Update wave direction data
+    const filteredDirData = filteredData.map(point => ({
+      x: point.x,
+      y: point.direction
+    }));
+    setWaveDirChartData(filteredDirData);
+  };
+
   const fetchData = async () => {
-    console.log('Fetching wave data started');
     try {
       const response = await fetch('/api/home-waves-data');
-      console.log('Fetch response received:', response.status, response.statusText);
-      
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
       
       const data = await response.json();
-      console.log('Wave data received:', data);
   
       // Format data for wave height chart with direction and period included
       const formattedWaveHeightData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
         y: parseFloat(item.VAVH) / 100,  // Convert cm to m
-        direction: Math.round(parseFloat(item.VDIR)),  // Round to integer
-        period: Math.round(parseFloat(item.VAVT))      // Round to integer
+        direction: Math.round(parseFloat(item.VDIR)),
+        period: Math.round(parseFloat(item.VAVT))
       }));
   
-      // Format data for wave direction chart
-      const formattedWaveDirData = data.map(item => ({
-        x: new Date(item.created_at).getTime(),
-        y: Math.round(parseFloat(item.VDIR))  // Round to integer
-      }));
-      console.log('Formatted wave direction data:', formattedWaveDirData);
+      setAllChartData(formattedWaveHeightData);
+      setDisplayedChartData(formattedWaveHeightData);
   
-      setChartData(formattedWaveHeightData);
+      // Format initial data for wave direction chart
+      const formattedWaveDirData = formattedWaveHeightData.map(item => ({
+        x: item.x,
+        y: item.direction
+      }));
       setWaveDirChartData(formattedWaveDirData);
-      console.log('Wave chart data set:', formattedWaveHeightData);
   
       if (formattedWaveHeightData.length > 0) {
         const lastDataPoint = formattedWaveHeightData[formattedWaveHeightData.length - 1];
@@ -67,22 +86,12 @@ const WaveHeightChart = () => {
           minute: '2-digit', 
           hour12: false 
         }));
-  
-        console.log('Updated values:', {
-          height: lastDataPoint.y.toFixed(2),
-          direction: lastDataPoint.direction,
-          period: lastDataPoint.period,
-          time: lastDataTime
-        });
-      } else {
-        console.log('No data points available');
       }
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching Wave data:', error);
       setIsLoading(false);
     }
-    console.log('Fetching Wave data completed');
   };
 
   const chartOptionsHeight = {
@@ -112,7 +121,7 @@ const WaveHeightChart = () => {
     },
     series: [{
       name: "Wave Height",
-      data: chartData
+      data: displayedChartData
     }],
     grid: {
       padding: {
@@ -139,7 +148,7 @@ const WaveHeightChart = () => {
       },
       min: 0,
     },
-    colors: ["#13A8E2"], // Changed to ocean blue
+    colors: ["#13A8E2"],
     legend: {
       show: false,
     },

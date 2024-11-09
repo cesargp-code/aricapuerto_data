@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Layout from '../components/Layout';
+import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const TemperaturePage = () => {
+const TemperatureContent = () => {
+  const { timeRange } = useContext(TimeRangeContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
+  const [allChartData, setAllChartData] = useState([]);
+  const [displayedChartData, setDisplayedChartData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState('');
   const [currentTemp, setCurrentTemp] = useState('-');
   const [isStaleData, setIsStaleData] = useState(false);
@@ -21,6 +24,28 @@ const TemperaturePage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (allChartData.length > 0) {
+      filterDataByTimeRange(timeRange);
+    }
+  }, [timeRange, allChartData]);
+
+  const filterDataByTimeRange = (hours) => {
+    const now = new Date(allChartData[allChartData.length - 1].x);
+    const cutoff = new Date(now.getTime() - (hours * 60 * 60 * 1000));
+    
+    const filteredData = allChartData.filter(point => new Date(point.x) >= cutoff);
+    setDisplayedChartData(filteredData);
+
+    // Update statistics for the filtered range
+    const temperatures = filteredData.map(point => point.y);
+    setStats({
+      min: Math.min(...temperatures).toFixed(1),
+      max: Math.max(...temperatures).toFixed(1),
+      avg: (temperatures.reduce((a, b) => a + b, 0) / temperatures.length).toFixed(1)
+    });
+  };
 
   const fetchData = async () => {
     try {
@@ -37,7 +62,8 @@ const TemperaturePage = () => {
         y: parseFloat(item.DRYT)
       }));
 
-      setChartData(formattedData);
+      setAllChartData(formattedData);
+      setDisplayedChartData(formattedData); // Initially show all data
 
       if (formattedData.length > 0) {
         const lastDataPoint = formattedData[formattedData.length - 1];
@@ -53,7 +79,7 @@ const TemperaturePage = () => {
           hour12: false 
         }));
 
-        // Calculate statistics
+        // Initial statistics will be for 24h
         const temperatures = formattedData.map(point => point.y);
         setStats({
           min: Math.min(...temperatures).toFixed(1),
@@ -95,7 +121,7 @@ const TemperaturePage = () => {
     },
     series: [{
       name: "Temperature",
-      data: chartData
+      data: displayedChartData // Use filtered data here
     }],
     grid: {
       padding: {
@@ -145,7 +171,7 @@ const TemperaturePage = () => {
   };
 
   return (
-    <Layout>
+    <>
       {isLoading ? (
         <div className="page page-center" id="loading">
           <div className="container container-slim py-3">
@@ -232,6 +258,15 @@ const TemperaturePage = () => {
           </div>
         </div>
       )}
+    </>
+  );
+};
+
+// Wrapper component that provides the Layout
+const TemperaturePage = () => {
+  return (
+    <Layout>
+      <TemperatureContent />
     </Layout>
   );
 };

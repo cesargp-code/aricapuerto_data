@@ -1,32 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { IconInfoCircleFilled } from '@tabler/icons-react';
+import { TimeRangeContext } from '../contexts/TimeRangeContext';
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const isHomePage = router.pathname === '/';
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  
+  // Initialize timeRange from localStorage if available, otherwise default to 24
+  const [timeRange, setTimeRange] = useState(() => {
+    // Only run this on client side
+    if (typeof window !== 'undefined') {
+      const savedTimeRange = localStorage.getItem('timeRange');
+      return savedTimeRange ? parseInt(savedTimeRange) : 24;
+    }
+    return 24;
+  });
+
+  // Save to localStorage whenever timeRange changes
+  useEffect(() => {
+    localStorage.setItem('timeRange', timeRange.toString());
+  }, [timeRange]);
 
   const toggleOffcanvas = () => {
     setShowOffcanvas(!showOffcanvas);
   };
 
+  // Only show selector on specific pages
+  const showTimeSelector = ['/', '/temperature', '/wind', '/pressure'].includes(router.pathname);
+
   return (
-    <>
+    <TimeRangeContext.Provider value={{ timeRange, setTimeRange }}>
       <Head>
         <title>Arica</title>
       </Head>
       <div className="page">
         <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
           <div className="container-xl">
+            {/* Left side - Brand */}
             <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
               <Link href="/" className="h2 mb-0 text-decoration-none d-flex align-items-center">
                 <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
               </Link>
             </h1>
+
+            {/* Center - Time Range Selector */}
+            {showTimeSelector && (
+              <div className="navbar-nav flex-row justify-content-center flex-grow-1">
+                <select 
+                  className="form-select w-auto"
+                  value={timeRange}
+                  onChange={(e) => setTimeRange(Number(e.target.value))}
+                >
+                  <option value={24}>Últimas 24h</option>
+                  <option value={12}>Últimas 12h</option>
+                  <option value={6}>Últimas 6h</option>
+
+                </select>
+              </div>
+            )}
+
+            {/* Right side - Info Button */}
             <div className="navbar-nav flex-row order-md-last px-3">
               <div className="nav-item">
                 <button 
@@ -115,7 +153,7 @@ const Layout = ({ children }) => {
         src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"
         strategy="afterInteractive"
       />
-    </>
+    </TimeRangeContext.Provider>
   );
 };
 

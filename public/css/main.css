@@ -76,6 +76,15 @@ div.arrow_box div {
     }
 }
 
+.navbar-nav select.form-select {
+    background-color: #29397A;
+    color: white;
+    border:1px solid #2a3667;
+}
+.navbar-nav select.form-select option {
+    background-color: #29397A;
+}
+
 .footer {
     background-image: url(../img/bg_map.png);
     background-position: center;
