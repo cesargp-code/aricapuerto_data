@@ -76,12 +76,12 @@ div.arrow_box div {
     }
 }
 
-.navbar-nav select.form-select {
-    background-color: #29397A;
+.navbar select.form-select {
+    background-color: #2a3667;
     color: white;
     border:1px solid #2a3667;
 }
-.navbar-nav select.form-select option {
+.navbar select.form-select option {
     background-color: #29397A;
 }
 

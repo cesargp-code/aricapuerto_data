@@ -36,48 +36,50 @@ const Layout = ({ children }) => {
   return (
     <TimeRangeContext.Provider value={{ timeRange, setTimeRange }}>
       <Head>
-        <title>Arica</title>
+        <title>Puerto de Arica</title>
       </Head>
       <div className="page">
-        <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
-          <div className="container-xl">
-            {/* Left side - Brand */}
-            <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-              <Link href="/" className="h2 mb-0 text-decoration-none d-flex align-items-center">
-                <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
-              </Link>
-            </h1>
-
-            {/* Center - Time Range Selector */}
-            {showTimeSelector && (
-              <div className="navbar-nav flex-row justify-content-center flex-grow-1">
-                <select 
-                  className="form-select w-auto"
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(Number(e.target.value))}
-                >
-                  <option value={24}>Últimas 24h</option>
-                  <option value={12}>Últimas 12h</option>
-                  <option value={6}>Últimas 6h</option>
-
-                </select>
-              </div>
-            )}
-
-            {/* Right side - Info Button */}
-            <div className="navbar-nav flex-row order-md-last px-3">
-              <div className="nav-item">
-                <button 
-                  className="nav-link px-0 border-0 bg-transparent" 
-                  onClick={toggleOffcanvas}
-                  aria-label="Open information"
-                >
-                  <IconInfoCircleFilled size={30} color="#F28B2F" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
+      <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
+  <div className="container-xl position-relative">
+    {/* Left side - Brand */}
+    <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3 mb-0">
+      <Link href="/" className="h2 mb-0 text-decoration-none d-flex align-items-center">
+        <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
+      </Link>
+    </h1>
+    
+    {/* Center - Time Range Selector */}
+    {showTimeSelector && (
+      <div className="position-absolute start-0 end-0 mx-auto d-flex justify-content-center" 
+           style={{ pointerEvents: 'none', zIndex: 1 }}>
+        <div style={{ pointerEvents: 'auto' }}>
+          <select 
+            className="form-select w-auto"
+            value={timeRange}
+            onChange={(e) => setTimeRange(Number(e.target.value))}
+          >
+            <option value={24}>24h</option>
+            <option value={12}>12h</option>
+            <option value={6}>6h</option>
+          </select>
+        </div>
+      </div>
+    )}
+    
+    {/* Right side - Info Button */}
+    <div className="navbar-nav flex-row order-md-last px-3">
+      <div className="nav-item">
+        <button 
+          className="nav-link px-0 border-0 bg-transparent" 
+          onClick={toggleOffcanvas}
+          aria-label="Open information"
+        >
+          <IconInfoCircleFilled size={30} color="#F28B2F" />
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
 
         {/* Offcanvas */}
         <div className={`offcanvas offcanvas-end ${showOffcanvas ? 'show' : ''}`} 
