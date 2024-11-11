@@ -1,1 +1,106 @@
-body {background-color: brown !important;}
+@import url('https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css');
+
+/* Custom css on top of tabler css */
+.bg-primary {
+    background-color:#29397A !important;
+}
+#__next {
+    height:100%;
+}
+a h3.card-title, a #page-title {
+    color: rgb(24, 36, 51);
+}
+.current-pill {
+    font-size: medium;
+    height:34px;
+    color: #2C3976; 
+    background-color:#DFE1EA;
+}
+.navigation_arrow {
+    color:#F7B982;
+}
+.main_card_value_last_updated {
+    font-size: xx-small;
+}
+#current-wind-pill.current-pill {
+    color: #157B37; 
+    background-color:#E1EBE2;
+}
+#current-wave-pill.current-pill {
+    color: #13A8E2;
+    background-color:#DCF2FB;
+}
+.navbar .navbar-brand img#logo {
+    height:60px;
+}
+#chart-wind-speed, #chart-wave-height {
+    margin-right:10px !important;
+}
+.apexcharts-tooltip {
+    transform: translateY(-100%) !important;
+}
+div.arrow_box {
+    padding:0;
+    font-size:small;
+}
+div.arrow_box_header {
+    background-color:#eee;
+}
+div.arrow_box div {
+    padding:2px 8px;
+}
+@media (max-width: 1067px) {
+    div.dir_strip {
+        margin-top: -15px;
+    }
+}
+
+.rose_points_2 {
+    font-size: x-small;
+    fill: #999;
+}
+
+#loading {
+    height:600px;
+}
+.progress-bar-indeterminate {
+    width: 100%;
+    position: relative;
+    animation: progress-loading 1s linear infinite;
+    background-image: linear-gradient(to right, #ebebeb 60%, #ebebeb 60%);
+}
+
+@keyframes progress-loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.navbar select.form-select {
+    background-color: #2a3667;
+    color: white;
+    border:1px solid #2a3667;
+}
+.navbar select.form-select option {
+    background-color: #29397A;
+}
+
+.footer {
+    background-image: url(/img/bg_map.png);
+    background-position: center;
+    background-color:#29397A;
+    border:0;
+    color:white;
+    height:300px;
+}
+.footer a {
+    color:white;
+    text-decoration: underline;
+}
+.footer a:hover {
+    color:rgb(43, 123, 177);
+    text-decoration: underline;
+}

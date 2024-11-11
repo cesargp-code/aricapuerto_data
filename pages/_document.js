@@ -4,8 +4,6 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <link rel="stylesheet" href="/css/tabler.min.css" />
-        <link rel="stylesheet" href="/css/main.css" />
       </Head>
       <body>
         <Main />
