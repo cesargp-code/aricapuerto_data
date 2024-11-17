@@ -3,21 +3,20 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
-import { IconInfoCircleFilled, IconLogout } from '@tabler/icons-react';
+import { IconInfoCircleFilled, IconLogout, IconLogin } from '@tabler/icons-react';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
-import LoginForm from '../components/LoginForm';
+import LoginModal from '../components/LoginModal';
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const isHomePage = router.pathname === '/';
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const { user, signOut } = useAuth();
-  const [showLogin, setShowLogin] = useState(false);
   
   // Initialize timeRange from localStorage if available, otherwise default to 24
   const [timeRange, setTimeRange] = useState(() => {
-    // Only run this on client side
     if (typeof window !== 'undefined') {
       const savedTimeRange = localStorage.getItem('timeRange');
       return savedTimeRange ? parseInt(savedTimeRange) : 24;
@@ -39,11 +38,11 @@ const Layout = ({ children }) => {
     }
   };
 
-  const toggleOffcanvas = () => {
-    setShowOffcanvas(!showOffcanvas);
+  const handleLoginClick = () => {
+    setShowOffcanvas(false);
+    setShowLoginModal(true);
   };
 
-  // Only show selector on specific pages
   const showTimeSelector = ['/', '/temperature', '/wind', '/pressure'].includes(router.pathname);
 
   return (
@@ -52,50 +51,51 @@ const Layout = ({ children }) => {
         <title>Puerto de Arica</title>
       </Head>
       <div className="page">
-      <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
-  <div className="container-xl position-relative">
-    {/* Left side - Brand */}
-    <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3 mb-0">
-      <Link href="/" className="h2 mb-0 text-decoration-none d-flex align-items-center">
-        <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
-      </Link>
-    </h1>
-    
-    {/* Center - Time Range Selector */}
-    {showTimeSelector && (
-      <div className="position-absolute start-0 end-0 mx-auto d-flex justify-content-center" 
-           style={{ pointerEvents: 'none', zIndex: 1 }}>
-        <div style={{ pointerEvents: 'auto' }}>
-          <select 
-            className="form-select w-auto"
-            value={timeRange}
-            onChange={(e) => setTimeRange(Number(e.target.value))}
-          >
-            <option value={24}>24h</option>
-            <option value={12}>12h</option>
-            <option value={6}>6h</option>
-          </select>
-        </div>
-      </div>
-    )}
-    
-    {/* Right side - Info Button */}
-    <div className="navbar-nav flex-row order-md-last px-3">
-      <div className="nav-item">
-        <button 
-          className="nav-link px-0 border-0 bg-transparent" 
-          onClick={toggleOffcanvas}
-          aria-label="Open information"
-        >
-          <IconInfoCircleFilled size={30} color="#F28B2F" />
-        </button>
-      </div>
-    </div>
-  </div>
-</header>
+        {/* Header with corrected onClick handler */}
+        <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
+          <div className="container-xl position-relative">
+            {/* Left side - Brand */}
+            <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3 mb-0">
+              <Link href="/" className="h2 mb-0 text-decoration-none d-flex align-items-center">
+                <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
+              </Link>
+            </h1>
+            
+            {/* Center - Time Range Selector */}
+            {showTimeSelector && (
+              <div className="position-absolute start-0 end-0 mx-auto d-flex justify-content-center" 
+                   style={{ pointerEvents: 'none', zIndex: 1 }}>
+                <div style={{ pointerEvents: 'auto' }}>
+                  <select 
+                    className="form-select w-auto"
+                    value={timeRange}
+                    onChange={(e) => setTimeRange(Number(e.target.value))}
+                  >
+                    <option value={24}>24h</option>
+                    <option value={12}>12h</option>
+                    <option value={6}>6h</option>
+                  </select>
+                </div>
+              </div>
+            )}
+            
+            {/* Right side - Info Button with corrected onClick handler */}
+            <div className="navbar-nav flex-row order-md-last px-3">
+              <div className="nav-item">
+                <button 
+                  className="nav-link px-0 border-0 bg-transparent" 
+                  onClick={() => setShowOffcanvas(true)}
+                  aria-label="Open information"
+                >
+                  <IconInfoCircleFilled size={30} color="#F28B2F" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
 
-        {/* Modified Offcanvas */}
-        <div className={`offcanvas offcanvas-end ${showOffcanvas ? 'show' : ''}`} 
+      {/* Modified Offcanvas */}
+      <div className={`offcanvas offcanvas-end ${showOffcanvas ? 'show' : ''}`} 
              tabIndex="-1" 
              id="infoOffcanvas"
              aria-labelledby="infoOffcanvasLabel">
@@ -115,38 +115,39 @@ const Layout = ({ children }) => {
               className="img-fluid rounded mb-3 w-100"
             />
             <p>
-            Esta tecnología optimiza las operaciones portuarias y refuerza la seguridad marítima del Puerto de Arica, siendo especialmente relevante ante el aumento de marejadas por el cambio climático, lo que posiciona al puerto a la vanguardia en la macrozona norte.</p>
+              Esta tecnología optimiza las operaciones portuarias y refuerza la seguridad marítima del Puerto de Arica, siendo especialmente relevante ante el aumento de marejadas por el cambio climático, lo que posiciona al puerto a la vanguardia en la macrozona norte.
+            </p>
             <p>
-            La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.</p>
+              La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.
+            </p>
             <p>
-            Este sistema de última generación representa una inversión de más de 150 millones de pesos, permitiendo monitorear en tiempo real las condiciones marítimas y meteorológicas del puerto.</p>
-          
-            <div className="mt-4">
-              {user ? (
-                <div className="d-flex justify-content-between align-items-center">
-                  <span>Logged in as: {user.email}</span>
-                  <button 
-                    className="btn btn-danger btn-sm"
-                    onClick={handleSignOut}
-                  >
-                    <IconLogout size={16} className="me-1" />
-                    Logout
-                  </button>
+              Este sistema de última generación representa una inversión de más de 150 millones de pesos, permitiendo monitorear en tiempo real las condiciones marítimas y meteorológicas del puerto.
+            </p>
+          </div>
+          {/* New sticky footer */}
+          <div className="offcanvas-footer border-top p-3" style={{ position: 'sticky', bottom: 0, background: 'white' }}>
+            {user ? (
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="text-truncate me-2">
+                  <small className="text-muted d-block">Usuario actual</small>
+                  <strong>{user.email}</strong>
                 </div>
-              ) : (
                 <button 
-                  className="btn btn-primary w-100"
-                  onClick={() => setShowLogin(true)}
+                  className="btn btn-danger"
+                  onClick={handleSignOut}
                 >
-                  Login
+                  <IconLogout className="me-1"/>
+                  Cerrar sesión
                 </button>
-              )}
-            </div>
-            
-            {showLogin && !user && (
-              <div className="mt-3">
-                <LoginForm onClose={() => setShowLogin(false)} />
               </div>
+            ) : (
+              <button 
+                className="btn btn-primary w-100"
+                onClick={handleLoginClick}
+              >
+                <IconLogin className="me-1"/>
+                Iniciar sesión
+              </button>
             )}
           </div>
         </div>
@@ -155,9 +156,15 @@ const Layout = ({ children }) => {
         {showOffcanvas && (
           <div 
             className="offcanvas-backdrop fade show" 
-            onClick={toggleOffcanvas}
+            onClick={() => setShowOffcanvas(false)}
           ></div>
         )}
+
+        {/* Login Modal */}
+        <LoginModal 
+          isOpen={showLoginModal} 
+          onClose={() => setShowLoginModal(false)} 
+        />
 
         <div className="page-wrapper">
           <div className="page-body">
