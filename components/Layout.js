@@ -3,13 +3,17 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
-import { IconInfoCircleFilled } from '@tabler/icons-react';
+import { IconInfoCircleFilled, IconLogout } from '@tabler/icons-react';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
+import { useAuth } from '../contexts/AuthContext';
+import LoginForm from '../components/LoginForm';
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const isHomePage = router.pathname === '/';
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const { user, signOut } = useAuth();
+  const [showLogin, setShowLogin] = useState(false);
   
   // Initialize timeRange from localStorage if available, otherwise default to 24
   const [timeRange, setTimeRange] = useState(() => {
@@ -25,6 +29,15 @@ const Layout = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('timeRange', timeRange.toString());
   }, [timeRange]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setShowOffcanvas(false);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   const toggleOffcanvas = () => {
     setShowOffcanvas(!showOffcanvas);
@@ -81,7 +94,7 @@ const Layout = ({ children }) => {
   </div>
 </header>
 
-        {/* Offcanvas */}
+        {/* Modified Offcanvas */}
         <div className={`offcanvas offcanvas-end ${showOffcanvas ? 'show' : ''}`} 
              tabIndex="-1" 
              id="infoOffcanvas"
@@ -91,7 +104,7 @@ const Layout = ({ children }) => {
             <button 
               type="button" 
               className="btn-close" 
-              onClick={toggleOffcanvas}
+              onClick={() => setShowOffcanvas(false)}
               aria-label="Close"
             ></button>
           </div>
@@ -107,6 +120,34 @@ const Layout = ({ children }) => {
             La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.</p>
             <p>
             Este sistema de última generación representa una inversión de más de 150 millones de pesos, permitiendo monitorear en tiempo real las condiciones marítimas y meteorológicas del puerto.</p>
+          
+            <div className="mt-4">
+              {user ? (
+                <div className="d-flex justify-content-between align-items-center">
+                  <span>Logged in as: {user.email}</span>
+                  <button 
+                    className="btn btn-danger btn-sm"
+                    onClick={handleSignOut}
+                  >
+                    <IconLogout size={16} className="me-1" />
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  className="btn btn-primary w-100"
+                  onClick={() => setShowLogin(true)}
+                >
+                  Login
+                </button>
+              )}
+            </div>
+            
+            {showLogin && !user && (
+              <div className="mt-3">
+                <LoginForm onClose={() => setShowLogin(false)} />
+              </div>
+            )}
           </div>
         </div>
 

@@ -56,9 +56,9 @@ const WaveHeightChart = () => {
       // Format data for wave height chart with direction and period included
       const formattedWaveHeightData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.VAVH) / 100,  // Convert cm to m
-        direction: Math.round(parseFloat(item.VDIR)),
-        period: Math.round(parseFloat(item.VAVT))
+        y: item.VAVH ? item.VAVH / 100 : null,  // Convert cm to m, null remains null
+        direction: item.VDIR ? Math.round(item.VDIR) : null,
+        period: item.VAVT ? Math.round(item.VAVT) : null
       }));
   
       setAllChartData(formattedWaveHeightData);
@@ -70,7 +70,7 @@ const WaveHeightChart = () => {
         y: item.direction
       }));
       setWaveDirChartData(formattedWaveDirData);
-  
+
       if (formattedWaveHeightData.length > 0) {
         const lastDataPoint = formattedWaveHeightData[formattedWaveHeightData.length - 1];
         const lastDataTime = new Date(lastDataPoint.x);
@@ -118,6 +118,7 @@ const WaveHeightChart = () => {
       width: 2,
       lineCap: "round",
       curve: "smooth",
+      connectNulls: false,
     },
     series: [{
       name: "Wave Height",
@@ -160,9 +161,9 @@ const WaveHeightChart = () => {
           minute: '2-digit',
           hour12: false
         });
-        const height = data.y.toFixed(2);
-        const direction = data.direction.toString();
-        const period = data.period.toString();
+        const height = data.y !== null ? data.y.toFixed(2) : '-';
+        const direction = data.direction !== null ? Math.round(data.direction).toString() : '-';
+        const period = data.period !== null ? Math.round(data.period).toString() : '-';
         
         return `
           <div class="arrow_box">

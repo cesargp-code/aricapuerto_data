@@ -1,12 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
+import supabase from '../../lib/supabaseClient';
 
 export default async function handler(req, res) {
-  // Calculate timestamp for 24 hours ago
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
   const { data, error } = await supabase
@@ -16,5 +10,11 @@ export default async function handler(req, res) {
     .order('created_at', { ascending: false })
 
   if (error) return res.status(500).json({ error: error.message })
-  return res.status(200).json(data)
+
+  const sanitizedData = data.map(item => ({
+    created_at: item.created_at,
+    DRYT: isNaN(parseFloat(item.DRYT)) ? null : parseFloat(item.DRYT)
+  }));
+
+  return res.status(200).json(sanitizedData)
 }

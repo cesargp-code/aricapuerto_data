@@ -1,9 +1,10 @@
-import '../styles/globals.css'  // Note the relative path
+import '../styles/globals.css'
 import Script from 'next/script'
+import { AuthProvider } from '../contexts/AuthContext'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <>
+    <AuthProvider>
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-TSVEFD13BQ"
         strategy="afterInteractive"
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps }) {
         `}
       </Script>
       <Component {...pageProps} />
-    </>
+    </AuthProvider>
   )
 }
 

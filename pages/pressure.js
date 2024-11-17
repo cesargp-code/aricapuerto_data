@@ -99,6 +99,7 @@ const PressureContent = () => {
       type: 'line',
       fontFamily: 'inherit',
       height: 200,
+      zoom: false,
       parentHeightOffset: 0,
       toolbar: {
         show: false,
@@ -157,7 +158,7 @@ const PressureContent = () => {
           minute: '2-digit',
           hour12: false
         });
-        const pressure = data.y.toFixed(1);
+        const pressure = data.y !== null ? data.y.toFixed(1) : '-';
         
         return `
           <div class="arrow_box">

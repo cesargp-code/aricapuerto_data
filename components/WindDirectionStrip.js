@@ -31,13 +31,19 @@ const WindDirectionStrip = ({ windDirData }) => {
           <div style={{ fontSize: 'xx-small' }}>
             {new Date(data.x).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
           </div>
-          <div style={{ transform: `rotate(${data.y}deg)` }}>
-          <IconArrowNarrowUp
-            size={20} 
-            color="#157B37"
-          />
+          <div style={{ 
+            transform: `rotate(${data.y + 180}deg)`,
+            visibility: (data.y !== null && !isNaN(data.y)) ? 'visible' : 'hidden'
+          }}>
+            <IconArrowNarrowUp
+              size={20} 
+              color="#157B37"
+            />
           </div>
-          <div style={{ fontSize: 'xx-small' }}>
+          <div style={{ 
+            fontSize: 'xx-small',
+            visibility: (data.y !== null && !isNaN(data.y)) ? 'visible' : 'hidden'
+          }}>
             {Math.round(data.y)}°
           </div>
         </div>

@@ -158,7 +158,7 @@ const TemperatureContent = () => {
           minute: '2-digit',
           hour12: false
         });
-        const temperature = data.y.toFixed(1);
+        const temperature = data.y !== null ? data.y.toFixed(1) : '-';
         
         return `
           <div class="arrow_box">

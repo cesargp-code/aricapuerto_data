@@ -1,9 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
+import supabase from '../../lib/supabaseClient';
 
 export default async function handler(req, res) {
   const { data, error } = await supabase
@@ -14,5 +9,13 @@ export default async function handler(req, res) {
     .single()
 
   if (error) return res.status(500).json({ error: error.message })
-  return res.status(200).json(data)
+
+  const sanitizedData = {
+    created_at: data.created_at,
+    ATMS: isNaN(parseFloat(data.ATMS)) ? null : parseFloat(data.ATMS),
+    DRYT: isNaN(parseFloat(data.DRYT)) ? null : parseFloat(data.DRYT),
+    DEWT: isNaN(parseFloat(data.DEWT)) ? null : parseFloat(data.DEWT)
+  };
+
+  return res.status(200).json(sanitizedData)
 }

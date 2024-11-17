@@ -196,7 +196,6 @@ const WindContent = () => {
     tooltip: {
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
         const timestamp = w.config.series[seriesIndex].data[dataPointIndex].x;
-        const value = w.config.series[seriesIndex].data[dataPointIndex].y;
         const time = new Date(timestamp).toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
@@ -206,12 +205,17 @@ const WindContent = () => {
         // Find the original data point that contains all the information
         const originalDataPoint = displayedChartData[dataPointIndex];
         
+        // Safely handle null values for each metric
+        const gustValue = originalDataPoint.gust !== null ? originalDataPoint.gust.toFixed(2) : '-';
+        const windValue = originalDataPoint.y !== null ? originalDataPoint.y.toFixed(2) : '-';
+        const directionValue = originalDataPoint.direction !== null ? originalDataPoint.direction.toFixed(0) : '-';
+        
         return `
           <div class="arrow_box">
             <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-            <div><span class="status-dot" style="background-color:#43F37C"></span> ${originalDataPoint.gust.toFixed(2)} m/s</div>
-            <div><span class="status-dot" style="background-color:#157B37"></span> ${originalDataPoint.y.toFixed(2)} m/s</div>
-            <div>${originalDataPoint.direction.toFixed(0)}°</div>
+            <div><span class="status-dot" style="background-color:#43F37C"></span> ${gustValue} m/s</div>
+            <div><span class="status-dot" style="background-color:#157B37"></span> ${windValue} m/s</div>
+            <div>${directionValue}°</div>
           </div>
         `;
       }

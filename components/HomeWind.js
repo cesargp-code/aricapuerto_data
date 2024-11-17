@@ -158,8 +158,8 @@ const WindSpeedChart = () => {
           minute: '2-digit',
           hour12: false
         });
-        const speed = data.y.toFixed(1);
-        const direction = data.direction.toFixed(0);
+        const speed = data.y !== null ? data.y.toFixed(1) : '-';
+        const direction = data.direction !== null ? data.direction.toFixed(0) : '-';
         
         return `
           <div class="arrow_box">
