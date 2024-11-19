@@ -1,6 +1,6 @@
 @import url('https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css');
 
-/* Custom css on top of tabler css */
+/* Custom css on top of Tabler css */
 .bg-primary {
     background-color:#29397A !important;
 }
@@ -15,6 +15,9 @@ a h3.card-title, a #page-title {
     height:34px;
     color: #2C3976; 
     background-color:#DFE1EA;
+}
+.secondary-measure .current-pill .status-dot {
+    background: #4c5a9c;
 }
 .navigation_arrow {
     color:#F7B982;
@@ -103,4 +106,7 @@ div.arrow_box div {
 .footer a:hover {
     color:rgb(43, 123, 177);
     text-decoration: underline;
+}
+.dir_strip {
+    margin-left: 24px;
 }

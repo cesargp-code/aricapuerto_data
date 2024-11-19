@@ -45,7 +45,7 @@ const SecondaryDataHome = () => {
   };
 
   return (
-    <div className="col-12">
+    <div className="col-12 secondary-measure">
       <div className="row row-cards">
       <div className="col-sm-6">
         <Link href="/pressure" className="text-decoration-none">

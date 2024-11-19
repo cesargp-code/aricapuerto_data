@@ -204,7 +204,7 @@ const PressureContent = () => {
         </div>
       ) : (
         <div>
-          <div className='title d-flex align-items-center justify-content-between w-100 mb-3'>
+          <div className='title d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
             <div className="d-flex align-items-center">
               <Link href="/" className="text-decoration-none d-flex align-items-center">
                 <IconCircleArrowLeftFilled

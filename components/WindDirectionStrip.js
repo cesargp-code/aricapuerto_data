@@ -25,7 +25,7 @@ const WindDirectionStrip = ({ windDirData }) => {
   };
  
   return (
-    <div className="d-flex justify-content-between align-items-center ms-4 dir_strip">
+    <div className="d-flex justify-content-between align-items-center dir_strip">
       {sampleData().map((data, index) => (
         <div key={index} className="text-center d-flex flex-column align-items-center">
           <div style={{ fontSize: 'xx-small' }}>
