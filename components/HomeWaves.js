@@ -214,7 +214,7 @@ const WaveHeightChart = () => {
               </span>
               {currentWaveHeight} m
               <span className="d-inline-flex align-items-center gap-1">
-                    <span style={{ transform: `rotate(${currentWaveDir}deg)` }}>
+                    <span style={{ transform: `rotate(${currentWaveDir + 180}deg)` }}>
                       <IconArrowNarrowUp
                         size={20}
                         stroke={2}

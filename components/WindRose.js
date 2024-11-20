@@ -23,7 +23,7 @@ const WindRose = ({ data }) => {
     
     // Process each data point
     data.forEach(point => {
-      const direction = point.direction;
+      const direction = (point.direction + 180) % 360;
       const speed = point.y;
       
       // Calculate which bin this direction belongs to
@@ -83,7 +83,7 @@ const WindRose = ({ data }) => {
       return `M 150,150 L ${x1},${y1} A ${radius},${radius} 0 0,1 ${x2},${y2} Z`;
     }).join(' ');
 
-    return <path d={paths} fill={color} opacity={0.8} />;
+    return <path d={paths} fill={color} opacity={0.9} />;
   };
 
   const windSpeedColors = [

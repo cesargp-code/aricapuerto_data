@@ -210,7 +210,7 @@ const WindSpeedChart = () => {
                   </span>
                   {currentWindSpeed} m/s
                   <span className="d-inline-flex align-items-center gap-1">
-                    <span style={{ transform: `rotate(${currentWindDir}deg)` }}>
+                    <span style={{ transform: `rotate(${currentWindDir + 180}deg)` }}>
                       <IconArrowNarrowUp
                         size={20}
                         stroke={2}
