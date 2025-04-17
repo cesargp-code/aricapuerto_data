@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://ozxrmiyeamfolxtvzoee.supabase.co';  // Replace with your actual URL
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96eHJtaXllYW1mb2x4dHZ6b2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM5OTk5NjcsImV4cCI6MjAzOTU3NTk2N30.OctCvxTEH4PLJ9BxXPSVL5lTRMoD_VHREw3IPeGGhY0';  // Replace with your actual anon key
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
