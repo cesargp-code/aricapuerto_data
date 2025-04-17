@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import WaveDirectionStrip from '../components/WaveDirectionStrip';
+import WindDirectionStrip from '../components/WindDirectionStrip';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
@@ -22,15 +22,15 @@ const WavesContent = () => {
   const [waveDirChartData, setWaveDirChartData] = useState([]);
   const [currentWave, setCurrentWave] = useState({
     height: '-',
-    direction: '-',
-    period: '-'
+    maxHeight: '-',
+    direction: '-'
   });
   const [isStaleData, setIsStaleData] = useState(false);
   const [stats, setStats] = useState({
     minHeight: '-',
     maxHeight: '-',
-    minPeriod: '-',
-    maxPeriod: '-',
+    minMaxHeight: '-',
+    maxMaxHeight: '-',
   });
 
   useEffect(() => {
@@ -60,12 +60,12 @@ const WavesContent = () => {
     // Update statistics for the filtered range
     if (filteredData.length > 0) {
       const waveHeights = filteredData.map(point => point.y);
-      const wavePeriods = filteredData.map(point => point.period);
+      const maxHeights = filteredData.map(point => point.maxHeight);
       setStats({
-        minHeight: Math.min(...waveHeights).toFixed(2),
-        maxHeight: Math.max(...waveHeights).toFixed(2),
-        minPeriod: Math.min(...wavePeriods).toFixed(1),
-        maxPeriod: Math.max(...wavePeriods).toFixed(1),
+        minHeight: Math.min(...waveHeights).toFixed(1),
+        maxHeight: Math.max(...waveHeights).toFixed(1),
+        minMaxHeight: Math.min(...maxHeights).toFixed(1),
+        maxMaxHeight: Math.max(...maxHeights).toFixed(1),
       });
     }
   };
@@ -79,12 +79,12 @@ const WavesContent = () => {
       
       const data = await response.json();
       
-      // Format data for the chart
+      // Format data for the chart - convert from cm to meters
       const formattedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
-        y: item.VAVH ? item.VAVH / 100 : null,  // Convert cm to m
-        direction: item.VDIR ? parseFloat(item.VDIR) : null,
-        period: item.VAVT ? parseFloat(item.VAVT) : null
+        y: parseFloat(item.VAVH) / 100, // Regular wave height (significant)
+        maxHeight: parseFloat(item.VMXL) / 100, // Maximum wave height
+        direction: parseFloat(item.VDIR)
       }));
 
       setAllChartData(formattedData);
@@ -105,9 +105,9 @@ const WavesContent = () => {
         
         setIsStaleData(timeDifferenceMinutes >= 30);
         setCurrentWave({
-          height: lastDataPoint.y.toFixed(2),
-          direction: Math.round(lastDataPoint.direction),
-          period: lastDataPoint.period.toFixed(1)
+          height: lastDataPoint.y.toFixed(1),
+          maxHeight: lastDataPoint.maxHeight.toFixed(1),
+          direction: Math.round(lastDataPoint.direction)
         });
         setLastUpdated(lastDataTime.toLocaleTimeString([], { 
           hour: '2-digit', 
@@ -117,12 +117,12 @@ const WavesContent = () => {
 
         // Initial statistics
         const waveHeights = formattedData.map(point => point.y);
-        const wavePeriods = formattedData.map(point => point.period);
+        const maxHeights = formattedData.map(point => point.maxHeight);
         setStats({
-          minHeight: Math.min(...waveHeights).toFixed(2),
-          maxHeight: Math.max(...waveHeights).toFixed(2),
-          minPeriod: Math.min(...wavePeriods).toFixed(1),
-          maxPeriod: Math.max(...wavePeriods).toFixed(1),
+          minHeight: Math.min(...waveHeights).toFixed(1),
+          maxHeight: Math.max(...waveHeights).toFixed(1),
+          minMaxHeight: Math.min(...maxHeights).toFixed(1),
+          maxMaxHeight: Math.max(...maxHeights).toFixed(1),
         });
       }
       setIsLoading(false);
@@ -156,12 +156,12 @@ const WavesContent = () => {
     },
     series: [
       {
-        name: "Altura",
+        name: "Altura significativa",
         data: displayedChartData.map(point => ({ x: point.x, y: point.y }))
       },
       {
-        name: "Período",
-        data: displayedChartData.map(point => ({ x: point.x, y: point.period }))
+        name: "Altura máxima",
+        data: displayedChartData.map(point => ({ x: point.x, y: point.maxHeight }))
       }
     ],
     grid: {
@@ -186,10 +186,13 @@ const WavesContent = () => {
     yaxis: {
       labels: {
         padding: 4,
+        formatter: function (value) {
+          return value.toFixed(1) + ' m';
+        }
       },
       min: 0,
     },
-    colors: ["#0F6F9B", "#13A8E2"],
+    colors: ["#0F6CBD", "#2B93D5"],
     legend: {
       show: false,
     },
@@ -206,15 +209,15 @@ const WavesContent = () => {
         const originalDataPoint = displayedChartData[dataPointIndex];
         
         // Safely handle null values for each metric
+        const maxHeightValue = originalDataPoint.maxHeight !== null ? originalDataPoint.maxHeight.toFixed(2) : '-';
         const heightValue = originalDataPoint.y !== null ? originalDataPoint.y.toFixed(2) : '-';
-        const periodValue = originalDataPoint.period !== null ? originalDataPoint.period.toFixed(1) : '-';
         const directionValue = originalDataPoint.direction !== null ? originalDataPoint.direction.toFixed(0) : '-';
         
         return `
           <div class="arrow_box">
             <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-            <div><span class="status-dot" style="background-color:#0F6F9B"></span> ${heightValue} m</div>
-            <div><span class="status-dot" style="background-color:#13A8E2"></span> ${periodValue} s</div>
+            <div><span class="status-dot" style="background-color:#2B93D5"></span> ${maxHeightValue} m</div>
+            <div><span class="status-dot" style="background-color:#0F6CBD"></span> ${heightValue} m</div>
             <div>${directionValue}°</div>
           </div>
         `;
@@ -226,16 +229,16 @@ const WavesContent = () => {
     const csvData = displayedChartData.map(point => ({
       date: point.x,
       waveHeight: point.y,
-      waveDirection: point.direction,
-      wavePeriod: point.period
+      maxWaveHeight: point.maxHeight,
+      waveDirection: point.direction
     }));
 
     downloadCSV(csvData, {
       columns: {
         date: 'Fecha y hora',
-        waveHeight: 'Altura de ola (m)',
-        waveDirection: 'Dirección de ola (°)',
-        wavePeriod: 'Período (s)'
+        waveHeight: 'Altura significativa (m)',
+        maxWaveHeight: 'Altura máxima (m)',
+        waveDirection: 'Dirección del oleaje (°)'
       },
       filename: 'oleaje'
     });
@@ -280,11 +283,11 @@ const WavesContent = () => {
                 </div>
               </Link>
             </div>
-            <span className="status status-azure current-pill" id="current-wave-pill">
+            <span className="status status-blue current-pill" id="current-wave-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWave.height} m | {currentWave.period} s
+              {currentWave.height} m | {currentWave.maxHeight} m
               <span className="d-inline-flex align-items-center gap-1">
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
@@ -295,20 +298,6 @@ const WavesContent = () => {
               </span>
             </span>
           </div>
-          <div className="alert alert-warning mb-3">
-            <div className="d-flex">
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" className="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                  <path d="M12 9v2m0 4v.01"></path>
-                  <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
-                </svg>
-              </div>
-              <div>
-                La boya de oleaje está actualmente en mantenimiento. Se muestran datos históricos. 
-              </div>
-            </div>
-          </div>
           <div className="col-12">
             <div className="card">
               <div className="card-body">
@@ -316,8 +305,8 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#0F6F9B' }}></span>
-                        <span className="fs-5">Mín. altura</span>
+                        <span className="status-dot" style={{ backgroundColor: '#0F6CBD' }}></span>
+                        <span className="fs-5">Mín. altura sig.</span>
                       </div>
                       <div className="h3 m-0">{stats.minHeight} m</div>
                     </div>
@@ -325,8 +314,8 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#0F6F9B' }}></span>
-                        <span className="fs-5">Máx. altura</span>
+                        <span className="status-dot" style={{ backgroundColor: '#0F6CBD' }}></span>
+                        <span className="fs-5">Máx. altura sig.</span>
                       </div>
                       <div className="h3 m-0">{stats.maxHeight} m</div>
                     </div>
@@ -334,19 +323,19 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
-                        <span className="fs-5">Mín. período</span>
+                        <span className="status-dot" style={{ backgroundColor: '#2B93D5' }}></span>
+                        <span className="fs-5">Mín. altura máx.</span>
                       </div>
-                      <div className="h3 m-0">{stats.minPeriod} s</div>
+                      <div className="h3 m-0">{stats.minMaxHeight} m</div>
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
-                        <span className="fs-5">Máx. período</span>
+                        <span className="status-dot" style={{ backgroundColor: '#2B93D5' }}></span>
+                        <span className="fs-5">Máx. altura máx.</span>
                       </div>
-                      <div className="h3 m-0">{stats.maxPeriod} s</div>
+                      <div className="h3 m-0">{stats.maxMaxHeight} m</div>
                     </div>
                   </div>
                 </div>
@@ -360,7 +349,7 @@ const WavesContent = () => {
                     />
                   )}
                 </div>
-                <WaveDirectionStrip waveData={waveDirChartData} />
+                <WindDirectionStrip windDirData={waveDirChartData} />
               </div>
             </div>
           </div>

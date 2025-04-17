@@ -1,12 +1,26 @@
 import supabase from '../../lib/supabaseClient';
 
 export default async function handler(req, res) {
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  // TEMPORARY FIX: Use data from 5 months ago due to meteorological station issues
+  
+  // Calculate current date and date 5 months ago
+  const currentDate = new Date();
+  const fiveMonthsAgo = new Date(currentDate);
+  fiveMonthsAgo.setMonth(currentDate.getMonth() - 5);
+  
+  // Calculate a 24-hour window from 5 months ago
+  const startDate = new Date(fiveMonthsAgo);
+  const endDate = new Date(fiveMonthsAgo);
+  endDate.setDate(endDate.getDate() + 1); // Add 1 day to get 24 hours of data
+  
+  const startDateISO = startDate.toISOString();
+  const endDateISO = endDate.toISOString();
 
   const { data, error } = await supabase
     .from('arica_meteo')
     .select('created_at, DRYT')
-    .gte('created_at', twentyFourHoursAgo)
+    .gte('created_at', startDateISO)
+    .lt('created_at', endDateISO)
     .order('created_at', { ascending: false })
 
   if (error) return res.status(500).json({ error: error.message })

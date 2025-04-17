@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import { IconArrowNarrowUp } from '@tabler/icons-react';
+import Link from 'next/link';
 import WaveDirectionStrip from './WaveDirectionStrip';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 
@@ -192,6 +193,7 @@ const WaveHeightChart = () => {
         </div>
       ) : (
       <>
+      <Link href="/waves" className="text-decoration-none">
         <div className="card-header">
           <div>
             <h3 className="card-title">Oleaje</h3>
@@ -230,6 +232,7 @@ const WaveHeightChart = () => {
             />
           </div>
         </div>
+        </Link>
         <div className="card-body">
           <div id="chart-wave-height">
             {typeof window !== 'undefined' && (

@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     // Fetch historical data
     const { data, error } = await supabase
       .from('arica_oceano')
-      .select('created_at, VAVH, VAVT, VDIR')
+      .select('created_at, VAVH, VAVT, VDIR, VMXL')
       .gte('created_at', startDate.toISOString())
       .lte('created_at', endDate.toISOString())
       .order('created_at', { ascending: false });
@@ -40,7 +40,8 @@ export default async function handler(req, res) {
       created_at: adjustTimestamp(item.created_at).toISOString(),
       VAVH: isNaN(parseFloat(item.VAVH)) ? null : parseFloat(item.VAVH),
       VAVT: isNaN(parseFloat(item.VAVT)) ? null : parseFloat(item.VAVT),
-      VDIR: isNaN(parseFloat(item.VDIR)) ? null : parseFloat(item.VDIR)
+      VDIR: isNaN(parseFloat(item.VDIR)) ? null : parseFloat(item.VDIR),
+      VMXL: isNaN(parseFloat(item.VMXL)) ? null : parseFloat(item.VMXL)
     }));
     
     return res.status(200).json(sanitizedData);
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
     
     const { data, error } = await supabase
       .from('arica_oceano')
-      .select('created_at, VAVH, VAVT, VDIR')
+      .select('created_at, VAVH, VAVT, VDIR, VMXL')
       .gte('created_at', twentyFourHoursAgo)
       .order('created_at', { ascending: false });
     
@@ -60,7 +61,8 @@ export default async function handler(req, res) {
       created_at: item.created_at,
       VAVH: isNaN(parseFloat(item.VAVH)) ? null : parseFloat(item.VAVH),
       VAVT: isNaN(parseFloat(item.VAVT)) ? null : parseFloat(item.VAVT),
-      VDIR: isNaN(parseFloat(item.VDIR)) ? null : parseFloat(item.VDIR)
+      VDIR: isNaN(parseFloat(item.VDIR)) ? null : parseFloat(item.VDIR),
+      VMXL: isNaN(parseFloat(item.VMXL)) ? null : parseFloat(item.VMXL)
     }));
     
     return res.status(200).json(sanitizedData);

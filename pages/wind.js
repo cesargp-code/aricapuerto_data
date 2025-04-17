@@ -305,6 +305,24 @@ const WindContent = () => {
             <div className="card">
               <div className="card-body">
                 <div className="row g-2 mb-3">
+                <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
+                        <span className="fs-5">Mín. racha</span>
+                      </div>
+                      <div className="h3 m-0">{stats.minGust} m/s</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
+                        <span className="fs-5">Máx. racha</span>
+                      </div>
+                      <div className="h3 m-0">{stats.maxGust} m/s</div>
+                    </div>
+                  </div>
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
@@ -321,24 +339,6 @@ const WindContent = () => {
                         <span className="fs-5">Máx. viento</span>
                       </div>
                       <div className="h3 m-0">{stats.maxWind} m/s</div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="p-3 bg-light rounded-2 text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
-                        <span className="fs-5">Mín. racha</span>
-                      </div>
-                      <div className="h3 m-0">{stats.minGust} m/s</div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="p-3 bg-light rounded-2 text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#43F37C' }}></span>
-                        <span className="fs-5">Máx. racha</span>
-                      </div>
-                      <div className="h3 m-0">{stats.maxGust} m/s</div>
                     </div>
                   </div>
                 </div>
