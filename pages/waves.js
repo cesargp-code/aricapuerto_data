@@ -62,10 +62,10 @@ const WavesContent = () => {
       const waveHeights = filteredData.map(point => point.y);
       const maxHeights = filteredData.map(point => point.maxHeight);
       setStats({
-        minWave: Math.min(...waveHeights).toFixed(1),
-        maxWave: Math.max(...waveHeights).toFixed(1),
-        minMaxHeight: Math.min(...maxHeights).toFixed(1),
-        maxMaxHeight: Math.max(...maxHeights).toFixed(1),
+        minWave: Math.min(...waveHeights).toFixed(2),
+        maxWave: Math.max(...waveHeights).toFixed(2),
+        minMaxHeight: Math.min(...maxHeights).toFixed(2),
+        maxMaxHeight: Math.max(...maxHeights).toFixed(2),
       });
     }
   };
@@ -105,9 +105,9 @@ const WavesContent = () => {
         
         setIsStaleData(timeDifferenceMinutes >= 30);
         setCurrentWave({
-          height: lastDataPoint.y.toFixed(1),
+          height: lastDataPoint.y.toFixed(2),
           direction: Math.round(lastDataPoint.direction),
-          maxHeight: lastDataPoint.maxHeight.toFixed(1),
+          maxHeight: lastDataPoint.maxHeight.toFixed(2),
         });
         setLastUpdated(lastDataTime.toLocaleTimeString([], { 
           hour: '2-digit', 
@@ -213,8 +213,8 @@ const WavesContent = () => {
         return `
           <div class="arrow_box">
             <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-            <div><span class="status-dot" style="background-color:#1E40AF"></span> ${maxHeightValue} cm</div>
-            <div><span class="status-dot" style="background-color:#13A8E2"></span> ${heightValue} cm</div>
+            <div><span class="status-dot" style="background-color:#1E40AF"></span> ${maxHeightValue} m</div>
+            <div><span class="status-dot" style="background-color:#13A8E2"></span> ${heightValue} m</div>
             <div>${directionValue}°</div>
           </div>
         `;
@@ -233,9 +233,9 @@ const WavesContent = () => {
     downloadCSV(csvData, {
       columns: {
         date: 'Fecha y hora',
-        significantHeight: 'Altura significativa (cm)',
+        significantHeight: 'Altura significativa (m)',
         waveDirection: 'Dirección del oleaje (°)',
-        maxHeight: 'Altura máxima (cm)',
+        maxHeight: 'Altura máxima (m)',
       },
       filename: 'oleaje'
     });
@@ -284,7 +284,7 @@ const WavesContent = () => {
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWave.height} cm | {currentWave.maxHeight} cm
+              {currentWave.height} m | {currentWave.maxHeight} m
               <span className="d-inline-flex align-items-center gap-1">
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
@@ -305,7 +305,7 @@ const WavesContent = () => {
                         <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
                         <span className="fs-5">Mín. altura máx.</span>
                       </div>
-                      <div className="h3 m-0">{stats.minMaxHeight} cm</div>
+                      <div className="h3 m-0">{stats.minMaxHeight} m</div>
                     </div>
                   </div>
                   <div className="col-6">
@@ -314,7 +314,7 @@ const WavesContent = () => {
                         <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
                         <span className="fs-5">Máx. altura máx.</span>
                       </div>
-                      <div className="h3 m-0">{stats.maxMaxHeight} cm</div>
+                      <div className="h3 m-0">{stats.maxMaxHeight} m</div>
                     </div>
                   </div>
                   <div className="col-6">
@@ -323,7 +323,7 @@ const WavesContent = () => {
                         <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
                         <span className="fs-5">Mín. altura sig.</span>
                       </div>
-                      <div className="h3 m-0">{stats.minWave} cm</div>
+                      <div className="h3 m-0">{stats.minWave} m</div>
                     </div>
                   </div>
                   <div className="col-6">
@@ -332,7 +332,7 @@ const WavesContent = () => {
                         <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
                         <span className="fs-5">Máx. altura sig.</span>
                       </div>
-                      <div className="h3 m-0">{stats.maxWave} cm</div>
+                      <div className="h3 m-0">{stats.maxWave} m</div>
                     </div>
                   </div>
                 </div>
