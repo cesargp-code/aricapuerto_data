@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import WindDirectionStrip from '../components/WindDirectionStrip';
+import WaveDirectionStrip from '../components/WaveDirectionStrip';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
@@ -22,13 +22,13 @@ const WavesContent = () => {
   const [waveDirChartData, setWaveDirChartData] = useState([]);
   const [currentWave, setCurrentWave] = useState({
     height: '-',
+    direction: '-',
     maxHeight: '-',
-    direction: '-'
   });
   const [isStaleData, setIsStaleData] = useState(false);
   const [stats, setStats] = useState({
-    minHeight: '-',
-    maxHeight: '-',
+    minWave: '-',
+    maxWave: '-',
     minMaxHeight: '-',
     maxMaxHeight: '-',
   });
@@ -62,8 +62,8 @@ const WavesContent = () => {
       const waveHeights = filteredData.map(point => point.y);
       const maxHeights = filteredData.map(point => point.maxHeight);
       setStats({
-        minHeight: Math.min(...waveHeights).toFixed(1),
-        maxHeight: Math.max(...waveHeights).toFixed(1),
+        minWave: Math.min(...waveHeights).toFixed(1),
+        maxWave: Math.max(...waveHeights).toFixed(1),
         minMaxHeight: Math.min(...maxHeights).toFixed(1),
         maxMaxHeight: Math.max(...maxHeights).toFixed(1),
       });
@@ -79,12 +79,12 @@ const WavesContent = () => {
       
       const data = await response.json();
       
-      // Format data for the chart - convert from cm to meters
+      // Format data for the chart
       const formattedData = data.reverse().map(item => ({
         x: new Date(item.created_at).getTime(),
-        y: parseFloat(item.VAVH) / 100, // Regular wave height (significant)
-        maxHeight: parseFloat(item.VMXL) / 100, // Maximum wave height
-        direction: parseFloat(item.VDIR)
+        y: item.VAVH ? item.VAVH / 100 : null,
+        maxHeight: item.VMXL ? item.VMXL / 100 : null,
+        direction: parseFloat(item.VDIR),
       }));
 
       setAllChartData(formattedData);
@@ -106,8 +106,8 @@ const WavesContent = () => {
         setIsStaleData(timeDifferenceMinutes >= 30);
         setCurrentWave({
           height: lastDataPoint.y.toFixed(1),
+          direction: Math.round(lastDataPoint.direction),
           maxHeight: lastDataPoint.maxHeight.toFixed(1),
-          direction: Math.round(lastDataPoint.direction)
         });
         setLastUpdated(lastDataTime.toLocaleTimeString([], { 
           hour: '2-digit', 
@@ -119,8 +119,8 @@ const WavesContent = () => {
         const waveHeights = formattedData.map(point => point.y);
         const maxHeights = formattedData.map(point => point.maxHeight);
         setStats({
-          minHeight: Math.min(...waveHeights).toFixed(1),
-          maxHeight: Math.max(...waveHeights).toFixed(1),
+          minWave: Math.min(...waveHeights).toFixed(1),
+          maxWave: Math.max(...waveHeights).toFixed(1),
           minMaxHeight: Math.min(...maxHeights).toFixed(1),
           maxMaxHeight: Math.max(...maxHeights).toFixed(1),
         });
@@ -186,13 +186,10 @@ const WavesContent = () => {
     yaxis: {
       labels: {
         padding: 4,
-        formatter: function (value) {
-          return value.toFixed(1) + ' m';
-        }
       },
       min: 0,
     },
-    colors: ["#0F6CBD", "#2B93D5"],
+    colors: ["#13A8E2", "#1E40AF"],
     legend: {
       show: false,
     },
@@ -216,8 +213,8 @@ const WavesContent = () => {
         return `
           <div class="arrow_box">
             <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-            <div><span class="status-dot" style="background-color:#2B93D5"></span> ${maxHeightValue} m</div>
-            <div><span class="status-dot" style="background-color:#0F6CBD"></span> ${heightValue} m</div>
+            <div><span class="status-dot" style="background-color:#1E40AF"></span> ${maxHeightValue} cm</div>
+            <div><span class="status-dot" style="background-color:#13A8E2"></span> ${heightValue} cm</div>
             <div>${directionValue}°</div>
           </div>
         `;
@@ -228,17 +225,17 @@ const WavesContent = () => {
   const handleDownload = () => {
     const csvData = displayedChartData.map(point => ({
       date: point.x,
-      waveHeight: point.y,
-      maxWaveHeight: point.maxHeight,
-      waveDirection: point.direction
+      significantHeight: point.y,
+      waveDirection: point.direction,
+      maxHeight: point.maxHeight,
     }));
 
     downloadCSV(csvData, {
       columns: {
         date: 'Fecha y hora',
-        waveHeight: 'Altura significativa (m)',
-        maxWaveHeight: 'Altura máxima (m)',
-        waveDirection: 'Dirección del oleaje (°)'
+        significantHeight: 'Altura significativa (cm)',
+        waveDirection: 'Dirección del oleaje (°)',
+        maxHeight: 'Altura máxima (cm)',
       },
       filename: 'oleaje'
     });
@@ -283,11 +280,11 @@ const WavesContent = () => {
                 </div>
               </Link>
             </div>
-            <span className="status status-blue current-pill" id="current-wave-pill">
+            <span className="status status-azure current-pill" id="current-wave-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWave.height} m | {currentWave.maxHeight} m
+              {currentWave.height} cm | {currentWave.maxHeight} cm
               <span className="d-inline-flex align-items-center gap-1">
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
@@ -302,40 +299,40 @@ const WavesContent = () => {
             <div className="card">
               <div className="card-body">
                 <div className="row g-2 mb-3">
-                  <div className="col-6">
+                <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#0F6CBD' }}></span>
-                        <span className="fs-5">Mín. altura sig.</span>
-                      </div>
-                      <div className="h3 m-0">{stats.minHeight} m</div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="p-3 bg-light rounded-2 text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#0F6CBD' }}></span>
-                        <span className="fs-5">Máx. altura sig.</span>
-                      </div>
-                      <div className="h3 m-0">{stats.maxHeight} m</div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="p-3 bg-light rounded-2 text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#2B93D5' }}></span>
+                        <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
                         <span className="fs-5">Mín. altura máx.</span>
                       </div>
-                      <div className="h3 m-0">{stats.minMaxHeight} m</div>
+                      <div className="h3 m-0">{stats.minMaxHeight} cm</div>
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#2B93D5' }}></span>
+                        <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
                         <span className="fs-5">Máx. altura máx.</span>
                       </div>
-                      <div className="h3 m-0">{stats.maxMaxHeight} m</div>
+                      <div className="h3 m-0">{stats.maxMaxHeight} cm</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
+                        <span className="fs-5">Mín. altura sig.</span>
+                      </div>
+                      <div className="h3 m-0">{stats.minWave} cm</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
+                        <span className="fs-5">Máx. altura sig.</span>
+                      </div>
+                      <div className="h3 m-0">{stats.maxWave} cm</div>
                     </div>
                   </div>
                 </div>
@@ -349,7 +346,7 @@ const WavesContent = () => {
                     />
                   )}
                 </div>
-                <WindDirectionStrip windDirData={waveDirChartData} />
+                <WaveDirectionStrip waveData={waveDirChartData} />
               </div>
             </div>
           </div>
@@ -364,6 +361,9 @@ const WavesContent = () => {
               </button>
             </div>
           )}
+          <div className="col-12">
+
+          </div>
         </>
       )}
     </>
