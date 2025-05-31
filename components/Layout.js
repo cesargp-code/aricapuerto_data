@@ -43,7 +43,7 @@ const Layout = ({ children }) => {
     setShowLoginModal(true);
   };
 
-  const showTimeSelector = ['/', '/temperature', '/wind', '/pressure'].includes(router.pathname);
+  const showTimeSelector = ['/', '/temperature', '/wind', '/pressure', '/waves'].includes(router.pathname);
 
   return (
     <TimeRangeContext.Provider value={{ timeRange, setTimeRange }}>
