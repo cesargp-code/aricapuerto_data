@@ -24,7 +24,11 @@ const LoginModal = ({ isOpen, onClose }) => {
         onClose(); // Close the modal on success
       }
     } catch (error) {
-      setError(error.message);
+      if (error.message === 'Invalid login credentials') {
+        setError('El usuario o la contraseña no son válidos');
+      } else {
+        setError(error.message);
+      }
     }
   };
 
