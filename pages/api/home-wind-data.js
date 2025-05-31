@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   // Calculate current date and date 5 months ago
   const currentDate = new Date();
   const fiveMonthsAgo = new Date(currentDate);
-  fiveMonthsAgo.setMonth(currentDate.getMonth() - 5);
+  fiveMonthsAgo.setMonth(currentDate.getMonth() - 7);
   
   // Calculate a 24-hour window from 5 months ago
   const startDate = new Date(fiveMonthsAgo);
