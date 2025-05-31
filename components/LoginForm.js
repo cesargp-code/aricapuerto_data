@@ -16,7 +16,7 @@ const LoginForm = ({ onClose }) => {
       if (isResetMode) {
         const { error } = await forgotPassword(email);
         if (error) throw error;
-        alert('Check your email for password reset instructions');
+        alert('Revisa tu correo electrónico para obtener instrucciones para restablecer la contraseña');
         setIsResetMode(false);
       } else {
         const { error } = await signIn(email, password);
@@ -24,14 +24,18 @@ const LoginForm = ({ onClose }) => {
         onClose(); // Close the login form on success
       }
     } catch (error) {
-      setError(error.message);
+      if (error.message === 'Invalid login credentials') {
+        setError('El usuario o la contraseña no son válidos');
+      } else {
+        setError(error.message);
+      }
     }
   };
 
   return (
     <div className="card">
       <div className="card-body">
-        <h3 className="card-title">{isResetMode ? 'Reset Password' : 'Login'}</h3>
+        <h3 className="card-title">{isResetMode ? 'Restablecer Contraseña' : 'Iniciar Sesión'}</h3>
         {error && (
           <div className="alert alert-danger" role="alert">
             {error}
@@ -39,7 +43,7 @@ const LoginForm = ({ onClose }) => {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label">Correo Electrónico</label>
             <input
               type="email"
               className="form-control"
@@ -50,7 +54,7 @@ const LoginForm = ({ onClose }) => {
           </div>
           {!isResetMode && (
             <div className="mb-3">
-              <label className="form-label">Password</label>
+              <label className="form-label">Contraseña</label>
               <input
                 type="password"
                 className="form-control"
@@ -62,14 +66,14 @@ const LoginForm = ({ onClose }) => {
           )}
           <div className="d-flex justify-content-between align-items-center">
             <button type="submit" className="btn btn-primary">
-              {isResetMode ? 'Send Reset Link' : 'Login'}
+              {isResetMode ? 'Enviar Enlace de Restablecimiento' : 'Iniciar Sesión'}
             </button>
             <button
               type="button"
               className="btn btn-link"
               onClick={() => setIsResetMode(!isResetMode)}
             >
-              {isResetMode ? 'Back to Login' : 'Forgot Password?'}
+              {isResetMode ? 'Volver a Iniciar Sesión' : '¿Olvidaste tu Contraseña?'}
             </button>
           </div>
         </form>
