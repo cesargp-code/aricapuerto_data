@@ -173,20 +173,10 @@ const WavesContent = () => {
       enabled: false,
     },
     stroke: {
-      width: [2, 2], // Reverted for two series
+      width: [2, 2],
       lineCap: "round",
       curve: "smooth",
     },
-    series: [
-      {
-        name: "Altura significativa",
-        data: displayedChartData.map(point => ({ x: point.x, y: point.y }))
-      },
-      {
-        name: "Altura máxima",
-        data: displayedChartData.map(point => ({ x: point.x, y: point.maxHeight }))
-      }
-    ],
     grid: {
       padding: {
         top: -20,
@@ -206,22 +196,18 @@ const WavesContent = () => {
         enabled: false
       },
     },
-    yaxis: { // Reverted to single axis configuration
+    yaxis: {
       labels: {
         padding: 4,
-        formatter: function (val) { // General formatter, or can be more specific if only one unit type
-          return val !== null && !isNaN(val) ? val.toFixed(0) + " m" : "0 m";
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? Math.round(val) + " m" : "0 m";
         }
       },
       min: 0,
-      title: {
-        // text: "Altura (m)", // Optional: can remove if chart context is clear
-        // style: { color: "#000", fontWeight: 'normal' }
-      }
     },
-    colors: ["#13A8E2", "#1E40AF"], // Reverted to two colors
+    colors: ["#13A8E2", "#1E40AF"],
     legend: {
-      show: false, // Hidden as it was originally for two series
+      show: false,
     },
     tooltip: {
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
@@ -232,17 +218,12 @@ const WavesContent = () => {
           hour12: false
         });
     
-        // Find the original data point that contains all the information
-        // dataPointIndex can be unreliable with multiple series if x values are not perfectly aligned.
-        // It's safer to find the point by timestamp from allChartData or displayedChartData.
         const originalDataPoint = displayedChartData.find(p => p.x === timestamp);
 
         if (!originalDataPoint) return '';
         
-        // Safely handle null values for each metric
         const maxHeightValue = originalDataPoint.maxHeight !== null ? originalDataPoint.maxHeight.toFixed(2) : '-';
         const heightValue = originalDataPoint.y !== null ? originalDataPoint.y.toFixed(2) : '-';
-        // const periodValue = originalDataPoint.period !== null ? originalDataPoint.period.toFixed(1) : '-'; // Period removed from this tooltip
         const directionValue = originalDataPoint.direction !== null ? originalDataPoint.direction.toFixed(0) : '-';
         
         let tooltipHtml = `<div class="arrow_box">
@@ -250,7 +231,6 @@ const WavesContent = () => {
 
         tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[0]}"></span> Alt. Sig.: ${heightValue} m</div>`;
         tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[1]}"></span> Alt. Max.: ${maxHeightValue} m</div>`;
-        // Period display removed
         tooltipHtml += `<div><span class="status-dot" style="opacity:0;"></span> Dir.: ${directionValue}°</div>`;
         tooltipHtml += `</div>`;
 
@@ -259,14 +239,13 @@ const WavesContent = () => {
     },
   };
 
-  // New chart options for Wave Period
   const periodChartOptions = {
     chart: {
       type: 'line',
       id: 'waves_chart_period',
       fontFamily: 'inherit',
-      group: 'waves_sync',
-      height: 120, // Slightly smaller height for the period chart
+      //group: 'waves_sync',
+      height: 120,
       zoom: false,
       parentHeightOffset: 0,
       toolbar: {
@@ -284,22 +263,20 @@ const WavesContent = () => {
       lineCap: "round",
       curve: "smooth",
     },
-    series: [ // Series will be set dynamically based on displayedChartData
-    ],
     grid: {
       padding: {
         top: -20,
         right: 0,
-        left: -4, // Adjust as needed for y-axis labels
+        left: -4,
         bottom: -4
       },
       strokeDashArray: 4,
     },
     xaxis: {
       type: 'numeric',
-      tickAmount: 8, // Match main chart or adjust
+      tickAmount: 8,
       labels: {
-        show: false, // Hide x-axis labels to avoid redundancy
+        show: false,
       },
       tooltip: {
         enabled: false
@@ -309,13 +286,13 @@ const WavesContent = () => {
       labels: {
         padding: 4,
         formatter: function (val) {
-          return val !== null && !isNaN(val) ? val.toFixed(0) + " s" : "0 s";
+          return val !== null && !isNaN(val) ? Math.round(val) + " s" : "0 s";
         }
       }
     },
     colors: ["#20c997"],
     legend: {
-      show: false, // Only one series, legend not critical
+      show: false,
     },
     tooltip: {
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
@@ -336,7 +313,6 @@ const WavesContent = () => {
       }
     }
   };
-
 
   const handleDownload = () => {
     const csvData = displayedChartData.map(point => ({
@@ -402,7 +378,7 @@ const WavesContent = () => {
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWave.height} m | {currentWave.maxHeight} m | {currentWave.currentPeriod} s
+              {currentWave.height} m | {currentWave.currentPeriod} s
               <span className="d-inline-flex align-items-center gap-1">
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
@@ -473,18 +449,29 @@ const WavesContent = () => {
                   </div>
                 </div>
                 <div id="chart-wave-height">
-                  {typeof window !== 'undefined' && (
+                  {typeof window !== 'undefined' && displayedChartData.length > 0 && (
                     <ReactApexChart 
+                      key={`height-chart-${displayedChartData.length}-${timeRange}`}
                       options={chartOptions} 
-                      series={chartOptions.series} // Ensure this is correctly populated
+                      series={[
+                        {
+                          name: "Altura significativa",
+                          data: displayedChartData.map(point => ({ x: point.x, y: point.y }))
+                        },
+                        {
+                          name: "Altura máxima",
+                          data: displayedChartData.map(point => ({ x: point.x, y: point.maxHeight }))
+                        }
+                      ]}
                       type="line" 
                       height={200} 
                     />
                   )}
                 </div>
                 <div id="chart-wave-period">
-                  {typeof window !== 'undefined' && (
+                  {typeof window !== 'undefined' && displayedChartData.length > 0 && (
                     <ReactApexChart
+                      key={`period-chart-${displayedChartData.length}-${timeRange}`}
                       options={periodChartOptions}
                       series={[{ name: "Periodo", data: displayedChartData.map(point => ({ x: point.x, y: point.period })) }]}
                       type="line"

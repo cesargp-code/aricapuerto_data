@@ -148,7 +148,10 @@ const PressureContent = () => {
     yaxis: {
       labels: {
         padding: 4,
-      },
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? val + " hPa" : "0 hPa";
+        }
+      }
     },
     colors: ["#2C3976"],
     legend: {

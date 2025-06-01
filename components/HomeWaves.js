@@ -147,6 +147,9 @@ const WaveHeightChart = () => {
     yaxis: {
       labels: {
         padding: 4,
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? val + " m" : "0 m";
+        }
       },
       min: 0,
     },

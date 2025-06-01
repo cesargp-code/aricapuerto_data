@@ -143,6 +143,10 @@ const WindSpeedChart = () => {
     yaxis: {
       labels: {
         padding: 4,
+        width: 50,
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? val + " m/s" : "0 m/s";
+        }
       },
       min: 0,
     },

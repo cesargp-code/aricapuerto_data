@@ -190,8 +190,10 @@ const WindContent = () => {
     yaxis: {
       labels: {
         padding: 4,
-      },
-      min: 0,
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? Math.round(val) + " m/s" : "0 m/s";
+        }
+      }
     },
     colors: ["#157B37", "#43F37C"],
     legend: {

@@ -148,7 +148,10 @@ const TemperatureContent = () => {
     yaxis: {
       labels: {
         padding: 4,
-      },
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? val + " °C" : "0 °C";
+        }
+      }
     },
     colors: ["#2C3976"],
     legend: {
