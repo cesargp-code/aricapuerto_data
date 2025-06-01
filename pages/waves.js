@@ -121,10 +121,10 @@ const WavesContent = () => {
         
         setIsStaleData(timeDifferenceMinutes >= 30);
         setCurrentWave({
-          height: lastDataPoint.y.toFixed(2),
+          height: lastDataPoint.y !== null ? lastDataPoint.y.toFixed(1) : '-',
           direction: Math.round(lastDataPoint.direction),
-          maxHeight: lastDataPoint.maxHeight.toFixed(2),
-          currentPeriod: lastDataPoint.period !== null ? lastDataPoint.period.toFixed(1) : '-',
+          maxHeight: lastDataPoint.maxHeight !== null ? lastDataPoint.maxHeight.toFixed(1) : '-',
+          currentPeriod: lastDataPoint.period !== null ? Math.round(lastDataPoint.period).toString() : '-',
         });
         setLastUpdated(lastDataTime.toLocaleTimeString([], {
           hour: '2-digit', 
@@ -171,25 +171,18 @@ const WavesContent = () => {
       enabled: false,
     },
     stroke: {
-      width: [2, 2, 2], // Adjusted for three series
+      width: [2, 2], // Reverted for two series
       lineCap: "round",
       curve: "smooth",
     },
     series: [
       {
         name: "Altura significativa",
-        type: 'line', // Specify type for mixed charts if necessary, but here all are lines
         data: displayedChartData.map(point => ({ x: point.x, y: point.y }))
       },
       {
         name: "Altura máxima",
-        type: 'line',
         data: displayedChartData.map(point => ({ x: point.x, y: point.maxHeight }))
-      },
-      {
-        name: "Periodo",
-        type: 'line',
-        data: displayedChartData.map(point => ({ x: point.x, y: point.period }))
       }
     ],
     grid: {
@@ -211,62 +204,22 @@ const WavesContent = () => {
         enabled: false
       },
     },
-    yaxis: [
-      { // Primary Y-axis (Wave Height)
-        seriesName: 'Altura significativa', // Link to the first series
-        axisTicks: { show: true },
-        axisBorder: { show: true, color: "#13A8E2" },
-        labels: {
-          style: { colors: "#13A8E2" },
-          padding: 4,
-          formatter: function (val) {
-            return val ? val.toFixed(1) + " m" : "0 m";
-          }
-        },
-        title: {
-          text: "Altura (m)",
-          style: { color: "#13A8E2", fontWeight: 'normal' }
-        },
-        min: 0,
+    yaxis: { // Reverted to single axis configuration
+      labels: {
+        padding: 4,
+        formatter: function (val) { // General formatter, or can be more specific if only one unit type
+          return val !== null && !isNaN(val) ? val.toFixed(1) + " m" : "0 m";
+        }
       },
-      { // Secondary Y-axis (Wave Height Max) - Same axis as primary but linked to second series
-        seriesName: 'Altura máxima', // Link to the second series
-        show: false, // Don't show this axis, just use its scale for the series
-        min: 0,
-      },
-      { // Tertiary Y-axis (Period)
-        seriesName: 'Periodo', // Link to the third series
-        opposite: true, // Position on the right
-        axisTicks: { show: true },
-        axisBorder: { show: true, color: "#20c997" },
-        labels: {
-          style: { colors: "#20c997" },
-          padding: 4,
-          formatter: function (val) {
-            return val ? val.toFixed(1) + " s" : "0 s";
-          }
-        },
-        title: {
-          text: "Periodo (s)",
-          style: { color: "#20c997", fontWeight: 'normal' }
-        },
-        // Potentially set min/max for period axis if needed, e.g., min: 0
+      min: 0,
+      title: {
+        // text: "Altura (m)", // Optional: can remove if chart context is clear
+        // style: { color: "#000", fontWeight: 'normal' }
       }
-    ],
-    colors: ["#13A8E2", "#1E40AF", "#20c997"], // Added color for Period
+    },
+    colors: ["#13A8E2", "#1E40AF"], // Reverted to two colors
     legend: {
-      show: true, // Let's show the legend now that we have more series
-      position: 'top',
-      horizontalAlign: 'center',
-      markers: {
-        width: 10,
-        height: 10,
-        radius: 5,
-      },
-      itemMargin: {
-        horizontal: 10,
-        vertical: 0
-      },
+      show: false, // Hidden as it was originally for two series
     },
     tooltip: {
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
@@ -287,17 +240,15 @@ const WavesContent = () => {
         // Safely handle null values for each metric
         const maxHeightValue = originalDataPoint.maxHeight !== null ? originalDataPoint.maxHeight.toFixed(2) : '-';
         const heightValue = originalDataPoint.y !== null ? originalDataPoint.y.toFixed(2) : '-';
-        const periodValue = originalDataPoint.period !== null ? originalDataPoint.period.toFixed(1) : '-';
+        // const periodValue = originalDataPoint.period !== null ? originalDataPoint.period.toFixed(1) : '-'; // Period removed from this tooltip
         const directionValue = originalDataPoint.direction !== null ? originalDataPoint.direction.toFixed(0) : '-';
         
         let tooltipHtml = `<div class="arrow_box">
                              <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>`;
 
-        // Check which series this specific tooltip is for, or display all if that's the desired behavior
-        // For a shared tooltip, we display all.
         tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[0]}"></span> Alt. Sig.: ${heightValue} m</div>`;
         tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[1]}"></span> Alt. Max.: ${maxHeightValue} m</div>`;
-        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[2]}"></span> Periodo: ${periodValue} s</div>`;
+        // Period display removed
         tooltipHtml += `<div><span class="status-dot" style="opacity:0;"></span> Dir.: ${directionValue}°</div>`;
         tooltipHtml += `</div>`;
 
@@ -305,6 +256,88 @@ const WavesContent = () => {
       }
     },
   };
+
+  // New chart options for Wave Period
+  const periodChartOptions = {
+    chart: {
+      type: 'line',
+      fontFamily: 'inherit',
+      height: 150, // Slightly smaller height for the period chart
+      zoom: false,
+      parentHeightOffset: 0,
+      toolbar: {
+        show: false,
+      },
+      animations: {
+        enabled: false
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      width: [2],
+      lineCap: "round",
+      curve: "smooth",
+    },
+    series: [ // Series will be set dynamically based on displayedChartData
+    ],
+    grid: {
+      padding: {
+        top: -20,
+        right: 0,
+        left: -4, // Adjust as needed for y-axis labels
+        bottom: -4
+      },
+      strokeDashArray: 4,
+    },
+    xaxis: {
+      type: 'numeric',
+      tickAmount: 8, // Match main chart or adjust
+      labels: {
+        show: false, // Hide x-axis labels to avoid redundancy
+      },
+      tooltip: {
+        enabled: false
+      },
+    },
+    yaxis: {
+      labels: {
+        padding: 4,
+        formatter: function (val) {
+          return val !== null && !isNaN(val) ? val.toFixed(1) + " s" : "0 s";
+        }
+      },
+      min: 0, // Or adjust based on typical period values
+      title: {
+        text: "Periodo (s)",
+        style: { color: "#20c997", fontWeight: 'normal' }
+      },
+    },
+    colors: ["#20c997"],
+    legend: {
+      show: false, // Only one series, legend not critical
+    },
+    tooltip: {
+      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+        const timestamp = w.config.series[seriesIndex].data[dataPointIndex].x;
+        const periodValue = series[seriesIndex][dataPointIndex];
+        const time = new Date(timestamp).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+
+        return `
+          <div class="arrow_box">
+            <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
+            <div><span class="status-dot" style="background-color:${w.globals.colors[0]}"></span> Periodo: ${periodValue !== null ? periodValue.toFixed(1) : '-'} s</div>
+          </div>
+        `;
+      }
+    }
+  };
+
 
   const handleDownload = () => {
     const csvData = displayedChartData.map(point => ({
@@ -424,7 +457,7 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot"></span>
+                        <span className="status-dot" style={{ backgroundColor: '#20c997' }}></span>
                         <span className="fs-5">Mín. periodo</span>
                       </div>
                       <div className="h3 m-0">{stats.minPeriod} s</div>
@@ -433,7 +466,7 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot"></span>
+                        <span className="status-dot" style={{ backgroundColor: '#20c997' }}></span>
                         <span className="fs-5">Máx. periodo</span>
                       </div>
                       <div className="h3 m-0">{stats.maxPeriod} s</div>
@@ -444,9 +477,19 @@ const WavesContent = () => {
                   {typeof window !== 'undefined' && (
                     <ReactApexChart 
                       options={chartOptions} 
-                      series={chartOptions.series} 
+                      series={chartOptions.series} // Ensure this is correctly populated
                       type="line" 
                       height={200} 
+                    />
+                  )}
+                </div>
+                <div id="chart-wave-period" style={{ marginTop: '20px' }}>
+                  {typeof window !== 'undefined' && (
+                    <ReactApexChart
+                      options={periodChartOptions}
+                      series={[{ name: "Periodo", data: displayedChartData.map(point => ({ x: point.x, y: point.period })) }]}
+                      type="line"
+                      height={150}
                     />
                   )}
                 </div>

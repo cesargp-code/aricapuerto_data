@@ -79,9 +79,9 @@ const WaveHeightChart = () => {
         const timeDifferenceMinutes = (currentTime - lastDataTime) / (1000 * 60);
         
         setIsStaleData(timeDifferenceMinutes >= 30);
-        setCurrentWaveHeight(lastDataPoint.y.toFixed(2));
+        setCurrentWaveHeight(lastDataPoint.y !== null ? lastDataPoint.y.toFixed(1) : '-');
         setCurrentWaveDir(lastDataPoint.direction);
-        setCurrentWavePeriod(lastDataPoint.period);
+        setCurrentWavePeriod(lastDataPoint.period !== null ? lastDataPoint.period.toString() : '-'); // Ensure it's a string for display
         setLastUpdated(lastDataTime.toLocaleTimeString([], { 
           hour: '2-digit', 
           minute: '2-digit', 
@@ -162,7 +162,7 @@ const WaveHeightChart = () => {
           minute: '2-digit',
           hour12: false
         });
-        const height = data.y !== null ? data.y.toFixed(2) : '-';
+        const height = data.y !== null ? data.y.toFixed(1) : '-'; // Changed to one decimal place
         const direction = data.direction !== null ? Math.round(data.direction).toString() : '-';
         const period = data.period !== null ? Math.round(data.period).toString() : '-';
         
