@@ -309,10 +309,10 @@ const WavesContent = () => {
         }
       },
       min: 0, // Or adjust based on typical period values
-      title: {
-        text: "Periodo (s)",
-        style: { color: "#20c997", fontWeight: 'normal' }
-      },
+      // title: { // Title removed for visual alignment
+      //   text: "Periodo (s)",
+      //   style: { color: "#20c997", fontWeight: 'normal' }
+      // },
     },
     colors: ["#20c997"],
     legend: {
