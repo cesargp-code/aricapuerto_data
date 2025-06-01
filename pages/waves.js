@@ -157,9 +157,8 @@ const WavesContent = () => {
     chart: {
       type: 'line',
       fontFamily: 'inherit',
+      id: 'waves_chart_height',
       group: 'waves_sync',
-      synchronize: 'waves_sync',
-      syncTooltip: true,
       height: 200,
       zoom: false,
       parentHeightOffset: 0,
@@ -211,7 +210,7 @@ const WavesContent = () => {
       labels: {
         padding: 4,
         formatter: function (val) { // General formatter, or can be more specific if only one unit type
-          return val !== null && !isNaN(val) ? val.toFixed(1) + " m" : "0 m";
+          return val !== null && !isNaN(val) ? val.toFixed(0) + " m" : "0 m";
         }
       },
       min: 0,
@@ -264,10 +263,9 @@ const WavesContent = () => {
   const periodChartOptions = {
     chart: {
       type: 'line',
+      id: 'waves_chart_period',
       fontFamily: 'inherit',
       group: 'waves_sync',
-      synchronize: 'waves_sync',
-      syncTooltip: true,
       height: 120, // Slightly smaller height for the period chart
       zoom: false,
       parentHeightOffset: 0,
@@ -311,7 +309,7 @@ const WavesContent = () => {
       labels: {
         padding: 4,
         formatter: function (val) {
-          return val !== null && !isNaN(val) ? val.toFixed(1) + " s" : "0 s";
+          return val !== null && !isNaN(val) ? val.toFixed(0) + " s" : "0 s";
         }
       }
     },
