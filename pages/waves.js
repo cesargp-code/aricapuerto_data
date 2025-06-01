@@ -24,6 +24,7 @@ const WavesContent = () => {
     height: '-',
     direction: '-',
     maxHeight: '-',
+    currentPeriod: '-',
   });
   const [isStaleData, setIsStaleData] = useState(false);
   const [stats, setStats] = useState({
@@ -31,6 +32,8 @@ const WavesContent = () => {
     maxWave: '-',
     minMaxHeight: '-',
     maxMaxHeight: '-',
+    minPeriod: '-',
+    maxPeriod: '-',
   });
 
   useEffect(() => {
@@ -59,13 +62,25 @@ const WavesContent = () => {
 
     // Update statistics for the filtered range
     if (filteredData.length > 0) {
-      const waveHeights = filteredData.map(point => point.y);
-      const maxHeights = filteredData.map(point => point.maxHeight);
+      const waveHeights = filteredData.map(point => point.y).filter(h => h !== null);
+      const maxHeights = filteredData.map(point => point.maxHeight).filter(h => h !== null);
+      const periods = filteredData.map(point => point.period).filter(p => p !== null);
       setStats({
-        minWave: Math.min(...waveHeights).toFixed(2),
-        maxWave: Math.max(...waveHeights).toFixed(2),
-        minMaxHeight: Math.min(...maxHeights).toFixed(2),
-        maxMaxHeight: Math.max(...maxHeights).toFixed(2),
+        minWave: waveHeights.length > 0 ? Math.min(...waveHeights).toFixed(1) : '-',
+        maxWave: waveHeights.length > 0 ? Math.max(...waveHeights).toFixed(1) : '-',
+        minMaxHeight: maxHeights.length > 0 ? Math.min(...maxHeights).toFixed(1) : '-',
+        maxMaxHeight: maxHeights.length > 0 ? Math.max(...maxHeights).toFixed(1) : '-',
+        minPeriod: periods.length > 0 ? Math.min(...periods).toFixed(1) : '-',
+        maxPeriod: periods.length > 0 ? Math.max(...periods).toFixed(1) : '-',
+      });
+    } else {
+      setStats({
+        minWave: '-',
+        maxWave: '-',
+        minMaxHeight: '-',
+        maxMaxHeight: '-',
+        minPeriod: '-',
+        maxPeriod: '-',
       });
     }
   };
@@ -85,6 +100,7 @@ const WavesContent = () => {
         y: item.VAVH ? item.VAVH / 100 : null,
         maxHeight: item.VMXL ? item.VMXL / 100 : null,
         direction: parseFloat(item.VDIR),
+        period: item.VAVT ? parseFloat(item.VAVT) : null, // VAVT is already a number from API
       }));
 
       setAllChartData(formattedData);
@@ -108,21 +124,26 @@ const WavesContent = () => {
           height: lastDataPoint.y.toFixed(2),
           direction: Math.round(lastDataPoint.direction),
           maxHeight: lastDataPoint.maxHeight.toFixed(2),
+          currentPeriod: lastDataPoint.period !== null ? lastDataPoint.period.toFixed(1) : '-',
         });
-        setLastUpdated(lastDataTime.toLocaleTimeString([], { 
+        setLastUpdated(lastDataTime.toLocaleTimeString([], {
           hour: '2-digit', 
           minute: '2-digit', 
           hour12: false 
         }));
 
         // Initial statistics
-        const waveHeights = formattedData.map(point => point.y);
-        const maxHeights = formattedData.map(point => point.maxHeight);
+        const waveHeights = formattedData.map(point => point.y).filter(h => h !== null);
+        const maxHeights = formattedData.map(point => point.maxHeight).filter(h => h !== null);
+        const periods = formattedData.map(point => point.period).filter(p => p !== null);
+
         setStats({
-          minWave: Math.min(...waveHeights).toFixed(1),
-          maxWave: Math.max(...waveHeights).toFixed(1),
-          minMaxHeight: Math.min(...maxHeights).toFixed(1),
-          maxMaxHeight: Math.max(...maxHeights).toFixed(1),
+          minWave: waveHeights.length > 0 ? Math.min(...waveHeights).toFixed(1) : '-',
+          maxWave: waveHeights.length > 0 ? Math.max(...waveHeights).toFixed(1) : '-',
+          minMaxHeight: maxHeights.length > 0 ? Math.min(...maxHeights).toFixed(1) : '-',
+          maxMaxHeight: maxHeights.length > 0 ? Math.max(...maxHeights).toFixed(1) : '-',
+          minPeriod: periods.length > 0 ? Math.min(...periods).toFixed(1) : '-',
+          maxPeriod: periods.length > 0 ? Math.max(...periods).toFixed(1) : '-',
         });
       }
       setIsLoading(false);
@@ -150,18 +171,25 @@ const WavesContent = () => {
       enabled: false,
     },
     stroke: {
-      width: [2, 2],
+      width: [2, 2, 2], // Adjusted for three series
       lineCap: "round",
       curve: "smooth",
     },
     series: [
       {
         name: "Altura significativa",
+        type: 'line', // Specify type for mixed charts if necessary, but here all are lines
         data: displayedChartData.map(point => ({ x: point.x, y: point.y }))
       },
       {
         name: "Altura máxima",
+        type: 'line',
         data: displayedChartData.map(point => ({ x: point.x, y: point.maxHeight }))
+      },
+      {
+        name: "Periodo",
+        type: 'line',
+        data: displayedChartData.map(point => ({ x: point.x, y: point.period }))
       }
     ],
     grid: {
@@ -183,15 +211,62 @@ const WavesContent = () => {
         enabled: false
       },
     },
-    yaxis: {
-      labels: {
-        padding: 4,
+    yaxis: [
+      { // Primary Y-axis (Wave Height)
+        seriesName: 'Altura significativa', // Link to the first series
+        axisTicks: { show: true },
+        axisBorder: { show: true, color: "#13A8E2" },
+        labels: {
+          style: { colors: "#13A8E2" },
+          padding: 4,
+          formatter: function (val) {
+            return val ? val.toFixed(1) + " m" : "0 m";
+          }
+        },
+        title: {
+          text: "Altura (m)",
+          style: { color: "#13A8E2", fontWeight: 'normal' }
+        },
+        min: 0,
       },
-      min: 0,
-    },
-    colors: ["#13A8E2", "#1E40AF"],
+      { // Secondary Y-axis (Wave Height Max) - Same axis as primary but linked to second series
+        seriesName: 'Altura máxima', // Link to the second series
+        show: false, // Don't show this axis, just use its scale for the series
+        min: 0,
+      },
+      { // Tertiary Y-axis (Period)
+        seriesName: 'Periodo', // Link to the third series
+        opposite: true, // Position on the right
+        axisTicks: { show: true },
+        axisBorder: { show: true, color: "#20c997" },
+        labels: {
+          style: { colors: "#20c997" },
+          padding: 4,
+          formatter: function (val) {
+            return val ? val.toFixed(1) + " s" : "0 s";
+          }
+        },
+        title: {
+          text: "Periodo (s)",
+          style: { color: "#20c997", fontWeight: 'normal' }
+        },
+        // Potentially set min/max for period axis if needed, e.g., min: 0
+      }
+    ],
+    colors: ["#13A8E2", "#1E40AF", "#20c997"], // Added color for Period
     legend: {
-      show: false,
+      show: true, // Let's show the legend now that we have more series
+      position: 'top',
+      horizontalAlign: 'center',
+      markers: {
+        width: 10,
+        height: 10,
+        radius: 5,
+      },
+      itemMargin: {
+        horizontal: 10,
+        vertical: 0
+      },
     },
     tooltip: {
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
@@ -203,21 +278,30 @@ const WavesContent = () => {
         });
     
         // Find the original data point that contains all the information
-        const originalDataPoint = displayedChartData[dataPointIndex];
+        // dataPointIndex can be unreliable with multiple series if x values are not perfectly aligned.
+        // It's safer to find the point by timestamp from allChartData or displayedChartData.
+        const originalDataPoint = displayedChartData.find(p => p.x === timestamp);
+
+        if (!originalDataPoint) return '';
         
         // Safely handle null values for each metric
         const maxHeightValue = originalDataPoint.maxHeight !== null ? originalDataPoint.maxHeight.toFixed(2) : '-';
         const heightValue = originalDataPoint.y !== null ? originalDataPoint.y.toFixed(2) : '-';
+        const periodValue = originalDataPoint.period !== null ? originalDataPoint.period.toFixed(1) : '-';
         const directionValue = originalDataPoint.direction !== null ? originalDataPoint.direction.toFixed(0) : '-';
         
-        return `
-          <div class="arrow_box">
-            <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>
-            <div><span class="status-dot" style="background-color:#1E40AF"></span> ${maxHeightValue} m</div>
-            <div><span class="status-dot" style="background-color:#13A8E2"></span> ${heightValue} m</div>
-            <div>${directionValue}°</div>
-          </div>
-        `;
+        let tooltipHtml = `<div class="arrow_box">
+                             <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>`;
+
+        // Check which series this specific tooltip is for, or display all if that's the desired behavior
+        // For a shared tooltip, we display all.
+        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[0]}"></span> Alt. Sig.: ${heightValue} m</div>`;
+        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[1]}"></span> Alt. Max.: ${maxHeightValue} m</div>`;
+        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[2]}"></span> Periodo: ${periodValue} s</div>`;
+        tooltipHtml += `<div><span class="status-dot" style="opacity:0;"></span> Dir.: ${directionValue}°</div>`;
+        tooltipHtml += `</div>`;
+
+        return tooltipHtml;
       }
     },
   };
@@ -226,6 +310,7 @@ const WavesContent = () => {
     const csvData = displayedChartData.map(point => ({
       date: point.x,
       significantHeight: point.y,
+      period: point.period,
       waveDirection: point.direction,
       maxHeight: point.maxHeight,
     }));
@@ -234,6 +319,7 @@ const WavesContent = () => {
       columns: {
         date: 'Fecha y hora',
         significantHeight: 'Altura significativa (m)',
+        period: 'Periodo (s)',
         waveDirection: 'Dirección del oleaje (°)',
         maxHeight: 'Altura máxima (m)',
       },
@@ -284,7 +370,7 @@ const WavesContent = () => {
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWave.height} m | {currentWave.maxHeight} m
+              {currentWave.height} m | {currentWave.maxHeight} m | {currentWave.currentPeriod} s
               <span className="d-inline-flex align-items-center gap-1">
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
@@ -333,6 +419,24 @@ const WavesContent = () => {
                         <span className="fs-5">Máx. altura sig.</span>
                       </div>
                       <div className="h3 m-0">{stats.maxWave} m</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot"></span>
+                        <span className="fs-5">Mín. periodo</span>
+                      </div>
+                      <div className="h3 m-0">{stats.minPeriod} s</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot"></span>
+                        <span className="fs-5">Máx. periodo</span>
+                      </div>
+                      <div className="h3 m-0">{stats.maxPeriod} s</div>
                     </div>
                   </div>
                 </div>
