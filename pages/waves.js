@@ -157,6 +157,9 @@ const WavesContent = () => {
     chart: {
       type: 'line',
       fontFamily: 'inherit',
+      group: 'waves_sync',
+      synchronize: 'waves_sync',
+      syncTooltip: true,
       height: 200,
       zoom: false,
       parentHeightOffset: 0,
@@ -262,7 +265,10 @@ const WavesContent = () => {
     chart: {
       type: 'line',
       fontFamily: 'inherit',
-      height: 150, // Slightly smaller height for the period chart
+      group: 'waves_sync',
+      synchronize: 'waves_sync',
+      syncTooltip: true,
+      height: 120, // Slightly smaller height for the period chart
       zoom: false,
       parentHeightOffset: 0,
       toolbar: {
@@ -307,12 +313,7 @@ const WavesContent = () => {
         formatter: function (val) {
           return val !== null && !isNaN(val) ? val.toFixed(1) + " s" : "0 s";
         }
-      },
-      min: 0, // Or adjust based on typical period values
-      // title: { // Title removed for visual alignment
-      //   text: "Periodo (s)",
-      //   style: { color: "#20c997", fontWeight: 'normal' }
-      // },
+      }
     },
     colors: ["#20c997"],
     legend: {
@@ -483,13 +484,13 @@ const WavesContent = () => {
                     />
                   )}
                 </div>
-                <div id="chart-wave-period" style={{ marginTop: '20px' }}>
+                <div id="chart-wave-period">
                   {typeof window !== 'undefined' && (
                     <ReactApexChart
                       options={periodChartOptions}
                       series={[{ name: "Periodo", data: displayedChartData.map(point => ({ x: point.x, y: point.period })) }]}
                       type="line"
-                      height={150}
+                      height={120}
                     />
                   )}
                 </div>
