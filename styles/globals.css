@@ -36,8 +36,11 @@ a h3.card-title, a #page-title {
 .navbar .navbar-brand img#logo {
     height:60px;
 }
-#chart-wind-speed, #chart-wave-height {
+#chart-wind-speed, #chart-wave-height, #chart-wave-period {
     margin-right:10px !important;
+}
+#chart-wave-period {
+    margin-top:15px;
 }
 .apexcharts-tooltip {
     transform: translateY(-100%) !important;
