@@ -273,7 +273,7 @@ const WavesContent = () => {
       strokeDashArray: 4,
     },
     xaxis: {
-      type: 'numeric',
+      type: 'datetime',
       tickAmount: 8,
       labels: {
         show: false,
@@ -429,24 +429,6 @@ const WavesContent = () => {
                       <div className="h3 m-0">{stats.maxWave} m</div>
                     </div>
                   </div>
-                  <div className="col-6">
-                    <div className="p-3 bg-light rounded-2 text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#20c997' }}></span>
-                        <span className="fs-5">Mín. periodo</span>
-                      </div>
-                      <div className="h3 m-0">{stats.minPeriod} s</div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="p-3 bg-light rounded-2 text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#20c997' }}></span>
-                        <span className="fs-5">Máx. periodo</span>
-                      </div>
-                      <div className="h3 m-0">{stats.maxPeriod} s</div>
-                    </div>
-                  </div>
                 </div>
                 <div id="chart-wave-height">
                   {typeof window !== 'undefined' && displayedChartData.length > 0 && (
@@ -468,6 +450,27 @@ const WavesContent = () => {
                     />
                   )}
                 </div>
+                <WaveDirectionStrip waveData={waveDirChartData} />
+                <div className="row g-2 mb-3 mt-4">
+                <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#20c997' }}></span>
+                        <span className="fs-5">Mín. periodo</span>
+                      </div>
+                      <div className="h3 m-0">{stats.minPeriod} s</div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-2 text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+                        <span className="status-dot" style={{ backgroundColor: '#20c997' }}></span>
+                        <span className="fs-5">Máx. periodo</span>
+                      </div>
+                      <div className="h3 m-0">{stats.maxPeriod} s</div>
+                    </div>
+                  </div>
+                </div>
                 <div id="chart-wave-period">
                   {typeof window !== 'undefined' && displayedChartData.length > 0 && (
                     <ReactApexChart
@@ -479,7 +482,7 @@ const WavesContent = () => {
                     />
                   )}
                 </div>
-                <WaveDirectionStrip waveData={waveDirChartData} />
+                
               </div>
             </div>
           </div>
