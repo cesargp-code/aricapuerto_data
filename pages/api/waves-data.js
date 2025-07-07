@@ -1,20 +1,13 @@
 import supabase from '../../lib/supabaseClient';
 
 export default async function handler(req, res) {
-  // TEMPORARY FIX: Use data from 5 months ago due to meteorological station issues
-  
-  // Calculate current date and date 5 months ago
+  // Calculate current 24-hour window
   const currentDate = new Date();
-  const fiveMonthsAgo = new Date(currentDate);
-  fiveMonthsAgo.setMonth(currentDate.getMonth() - 7);
-  
-  // Calculate a 24-hour window from 5 months ago
-  const startDate = new Date(fiveMonthsAgo);
-  const endDate = new Date(fiveMonthsAgo);
-  endDate.setDate(endDate.getDate() + 1); // Add 1 day to get 24 hours of data
+  const startDate = new Date(currentDate);
+  startDate.setDate(startDate.getDate() - 1); // Get last 24 hours
   
   const startDateISO = startDate.toISOString();
-  const endDateISO = endDate.toISOString();
+  const endDateISO = currentDate.toISOString();
 
   const { data, error } = await supabase
     .from('arica_oceano')
