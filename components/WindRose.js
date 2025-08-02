@@ -137,7 +137,11 @@ const WindRose = ({ data }) => {
             <text x="55" y="65" textAnchor="middle" className="rose_points_2">NW</text>
             
             {/* Speed category layers - now rendering from fastest to slowest */}
-            {[...windSpeedColors].reverse().map(({key, color}) => generatePaths(key, color))}
+            {[...windSpeedColors].reverse().map(({key, color}) => (
+              <g key={key}>
+                {generatePaths(key, color)}
+              </g>
+            ))}
           </svg>
           
           {/* Legend - keep original order for readability */}

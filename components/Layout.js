@@ -29,6 +29,50 @@ const Layout = ({ children }) => {
     localStorage.setItem('timeRange', timeRange.toString());
   }, [timeRange]);
 
+  // Track time range changes with GA4
+  useEffect(() => {
+    console.log('GA4 Debug: useEffect triggered', { timeRange, pathname: router.pathname });
+    
+    const sendGAEvent = (retries = 3) => {
+      if (typeof window !== 'undefined') {
+        console.log('GA4 Debug: window.gtag available?', !!window.gtag);
+        
+        if (window.gtag) {
+          try {
+            const pageTitle = document.title;
+            const pagePath = router.pathname;
+            
+            console.log('GA4 Debug: Sending time_range_change event', {
+              timeRange,
+              pageTitle,
+              pagePath
+            });
+            
+            window.gtag('event', 'time_range_change', {
+              event_category: 'engagement',
+              event_label: `${timeRange}_hours`,
+              page_title: pageTitle,
+              page_location: window.location.href,
+              time_range_hours: timeRange,
+              page_path: pagePath
+            });
+            
+            console.log('GA4 Debug: Event sent successfully');
+          } catch (error) {
+            console.error('GA4 Debug: Error sending event', error);
+          }
+        } else if (retries > 0) {
+          console.log(`GA4 Debug: gtag not available yet, retrying in 500ms (${retries} retries left)`);
+          setTimeout(() => sendGAEvent(retries - 1), 500);
+        } else {
+          console.log('GA4 Debug: gtag still not available after retries');
+        }
+      }
+    };
+
+    sendGAEvent();
+  }, [timeRange, router.pathname]);
+
   const handleSignOut = async () => {
     try {
       await signOut();
