@@ -292,14 +292,15 @@ const WindContent = () => {
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWind.speed} m/s | {currentWind.gust} m/s
-              <span className="d-inline-flex align-items-center gap-1">
+              {currentWind.speed} m/s 
                 <span style={{ transform: `rotate(${currentWind.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
                     size={20}
                     stroke={2}
                   />
                 </span>
+              ⋮ {currentWind.gust} m/s
+              <span className="d-inline-flex align-items-center gap-1">
               </span>
             </span>
           </div>

@@ -119,7 +119,7 @@ const WavesContent = () => {
         const currentTime = new Date();
         const timeDifferenceMinutes = (currentTime - lastDataTime) / (1000 * 60);
         
-        setIsStaleData(timeDifferenceMinutes >= 30);
+        setIsStaleData(timeDifferenceMinutes >= 35);
         setCurrentWave({
           height: lastDataPoint.y !== null ? lastDataPoint.y.toFixed(1) : '-',
           direction: Math.round(lastDataPoint.direction),
@@ -378,14 +378,15 @@ const WavesContent = () => {
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>
-              {currentWave.height} m | {currentWave.currentPeriod} s
-              <span className="d-inline-flex align-items-center gap-1">
+              {currentWave.height} m 
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
                   <IconArrowNarrowUp
                     size={20}
                     stroke={2}
                   />
                 </span>
+              ⋮ {currentWave.currentPeriod} s
+              <span className="d-inline-flex align-items-center gap-1">
               </span>
             </span>
           </div>

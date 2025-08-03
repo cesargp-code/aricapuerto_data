@@ -78,7 +78,7 @@ const WaveHeightChart = () => {
         const currentTime = new Date();
         const timeDifferenceMinutes = (currentTime - lastDataTime) / (1000 * 60);
         
-        setIsStaleData(timeDifferenceMinutes >= 30);
+        setIsStaleData(timeDifferenceMinutes >= 35);
         setCurrentWaveHeight(lastDataPoint.y !== null ? lastDataPoint.y.toFixed(1) : '-');
         setCurrentWaveDir(lastDataPoint.direction);
         setCurrentWavePeriod(lastDataPoint.period !== null ? lastDataPoint.period.toString() : '-'); // Ensure it's a string for display
@@ -226,7 +226,7 @@ const WaveHeightChart = () => {
                       />
                     </span>
                   </span>
-              | {currentWavePeriod} s
+              ⋮ {currentWavePeriod} s
             </span>
             <IconCircleArrowRightFilled
               height={40}

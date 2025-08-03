@@ -42,13 +42,13 @@ const Layout = ({ children }) => {
             const pageTitle = document.title;
             const pagePath = router.pathname;
             
-            console.log('GA4 Debug: Sending time_range_change event', {
+            console.log('GA4 Debug: Sending timerange_selected event', {
               timeRange,
               pageTitle,
               pagePath
             });
             
-            window.gtag('event', 'time_range_change', {
+            window.gtag('event', 'timerange_selected', {
               event_category: 'engagement',
               event_label: `${timeRange}_hours`,
               page_title: pageTitle,
