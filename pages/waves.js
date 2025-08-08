@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import WaveDirectionStrip from '../components/WaveDirectionStrip';
+import WaveRose from '../components/WaveRose';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
@@ -499,7 +500,7 @@ const WavesContent = () => {
             </div>
           )}
           <div className="col-12">
-
+            <WaveRose data={displayedChartData} />
           </div>
         </>
       )}
