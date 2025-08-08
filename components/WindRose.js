@@ -23,7 +23,7 @@ const WindRose = ({ data }) => {
     
     // Process each data point
     data.forEach(point => {
-      const direction = (point.direction + 180) % 360;
+      const direction = point.direction;
       const speed = point.y;
       
       // Calculate which bin this direction belongs to
