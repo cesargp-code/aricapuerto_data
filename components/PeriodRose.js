@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
-const WaveRose = ({ data }) => {
-  // Process data into direction/height bins
+const PeriodRose = ({ data }) => {
+  // Process data into direction/period bins
   const processedData = useMemo(() => {
     if (!data || data.length === 0) return null;
     
@@ -9,25 +9,25 @@ const WaveRose = ({ data }) => {
     // Shifted by -11.25 degrees so bins are centered on cardinal directions
     const bins = Array(16).fill(0).map(() => ({
       count: 0,
-      heights: {
-        calm: 0,      // 0-0.5 m
-        light: 0,     // 0.5-1 m
-        moderate: 0,  // 1-1.5 m
-        fresh: 0,     // 1.5-2 m
-        strong: 0,    // 2-2.5 m
-        high: 0,      // 2.5-3 m
-        veryHigh: 0,  // 3-4 m
-        extreme: 0    // >4 m
+      periods: {
+        veryShort: 0,   // 0-3 s
+        short: 0,       // 3-5 s
+        moderate: 0,    // 5-7 s
+        long: 0,        // 7-9 s
+        veryLong: 0,    // 9-11 s
+        extreme: 0,     // 11-13 s
+        massive: 0,     // 13-15 s
+        giant: 0        // >15 s
       }
     }));
     
     // Process each data point
     data.forEach(point => {
       const direction = point.direction;
-      const height = point.y;
+      const period = point.period;
       
-      // Skip if direction or height is null/undefined
-      if (direction == null || height == null) return;
+      // Skip if direction or period is null/undefined
+      if (direction == null || period == null) return;
       
       // Calculate which bin this direction belongs to
       // Add 360 before modulo to handle negative angles after the -11.25 shift
@@ -35,33 +35,33 @@ const WaveRose = ({ data }) => {
       
       bins[binIndex].count++;
       
-      // Categorize height
-      if (height <= 0.5) bins[binIndex].heights.calm++;
-      else if (height <= 1) bins[binIndex].heights.light++;
-      else if (height <= 1.5) bins[binIndex].heights.moderate++;
-      else if (height <= 2) bins[binIndex].heights.fresh++;
-      else if (height <= 2.5) bins[binIndex].heights.strong++;
-      else if (height <= 3) bins[binIndex].heights.high++;
-      else if (height <= 4) bins[binIndex].heights.veryHigh++;
-      else bins[binIndex].heights.extreme++;
+      // Categorize period
+      if (period <= 3) bins[binIndex].periods.veryShort++;
+      else if (period <= 5) bins[binIndex].periods.short++;
+      else if (period <= 7) bins[binIndex].periods.moderate++;
+      else if (period <= 9) bins[binIndex].periods.long++;
+      else if (period <= 11) bins[binIndex].periods.veryLong++;
+      else if (period <= 13) bins[binIndex].periods.extreme++;
+      else if (period <= 15) bins[binIndex].periods.massive++;
+      else bins[binIndex].periods.giant++;
     });
     
     // Convert counts to percentages
-    const total = data.filter(point => point.direction != null && point.y != null).length;
+    const total = data.filter(point => point.direction != null && point.period != null).length;
     if (total === 0) return null;
     
     return bins.map(bin => ({
       ...bin,
       percentage: (bin.count / total) * 100,
-      heights: {
-        calm: (bin.heights.calm / total) * 100,
-        light: (bin.heights.light / total) * 100,
-        moderate: (bin.heights.moderate / total) * 100,
-        fresh: (bin.heights.fresh / total) * 100,
-        strong: (bin.heights.strong / total) * 100,
-        high: (bin.heights.high / total) * 100,
-        veryHigh: (bin.heights.veryHigh / total) * 100,
-        extreme: (bin.heights.extreme / total) * 100
+      periods: {
+        veryShort: (bin.periods.veryShort / total) * 100,
+        short: (bin.periods.short / total) * 100,
+        moderate: (bin.periods.moderate / total) * 100,
+        long: (bin.periods.long / total) * 100,
+        veryLong: (bin.periods.veryLong / total) * 100,
+        extreme: (bin.periods.extreme / total) * 100,
+        massive: (bin.periods.massive / total) * 100,
+        giant: (bin.periods.giant / total) * 100
       }
     }));
   }, [data]);
@@ -72,12 +72,12 @@ const WaveRose = ({ data }) => {
   // Calculate maximum percentage for scaling
   const maxPercentage = Math.max(...processedData.map(bin => bin.percentage));
   
-  // Generate the SVG paths for each height category
-  const generatePaths = (heightKey, color) => {
+  // Generate the SVG paths for each period category
+  const generatePaths = (periodKey, color) => {
     const paths = processedData.map((bin, index) => {
       const angle = ((index * 22.5 - 11.25) * Math.PI) / 180;
       const nextAngle = (((index + 1) * 22.5 - 11.25) * Math.PI) / 180;
-      const percentage = bin.heights[heightKey];
+      const percentage = bin.periods[periodKey];
       const radius = (percentage * 120) / maxPercentage;
       
       const x1 = 150 + radius * Math.sin(angle);
@@ -91,21 +91,21 @@ const WaveRose = ({ data }) => {
     return <path d={paths} fill={color} opacity={0.9} />;
   };
 
-  const waveHeightColors = [
-    { key: 'calm', color: '#E3F2FD', label: '0-0.5 m' },
-    { key: 'light', color: '#BBDEFB', label: '0.5-1 m' },
-    { key: 'moderate', color: '#90CAF9', label: '1-1.5 m' },
-    { key: 'fresh', color: '#64B5F6', label: '1.5-2 m' },
-    { key: 'strong', color: '#42A5F5', label: '2-2.5 m' },
-    { key: 'high', color: '#2196F3', label: '2.5-3 m' },
-    { key: 'veryHigh', color: '#1976D2', label: '3-4 m' },
-    { key: 'extreme', color: '#0D47A1', label: '>4 m' }
+  const periodColors = [
+    { key: 'veryShort', color: '#E8F5E8', label: '0-3 s' },
+    { key: 'short', color: '#C8E6C9', label: '3-5 s' },
+    { key: 'moderate', color: '#A5D6A7', label: '5-7 s' },
+    { key: 'long', color: '#81C784', label: '7-9 s' },
+    { key: 'veryLong', color: '#66BB6A', label: '9-11 s' },
+    { key: 'extreme', color: '#4CAF50', label: '11-13 s' },
+    { key: 'massive', color: '#388E3C', label: '13-15 s' },
+    { key: 'giant', color: '#1B5E20', label: '>15 s' }
   ];
-  
+
   return (
     <div className="card">
         <div className='card-header'>
-            <h3 className="card-title">Distribución de altura de ola</h3>
+            <h3 className="card-title">Distribución de periodo de ola</h3>
         </div>
       <div className="card-body">
         <div className="d-flex flex-column align-items-center">
@@ -141,8 +141,8 @@ const WaveRose = ({ data }) => {
             <text x="55" y="245" textAnchor="middle" className="rose_points_2">SW</text>
             <text x="55" y="65" textAnchor="middle" className="rose_points_2">NW</text>
             
-            {/* Height category layers - rendering from largest to smallest */}
-            {[...waveHeightColors].reverse().map(({key, color}) => (
+            {/* Period category layers - rendering from largest to smallest */}
+            {[...periodColors].reverse().map(({key, color}) => (
               <g key={key}>
                 {generatePaths(key, color)}
               </g>
@@ -151,7 +151,7 @@ const WaveRose = ({ data }) => {
           
           {/* Legend - keep original order for readability */}
           <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
-            {waveHeightColors.map(({key, color, label}) => (
+            {periodColors.map(({key, color, label}) => (
               <div key={key} className="d-flex align-items-center me-3">
                 <span 
                   className="me-2" 
@@ -173,4 +173,4 @@ const WaveRose = ({ data }) => {
   );
 };
 
-export default WaveRose;
+export default PeriodRose;

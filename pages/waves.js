@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 import WaveDirectionStrip from '../components/WaveDirectionStrip';
 import WaveRose from '../components/WaveRose';
+import PeriodRose from '../components/PeriodRose';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
@@ -501,6 +502,9 @@ const WavesContent = () => {
           )}
           <div className="col-12">
             <WaveRose data={displayedChartData} />
+          </div>
+          <div className="col-12">
+            <PeriodRose data={displayedChartData} />
           </div>
         </>
       )}
