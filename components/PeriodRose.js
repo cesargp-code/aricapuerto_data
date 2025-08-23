@@ -92,14 +92,14 @@ const PeriodRose = ({ data }) => {
   };
 
   const periodColors = [
-    { key: 'veryShort', color: '#E8F5E8', label: '0-3 s' },
-    { key: 'short', color: '#C8E6C9', label: '3-5 s' },
-    { key: 'moderate', color: '#A5D6A7', label: '5-7 s' },
-    { key: 'long', color: '#81C784', label: '7-9 s' },
-    { key: 'veryLong', color: '#66BB6A', label: '9-11 s' },
-    { key: 'extreme', color: '#4CAF50', label: '11-13 s' },
-    { key: 'massive', color: '#388E3C', label: '13-15 s' },
-    { key: 'giant', color: '#1B5E20', label: '>15 s' }
+    { key: 'veryShort', color: '#E0F7FA', label: '0-3 s' },
+    { key: 'short', color: '#B2EBF2', label: '3-5 s' },
+    { key: 'moderate', color: '#80DEEA', label: '5-7 s' },
+    { key: 'long', color: '#4DD0E1', label: '7-9 s' },
+    { key: 'veryLong', color: '#26C6DA', label: '9-11 s' },
+    { key: 'extreme', color: '#20c997', label: '11-13 s' },
+    { key: 'massive', color: '#1db388', label: '13-15 s' },
+    { key: 'giant', color: '#1AA67D', label: '>15 s' }
   ];
 
   return (
