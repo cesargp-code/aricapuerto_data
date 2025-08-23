@@ -149,7 +149,7 @@ const TemperatureContent = () => {
         }
       }
     },
-    colors: ["#2C3976"],
+    colors: ["#AF3EC9"],
     legend: {
       show: false,
     },
@@ -213,7 +213,7 @@ const TemperatureContent = () => {
                 </div>
               </Link>
             </div>
-            <span className="status status-azure current-pill">
+            <span className="status status-purple current-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
               </span>

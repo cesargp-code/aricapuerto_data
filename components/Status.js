@@ -31,7 +31,7 @@ const Status = () => {
 
   const handleOpenMaps = () => {
     if (statusData && statusData.latitude_fixed && statusData.longitude_fixed) {
-      const mapsUrl = `https://www.google.com/maps?q=${statusData.latitude_fixed},${statusData.longitude_fixed}`;
+      const mapsUrl = `https://www.google.com/maps?q=${statusData.latitude_fixed},${statusData.longitude_fixed}(Boya+Oceanográfica+Puerto+Arica)&z=10`;
       window.open(mapsUrl, '_blank', 'noopener,noreferrer');
     }
   };
@@ -64,24 +64,33 @@ const Status = () => {
   }
 
   return (
-    <div className="card">
-      <div className="card-header">
-        <h3 className="card-title">Estado del Sistema</h3>
-      </div>
-      <div className="card-body">
-        {statusData ? (
-          <div>
-            <div className="row mb-3">
-              <div className="col-sm-6">
-                <label className="form-label text-muted">Latitud</label>
-                <div className="fw-bold">{statusData.latitude_fixed}°</div>
-              </div>
-              <div className="col-sm-6">
-                <label className="form-label text-muted">Longitud</label>
-                <div className="fw-bold">{statusData.longitude_fixed}°</div>
-              </div>
-            </div>
-            <div className="d-flex justify-content-center">
+    <div className="">
+      <div className="row g-3 align-items-center">
+        <div className="col-auto">
+          <span className="status-indicator status-green status-indicator-animated">
+            <span className="status-indicator-circle"></span>
+            <span className="status-indicator-circle"></span>
+            <span className="status-indicator-circle"></span>
+          </span>
+        </div>
+        <div className="col">
+          <h2 className="page-title">Posición</h2>
+          <div className="text-secondary">
+            <ul className="list-inline list-inline-dots mb-0">
+              <li className="list-inline-item">
+                <span className="text-green">Operativa</span>
+              </li>
+              {statusData && statusData.latitude_fixed && statusData.longitude_fixed && (
+                <li className="list-inline-item">
+                  {statusData.latitude_fixed}°, {statusData.longitude_fixed}°
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+        <div className="">
+          <div className="btn-list">
+            {statusData && statusData.latitude_fixed && statusData.longitude_fixed && (
               <button 
                 className="btn btn-primary d-flex align-items-center gap-2"
                 onClick={handleOpenMaps}
@@ -89,11 +98,9 @@ const Status = () => {
                 <IconMapPin size={20} />
                 Ver en Google Maps
               </button>
-            </div>
+            )}
           </div>
-        ) : (
-          <div className="text-muted">No hay datos de estado disponibles</div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-@import url('https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css');
+@import '../public/css/tabler.min.css';
 
 /* Custom css on top of Tabler css */
 .bg-primary {
