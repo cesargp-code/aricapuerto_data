@@ -1,4 +1,13 @@
-import supabase from '../../lib/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  console.error('Missing Supabase environment variables');
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -7,6 +16,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log('Attempting to fetch status data from arica_status table');
     const { data, error } = await supabase
       .from('arica_status')
       .select('longitude_fixed, latitude_fixed')
@@ -14,8 +24,12 @@ export default async function handler(req, res) {
       .limit(1);
 
     if (error) {
-      console.error('Error fetching status data:', error);
-      return res.status(500).json({ message: 'Error fetching status data' });
+      console.error('Supabase error details:', error);
+      return res.status(500).json({ 
+        message: 'Error fetching status data',
+        error: error.message,
+        details: error
+      });
     }
 
     if (!data || data.length === 0) {
