@@ -164,7 +164,7 @@ const Status = () => {
 
   return (
     <div className="">
-      <div className="row g-3 align-items-center">
+      <div className="row g-3 align-items-top">
         <div className="col-auto">
           <span className={`status-indicator ${isInAlarmRange() ? 'status-red' : 'status-green'} status-indicator-animated`}>
             <span className="status-indicator-circle"></span>
@@ -188,24 +188,25 @@ const Status = () => {
               )}
             </ul>
           </div>
+          {statusData && statusData.latitude_fixed && statusData.longitude_fixed && (
+            <div className="text-secondary">
+              Coordenadas: {statusData.latitude_fixed}°, {statusData.longitude_fixed}°
+            </div>
+          )}
+          {statusData && statusData.latitude_fixed && statusData.longitude_fixed && (
+            <button 
+              className="btn btn-primary mt-2"
+              onClick={handleOpenMaps}
+              title={`${statusData.latitude_fixed}°, ${statusData.longitude_fixed}°`}
+            >
+              <IconMapPin size={20} />
+              <div className="d-flex flex-column align-items-start">
+                <span>Ver en Google Maps</span>
+              </div>
+            </button>
+          )}
         </div>
-        <div className="">
-          <div className="btn-list">
-            {statusData && statusData.latitude_fixed && statusData.longitude_fixed && (
-              <button 
-                className="btn btn-primary d-flex align-items-center gap-2"
-                onClick={handleOpenMaps}
-                title={`${statusData.latitude_fixed}°, ${statusData.longitude_fixed}°`}
-              >
-                <IconMapPin size={20} />
-                <div className="d-flex flex-column align-items-start">
-                  <span>Ver en Google Maps</span>
-                  <small className="opacity-75">{statusData.latitude_fixed}°, {statusData.longitude_fixed}°</small>
-                </div>
-              </button>
-            )}
-          </div>
-        </div>
+        <div className=""></div>
       </div>
     </div>
   );
