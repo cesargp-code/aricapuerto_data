@@ -157,7 +157,7 @@ const WavesContent = () => {
 
   const chartOptions = {
     chart: {
-      type: 'line',
+      type: 'bars',
       fontFamily: 'inherit',
       id: 'waves_chart_height',
       group: 'waves_sync',
@@ -243,7 +243,7 @@ const WavesContent = () => {
 
   const periodChartOptions = {
     chart: {
-      type: 'line',
+      type: 'bar',
       id: 'waves_chart_period',
       fontFamily: 'inherit',
       //group: 'waves_sync',
@@ -260,10 +260,11 @@ const WavesContent = () => {
     dataLabels: {
       enabled: false,
     },
-    stroke: {
-      width: [2],
-      lineCap: "round",
-      curve: "smooth",
+    plotOptions: {
+      bar: {
+        borderRadius: 2,
+        columnWidth: '60%',
+      }
     },
     grid: {
       padding: {
@@ -479,7 +480,7 @@ const WavesContent = () => {
                       key={`period-chart-${displayedChartData.length}-${timeRange}`}
                       options={periodChartOptions}
                       series={[{ name: "Periodo", data: displayedChartData.map(point => ({ x: point.x, y: point.period })) }]}
-                      type="line"
+                      type="bar"
                       height={120}
                     />
                   )}
