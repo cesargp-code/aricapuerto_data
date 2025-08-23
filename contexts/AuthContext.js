@@ -46,6 +46,12 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const updatePassword = (password) => {
+    return supabase.auth.updateUser({
+      password: password
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -53,6 +59,7 @@ export const AuthProvider = ({ children }) => {
         signIn,
         signOut,
         forgotPassword,
+        updatePassword,
         loading
       }}
     >
