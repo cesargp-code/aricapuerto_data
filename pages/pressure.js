@@ -3,16 +3,12 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
-import { useAuth } from '../contexts/AuthContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
-import { IconFileDownload } from '@tabler/icons-react';
-import { downloadCSV } from '../utils/csvUtils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const PressureContent = () => {
   const { timeRange } = useContext(TimeRangeContext);
-  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [allChartData, setAllChartData] = useState([]);
   const [displayedChartData, setDisplayedChartData] = useState([]);
@@ -177,20 +173,6 @@ const PressureContent = () => {
     },
   };
 
-  const handleDownload = () => {
-    const csvData = displayedChartData.map(point => ({
-      date: point.x,
-      pressure: point.y
-    }));
-
-    downloadCSV(csvData, {
-      columns: {
-        date: 'Fecha y hora',
-        pressure: 'Presión atmosférica (hPa)'
-      },
-      filename: 'presion'
-    });
-  };
 
   return (
     <>
@@ -278,17 +260,6 @@ const PressureContent = () => {
               </div>
             </div>
           </div>
-          {user && (
-            <div className="d-flex justify-content-center mt-3">
-              <button 
-                className="btn btn-primary d-flex align-items-center gap-2"
-                onClick={handleDownload}
-              >
-                <IconFileDownload size={20} />
-                Descargar datos
-              </button>
-            </div>
-          )}
         </div>
       )}
     </>

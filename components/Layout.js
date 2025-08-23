@@ -7,6 +7,7 @@ import { IconInfoCircleFilled, IconLogout, IconLogin } from '@tabler/icons-react
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
 import LoginModal from '../components/LoginModal';
+import Status from '../components/Status';
 
 const Layout = ({ children }) => {
   const router = useRouter();
@@ -153,20 +154,26 @@ const Layout = ({ children }) => {
             ></button>
           </div>
           <div className="offcanvas-body">
-            <img 
-              src="/img/buoy_pic.jpg" 
-              alt="Boya oceanográfica" 
-              className="img-fluid rounded mb-3 w-100"
-            />
-            <p>
-              Esta tecnología optimiza las operaciones portuarias y refuerza la seguridad marítima del Puerto de Arica, siendo especialmente relevante ante el aumento de marejadas por el cambio climático, lo que posiciona al puerto a la vanguardia en la macrozona norte.
-            </p>
-            <p>
-              La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.
-            </p>
-            <p>
-              Este sistema de última generación representa una inversión de más de 150 millones de pesos, permitiendo monitorear en tiempo real las condiciones marítimas y meteorológicas del puerto.
-            </p>
+            {user ? (
+              <Status />
+            ) : (
+              <>
+                <img 
+                  src="/img/buoy_pic.jpg" 
+                  alt="Boya oceanográfica" 
+                  className="img-fluid rounded mb-3 w-100"
+                />
+                <p>
+                  Esta tecnología optimiza las operaciones portuarias y refuerza la seguridad marítima del Puerto de Arica, siendo especialmente relevante ante el aumento de marejadas por el cambio climático, lo que posiciona al puerto a la vanguardia en la macrozona norte.
+                </p>
+                <p>
+                  La boya está equipada con medidores de oleaje, estación meteorológica y sistemas de comunicación satelital, operando de manera autónoma gracias a su alimentación por energía solar.
+                </p>
+                <p>
+                  Este sistema de última generación representa una inversión de más de 150 millones de pesos, permitiendo monitorear en tiempo real las condiciones marítimas y meteorológicas del puerto.
+                </p>
+              </>
+            )}
           </div>
           {/* New sticky footer */}
           <div className="offcanvas-footer border-top p-3" style={{ position: 'sticky', bottom: 0, background: 'white' }}>

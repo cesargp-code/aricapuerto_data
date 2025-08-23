@@ -5,17 +5,13 @@ import WindRose from '../components/WindRose';
 import Layout from '../components/Layout';
 import WindDirectionStrip from '../components/WindDirectionStrip';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
-import { useAuth } from '../contexts/AuthContext';
 import { IconCircleArrowLeftFilled } from '@tabler/icons-react';
-import { IconFileDownload } from '@tabler/icons-react';
-import { downloadCSV } from '../utils/csvUtils';
 import { IconArrowNarrowUp } from '@tabler/icons-react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const WindContent = () => {
   const { timeRange } = useContext(TimeRangeContext);
-  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [allChartData, setAllChartData] = useState([]);
   const [displayedChartData, setDisplayedChartData] = useState([]);
@@ -228,26 +224,6 @@ const WindContent = () => {
     },
   };
 
-  const handleDownload = () => {
-    const csvData = displayedChartData.map(point => ({
-      date: point.x,
-      windSpeed: point.y,
-      windDirection: point.direction,
-      gustSpeed: point.gust,
-      gustDirection: point.gustDir
-    }));
-
-    downloadCSV(csvData, {
-      columns: {
-        date: 'Fecha y hora',
-        windSpeed: 'Velocidad del viento (m/s)',
-        windDirection: 'Dirección del viento (°)',
-        gustSpeed: 'Velocidad de la ráfaga (m/s)',
-        gustDirection: 'Dirección de la ráfaga (°)'
-      },
-      filename: 'viento'
-    });
-  };
 
   return (
     <>
@@ -359,17 +335,6 @@ const WindContent = () => {
               </div>
             </div>
           </div>
-          {user && (
-            <div className="d-flex justify-content-center mt-3">
-              <button 
-                className="btn btn-primary d-flex align-items-center gap-2"
-                onClick={handleDownload}
-              >
-                <IconFileDownload size={20} />
-                Descargar datos
-              </button>
-            </div>
-          )}
           <div className="col-12">
             <WindRose data={displayedChartData} />
           </div>
