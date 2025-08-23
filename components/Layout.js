@@ -76,10 +76,12 @@ const Layout = ({ children }) => {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const { error } = await signOut();
+      if (error) throw error;
       setShowOffcanvas(false);
     } catch (error) {
       console.error('Error signing out:', error);
+      alert('Error al cerrar sesión. Inténtalo de nuevo.');
     }
   };
 
