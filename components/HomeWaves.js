@@ -153,7 +153,7 @@ const WaveHeightChart = () => {
       },
       min: 0,
     },
-    colors: ["#13A8E2"],
+    colors: ["#1E40AF"],
     legend: {
       show: false,
     },
@@ -213,9 +213,9 @@ const WaveHeightChart = () => {
             </p>
           </div>
           <div className="card-actions">
-            <span className="status status-azure current-pill" id="current-wave-pill">
+            <span className="status current-pill" id="current-wave-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                    style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+                    style={isStaleData ? { backgroundColor: '#909090' } : { backgroundColor: '#1E40AF' }}>
               </span>
               {currentWaveHeight} m
               <span className="d-inline-flex align-items-center gap-1">
@@ -226,7 +226,6 @@ const WaveHeightChart = () => {
                       />
                     </span>
                   </span>
-              ⋮ {currentWavePeriod} s
             </span>
             <IconCircleArrowRightFilled
               height={40}

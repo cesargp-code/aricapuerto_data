@@ -207,7 +207,7 @@ const WavesContent = () => {
       },
       min: 0,
     },
-    colors: ["#13A8E2", "#1E40AF"],
+    colors: ["#1E40AF", "#13A8E2"],
     legend: {
       show: false,
     },
@@ -376,9 +376,9 @@ const WavesContent = () => {
                 </div>
               </Link>
             </div>
-            <span className="status status-azure current-pill" id="current-wave-pill">
+            <span className="status current-pill" id="current-wave-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
-                    style={isStaleData ? { backgroundColor: '#909090' } : {}}>
+                    style={isStaleData ? { backgroundColor: '#909090' } : { backgroundColor: '#1E40AF' }}>
               </span>
               {currentWave.height} m 
                 <span style={{ transform: `rotate(${currentWave.direction + 180}deg)` }}>
@@ -387,7 +387,6 @@ const WavesContent = () => {
                     stroke={2}
                   />
                 </span>
-              ⋮ {currentWave.currentPeriod} s
               <span className="d-inline-flex align-items-center gap-1">
               </span>
             </span>
@@ -399,7 +398,7 @@ const WavesContent = () => {
                 <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
+                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
                         <span className="fs-5">Mín. altura máx.</span>
                       </div>
                       <div className="h3 m-0">{stats.minMaxHeight} m</div>
@@ -408,7 +407,7 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
+                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
                         <span className="fs-5">Máx. altura máx.</span>
                       </div>
                       <div className="h3 m-0">{stats.maxMaxHeight} m</div>
@@ -417,7 +416,7 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
+                        <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
                         <span className="fs-5">Mín. altura sig.</span>
                       </div>
                       <div className="h3 m-0">{stats.minWave} m</div>
@@ -426,7 +425,7 @@ const WavesContent = () => {
                   <div className="col-6">
                     <div className="p-3 bg-light rounded-2 text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-                        <span className="status-dot" style={{ backgroundColor: '#13A8E2' }}></span>
+                        <span className="status-dot" style={{ backgroundColor: '#1E40AF' }}></span>
                         <span className="fs-5">Máx. altura sig.</span>
                       </div>
                       <div className="h3 m-0">{stats.maxWave} m</div>

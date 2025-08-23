@@ -13,11 +13,6 @@ a h3.card-title, a #page-title {
 .current-pill {
     font-size: medium;
     height:34px;
-    color: #2C3976; 
-    background-color:#DFE1EA;
-}
-.secondary-measure .current-pill .status-dot {
-    background: #4c5a9c;
 }
 .navigation_arrow {
     color:#F7B982;
@@ -30,8 +25,8 @@ a h3.card-title, a #page-title {
     background-color:#E1EBE2;
 }
 #current-wave-pill.current-pill {
-    color: #13A8E2;
-    background-color:#DCF2FB;
+    color: #1E40AF;
+    background-color:#C9D1EC;
 }
 .navbar .navbar-brand img#logo {
     height:60px;

@@ -32,7 +32,7 @@ const WaveDirectionStrip = ({ waveData }) => {
           }}>
             <IconArrowNarrowUp
               size={20} 
-              color="#13A8E2"
+              color="#1E40AF"
             />
           </div>
           <div style={{ 
