@@ -16,7 +16,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       if (isResetMode) {
         const { error } = await forgotPassword(email);
         if (error) throw error;
-        alert('Check your email for password reset instructions');
+        alert('Le llegará un mensaje con las instrucciones para actualizar la contraseña');
         setIsResetMode(false);
       } else {
         const { error } = await signIn(email, password);
@@ -92,7 +92,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                 className="btn btn-link link-secondary"
                 onClick={() => setIsResetMode(!isResetMode)}
               >
-                {isResetMode ? 'Volver al login' : '¿Olvidaste tu contraseña?'}
+                {isResetMode ? 'Volver al login' : '¿Olvidó su contraseña?'}
               </button>
             </div>
           </div>

@@ -38,7 +38,7 @@ const ResetPassword = () => {
           // (This handles cases where tokens were already processed)
           setIsValidRecovery(true);
         } else {
-          setError('Enlace de recuperación inválido o expirado. Por favor, solicita un nuevo enlace de recuperación.');
+          setError('Enlace de recuperación inválido o expirado. Por favor, solicite un nuevo enlace de recuperación.');
           setIsValidRecovery(false);
         }
         setIsChecking(false);
@@ -101,10 +101,10 @@ const ResetPassword = () => {
           <div className="card card-md">
             <div className="card-body text-center">
               <div className="mb-4">
-                <h2 className="h1 text-green">¡Contraseña actualizada!</h2>
+                <h2 className="h1 text-green">Contraseña actualizada</h2>
               </div>
               <p className="text-muted">
-                Tu contraseña ha sido actualizada exitosamente. Serás redirigido al inicio en unos segundos...
+                Su contraseña se ha actualizado. Será redirigido al inicio en unos segundos...
               </p>
               <div className="mt-4">
                 <Link href="/" className="btn btn-primary">
@@ -119,8 +119,20 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="page page-center">
-      <div className="container-tight py-4">
+    <div className="page">
+      {/* Header */}
+      <header className="navbar navbar-expand-md navbar-dark bg-primary text-dark d-print-none">
+        <div className="container-xl position-relative">
+          <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3 mb-0">
+            <div className="h2 mb-0 text-decoration-none d-flex align-items-center">
+              <img id="logo" src="/img/logo-inverted.svg" alt="Logo" />
+            </div>
+          </h1>
+        </div>
+      </header>
+
+      <div className="page page-center">
+        <div className="container-tight py-4">
         <div className="card card-md">
           <div className="card-body">
             <h2 className="card-title text-center mb-4">Restablecer contraseña</h2>
@@ -138,7 +150,7 @@ const ResetPassword = () => {
                   <input
                     type="password"
                     className="form-control"
-                    placeholder="Ingresa tu nueva contraseña"
+                    placeholder="Ingrese su nueva contraseña"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -154,7 +166,7 @@ const ResetPassword = () => {
                   <input
                     type="password"
                     className="form-control"
-                    placeholder="Confirma tu nueva contraseña"
+                    placeholder="Confirme su nueva contraseña"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -173,9 +185,6 @@ const ResetPassword = () => {
               </form>
             ) : isValidRecovery === false ? (
               <div className="text-center">
-                <p className="text-muted mb-4">
-                  Este enlace de recuperación no es válido o ha expirado.
-                </p>
                 <Link href="/" className="btn btn-primary">
                   Volver al inicio
                 </Link>
@@ -201,12 +210,8 @@ const ResetPassword = () => {
             )}
           </div>
         </div>
-        
-        <div className="text-center text-muted mt-3">
-          <Link href="/" className="text-muted">
-            ← Volver al inicio
-          </Link>
-        </div>
+
+      </div>
       </div>
     </div>
   );

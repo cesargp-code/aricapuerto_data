@@ -182,7 +182,7 @@ const Status = () => {
               </li>
               {getDistanceToMooredPosition() !== null && (
                 <li className="list-inline-item">
-                  Dist. a punto de fondeo: {getDistanceToMooredPosition()} m
+                  Dist. al punto de fondeo: {getDistanceToMooredPosition()} m
                 </li>
               )}
             </ul>
