@@ -57,13 +57,12 @@ const Status = () => {
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371000; // Earth's radius in meters
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
 
@@ -87,7 +86,7 @@ const Status = () => {
 
   const handleOpenMaps = () => {
     if (statusData && statusData.latitude_fixed && statusData.longitude_fixed) {
-      const mapsUrl = `https://www.google.com/maps?q=${statusData.latitude_fixed},${statusData.longitude_fixed}(Boya+Oceanográfica+Puerto+Arica)&z=10`;
+      const mapsUrl = `https://www.google.com/maps?q=${statusData.latitude_fixed},${statusData.longitude_fixed}(Boya+Oceanográfica+Puerto+Arica)&z=12`;
       window.open(mapsUrl, '_blank', 'noopener,noreferrer');
     }
   };
