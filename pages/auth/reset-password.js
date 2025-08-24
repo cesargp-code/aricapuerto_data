@@ -9,17 +9,46 @@ const ResetPassword = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isValidRecovery, setIsValidRecovery] = useState(null);
+  const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
-  const { updatePassword } = useAuth();
+  const { updatePassword, user } = useAuth();
 
   useEffect(() => {
-    // Check if we have the recovery token in the URL
-    const { access_token, refresh_token, type } = router.query;
+    // Check if we arrived here from a password recovery flow
+    const checkRecoveryFlow = async () => {
+      // Clear any previous errors
+      setError('');
+      
+      // Check URL hash first (where Supabase puts recovery tokens)
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const type = hashParams.get('type');
+      
+      if (type === 'recovery') {
+        // We have recovery tokens in the URL, this is a valid recovery
+        setIsValidRecovery(true);
+        setIsChecking(false);
+        return;
+      }
+      
+      // If no hash params, wait for auth to settle and check if user is authenticated
+      const timeout = setTimeout(() => {
+        if (user && user.aud === 'authenticated') {
+          // User is authenticated, allow password reset
+          // (This handles cases where tokens were already processed)
+          setIsValidRecovery(true);
+        } else {
+          setError('Enlace de recuperación inválido o expirado. Por favor, solicita un nuevo enlace de recuperación.');
+          setIsValidRecovery(false);
+        }
+        setIsChecking(false);
+      }, 2000);
+      
+      return () => clearTimeout(timeout);
+    };
     
-    if (type !== 'recovery' || !access_token) {
-      setError('Enlace de recuperación inválido o expirado. Por favor, solicita un nuevo enlace de recuperación.');
-    }
-  }, [router.query]);
+    checkRecoveryFlow();
+  }, [user]);
 
   const validatePassword = (password) => {
     if (password.length < 6) {
@@ -102,7 +131,7 @@ const ResetPassword = () => {
               </div>
             )}
 
-            {router.query.type === 'recovery' && router.query.access_token ? (
+            {isValidRecovery ? (
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Nueva contraseña</label>
@@ -142,10 +171,28 @@ const ResetPassword = () => {
                   </button>
                 </div>
               </form>
-            ) : (
+            ) : isValidRecovery === false ? (
               <div className="text-center">
                 <p className="text-muted mb-4">
                   Este enlace de recuperación no es válido o ha expirado.
+                </p>
+                <Link href="/" className="btn btn-primary">
+                  Volver al inicio
+                </Link>
+              </div>
+            ) : isChecking ? (
+              <div className="text-center">
+                <p className="text-muted mb-4">
+                  Verificando enlace de recuperación...
+                </p>
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-muted mb-4">
+                  No se pudo verificar el enlace de recuperación.
                 </p>
                 <Link href="/" className="btn btn-primary">
                   Volver al inicio
