@@ -81,7 +81,7 @@ const Status = () => {
 
   const isInAlarmRange = () => {
     const distance = getDistanceToMooredPosition();
-    return distance !== null && distance > 100;
+    return distance !== null && distance > 500;
   };
 
   const handleOpenMaps = () => {
