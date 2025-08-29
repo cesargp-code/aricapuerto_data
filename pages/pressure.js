@@ -189,7 +189,8 @@ const PressureContent = () => {
         </div>
       ) : (
         <div>
-          <div className='title d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
+          <div className="card">
+          <div className='title card-header d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
             <div className="d-flex align-items-center">
               <Link href="/" className="text-decoration-none d-flex align-items-center">
                 <IconCircleArrowLeftFilled
@@ -198,7 +199,7 @@ const PressureContent = () => {
                   className="navigation_arrow me-1"
                 />
                 <div>
-                  <h2 id='page-title' className='mb-0 text-decoration-none'>Presión atmosférica</h2>
+                  <h3 id='page-title' className='mb-0 text-decoration-none'>Presión atmosférica</h3>
                   <p className={`card-subtitle mb-0 ${isStaleData ? 'status status-red' : ''}`} 
                     style={{ 
                       fontSize: "x-small",
@@ -220,7 +221,6 @@ const PressureContent = () => {
               {currentPressure} hPa
             </span>
           </div>
-          <div className="card">
             <div className="card-body">
               <div className="row g-2 mb-3">
                 <div className="col-4">
