@@ -132,7 +132,7 @@ const Layout = ({ children }) => {
                 <button 
                   className="nav-link px-0 border-0 bg-transparent" 
                   onClick={() => setShowOffcanvas(true)}
-                  aria-label="Open information"
+                  aria-label="Sobre el sistema"
                 >
                   <IconInfoCircleFilled size={30} color="#F28B2F" />
                 </button>

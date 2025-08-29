@@ -189,8 +189,7 @@ const PressureContent = () => {
         </div>
       ) : (
         <div>
-          <div className="card">
-          <div className='title card-header d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
+          <div className='title d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
             <div className="d-flex align-items-center">
               <Link href="/" className="text-decoration-none d-flex align-items-center">
                 <IconCircleArrowLeftFilled
@@ -214,6 +213,7 @@ const PressureContent = () => {
                 </div>
               </Link>
             </div>
+          <div className="card">
             <span className="status status-purple current-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>

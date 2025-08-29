@@ -189,8 +189,7 @@ const TemperatureContent = () => {
         </div>
       ) : (
         <div>
-          <div className="card">
-          <div className='title card-header d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
+          <div className='title d-flex align-items-center justify-content-between w-100 mb-3 secondary-measure'>
             <div className="d-flex align-items-center">
               <Link href="/" className="text-decoration-none d-flex align-items-center">
                 <IconCircleArrowLeftFilled
@@ -221,7 +220,7 @@ const TemperatureContent = () => {
               {currentTemp} ºC
             </span>
           </div>
-
+          <div className="card">
             <div className="card-body">
               <div className="row g-2 mb-3">
                 <div className="col-4">

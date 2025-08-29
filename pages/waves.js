@@ -227,9 +227,9 @@ const WavesContent = () => {
         let tooltipHtml = `<div class="arrow_box">
                              <div class="arrow_box_header" style="font-weight: bold;">${time} h</div>`;
 
-        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[0]}"></span> Alt. Sig.: ${heightValue} m</div>`;
-        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[1]}"></span> Alt. Max.: ${maxHeightValue} m</div>`;
-        tooltipHtml += `<div><span class="status-dot" style="opacity:0;"></span> Dir.: ${directionValue}°</div>`;
+        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[1]}"></span> ${maxHeightValue} m</div>`;
+        tooltipHtml += `<div><span class="status-dot" style="background-color:${w.globals.colors[0]}"></span> ${heightValue} m</div>`;
+        tooltipHtml += `<div>${directionValue}°</div>`;
         tooltipHtml += `</div>`;
 
         return tooltipHtml;
