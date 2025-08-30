@@ -213,7 +213,6 @@ const PressureContent = () => {
                 </div>
               </Link>
             </div>
-          <div className="card">
             <span className="status status-purple current-pill">
               <span className={`status-dot ${!isStaleData ? 'status-dot-animated' : ''}`}
                     style={isStaleData ? { backgroundColor: '#909090' } : {}}>
@@ -221,6 +220,7 @@ const PressureContent = () => {
               {currentPressure} hPa
             </span>
           </div>
+          <div className="card">
             <div className="card-body">
               <div className="row g-2 mb-3">
                 <div className="col-4">
