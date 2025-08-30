@@ -108,3 +108,7 @@ div.arrow_box div {
 .dir_strip {
     margin-left: 24px;
 }
+.notification-badge-position {
+  top: 8px !important;
+  left: 22px !important;
+}

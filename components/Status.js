@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { IconMapPin } from '@tabler/icons-react';
+import { useStatus } from '../contexts/StatusContext';
 
 const Status = () => {
   const [statusData, setStatusData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { setIsInAlarm } = useStatus();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -83,6 +85,10 @@ const Status = () => {
     const distance = getDistanceToMooredPosition();
     return distance !== null && distance > 500;
   };
+
+  useEffect(() => {
+    setIsInAlarm(isInAlarmRange());
+  }, [statusData, setIsInAlarm]);
 
   const handleOpenMaps = () => {
     if (statusData && statusData.latitude_fixed && statusData.longitude_fixed) {

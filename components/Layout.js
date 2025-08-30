@@ -6,15 +6,17 @@ import { useRouter } from 'next/router';
 import { IconInfoCircleFilled, IconLogout, IconLogin } from '@tabler/icons-react';
 import { TimeRangeContext } from '../contexts/TimeRangeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { StatusProvider, useStatus } from '../contexts/StatusContext';
 import LoginModal from '../components/LoginModal';
 import Status from '../components/Status';
 
-const Layout = ({ children }) => {
+const LayoutContent = ({ children }) => {
   const router = useRouter();
   const isHomePage = router.pathname === '/';
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { user, signOut } = useAuth();
+  const { isInAlarm } = useStatus();
   
   // Initialize timeRange from localStorage if available, otherwise default to 24
   const [timeRange, setTimeRange] = useState(() => {
@@ -130,11 +132,14 @@ const Layout = ({ children }) => {
             <div className="navbar-nav flex-row order-md-last px-3">
               <div className="nav-item">
                 <button 
-                  className="nav-link px-0 border-0 bg-transparent" 
+                  className="nav-link px-0 border-0 bg-transparent position-relative" 
                   onClick={() => setShowOffcanvas(true)}
                   aria-label="Sobre el sistema"
                 >
                   <IconInfoCircleFilled size={30} color="#F28B2F" />
+                  {user && isInAlarm && (
+                    <span className="badge bg-red text-red-fg badge-notification badge-blink notification-badge-position"></span>
+                  )}
                 </button>
               </div>
             </div>
@@ -182,7 +187,7 @@ const Layout = ({ children }) => {
             {user ? (
               <div className="d-flex justify-content-between align-items-center">
                 <div className="text-truncate me-2">
-                  <small className="text-muted d-block">Usuario actual</small>
+                  <small className="text-muted d-block">Usuario:</small>
                   <strong>{user.email}</strong>
                 </div>
                 <button 
@@ -235,7 +240,7 @@ const Layout = ({ children }) => {
             <div className="row">
               <div className="col-12">
                 <div className="d-flex flex-wrap justify-content-center align-items-center gap-3">
-                  <div>Empresa Portuaria Arica © 2024</div>
+                  <div>Empresa Portuaria Arica © 2025</div>
                   <div>
                     <a href="https://www.google.cl/maps/place/M%C3%A1ximo+Lira+389,+Arica,+Regi%C3%B3n+de+Arica+y+Parinacota/@-18.476221,-70.3212228,17z/data=!3m1!4b1!4m2!3m1!1s0x915aa9919caea8d3:0x7789ee7a703f8688" 
                       target="_blank" 
@@ -257,6 +262,14 @@ const Layout = ({ children }) => {
         strategy="afterInteractive"
       />
     </TimeRangeContext.Provider>
+  );
+};
+
+const Layout = ({ children }) => {
+  return (
+    <StatusProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </StatusProvider>
   );
 };
 
