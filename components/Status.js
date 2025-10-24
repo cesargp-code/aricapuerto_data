@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { IconMapPin } from '@tabler/icons-react';
 import { useStatus } from '../contexts/StatusContext';
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 
 const Status = () => {
   const [statusData, setStatusData] = useState(null);
@@ -24,8 +25,8 @@ const Status = () => {
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
-      const response = await fetch('/api/status-data', {
+
+      const response = await authenticatedFetch('/api/status-data', {
         signal: controller.signal,
         headers: {
           'Cache-Control': 'no-cache'

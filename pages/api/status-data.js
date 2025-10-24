@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { withAuth } from '../../lib/authMiddleware';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -9,7 +10,7 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
     return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
@@ -42,3 +43,5 @@ export default async function handler(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+export default withAuth(handler);
