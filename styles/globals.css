@@ -1,6 +1,18 @@
 @import '../public/css/tabler.min.css';
 
 /* Custom css on top of Tabler css */
+
+/* Set body background to match navbar/footer for overscroll bounce effect */
+html,
+body {
+    background-color: #29397A;
+}
+
+/* Keep the main page content area light */
+.page {
+    background-color: #f6f8fb;
+}
+
 .bg-primary {
     background-color:#29397A !important;
 }

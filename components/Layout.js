@@ -10,6 +10,19 @@ import { StatusProvider, useStatus } from '../contexts/StatusContext';
 import LoginModal from '../components/LoginModal';
 import Status from '../components/Status';
 
+// Custom Circle Key Icon component
+const IconCircleKeyFilled = ({ size = 24, color = "currentColor" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill={color}
+    style={{ width: `${size}px`, height: `${size}px`, minWidth: `${size}px`, minHeight: `${size}px`, display: 'inline-block' }}
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1 -20 0c0 -5.523 4.477 -10 10 -10zm2 5a3 3 0 0 0 -2.98 2.65l-.015 .174l-.005 .176l.005 .176c.019 .319 .087 .624 .197 .908l.09 .209l-3.5 3.5l-.082 .094a1 1 0 0 0 0 1.226l.083 .094l1.5 1.5l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l.083 -.094a1 1 0 0 0 0 -1.226l-.083 -.094l-.792 -.793l.585 -.585l.793 .792l.094 .083a1 1 0 0 0 1.403 -1.403l-.083 -.094l-.792 -.793l.792 -.792a3 3 0 1 0 1.293 -5.708zm0 2a1 1 0 1 1 0 2a1 1 0 0 1 0 -2z" />
+  </svg>
+);
+
 const LayoutContent = ({ children }) => {
   const router = useRouter();
   const isHomePage = router.pathname === '/';
@@ -131,12 +144,16 @@ const LayoutContent = ({ children }) => {
             {/* Right side - Info Button with corrected onClick handler */}
             <div className="navbar-nav flex-row order-md-last px-3">
               <div className="nav-item">
-                <button 
-                  className="nav-link px-0 border-0 bg-transparent position-relative" 
+                <button
+                  className="nav-link px-0 border-0 bg-transparent position-relative"
                   onClick={() => setShowOffcanvas(true)}
                   aria-label="Sobre el sistema"
                 >
-                  <IconInfoCircleFilled size={30} color="#F28B2F" />
+                  {user ? (
+                    <IconCircleKeyFilled size={30} color="#F28B2F" />
+                  ) : (
+                    <IconInfoCircleFilled size={30} color="#F28B2F" />
+                  )}
                   {user && isInAlarm && (
                     <span className="badge bg-red text-red-fg badge-notification badge-blink notification-badge-position"></span>
                   )}
