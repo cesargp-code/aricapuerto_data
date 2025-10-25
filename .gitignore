@@ -39,3 +39,6 @@ next-env.d.ts
 claude.md
 notes.md
 *-notes.md
+
+# MCP configuration
+.mcp.json
